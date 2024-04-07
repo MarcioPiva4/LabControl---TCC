@@ -14,7 +14,7 @@ export default function Input({ label, idInput, type, options }: PropInput) {
         <input id={idInput} name={idInput} type={type}></input>
       ) : (
         <select id={idInput} name={idInput}>
-          {options?.map((e) => <option>{e.value}</option>)}
+          {options?.map((e) => <option key={e.value}>{e.value}</option>)}
         </select>
       )}
     </>
