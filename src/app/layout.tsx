@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import StyledComponentsRegistry from "./registry";
-import { GlobalStyle } from "./page";
+import { GlobalStyle } from "@/styles/GlobalStyle";
 
 export const metadata: Metadata = {
   title: "LabControl",
