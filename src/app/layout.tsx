@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
 import StyledComponentsRegistry from "./registry";
 import { GlobalStyle } from "@/styles/GlobalStyle";
+import { Inter } from 'next/font/google'
 
 export const metadata: Metadata = {
   title: "LabControl",
   description: "Gerenciamento de estoque de laboratio",
 };
+
+const fontFamily = Inter({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+})
+
 
 export default function RootLayout({
   children,
@@ -13,10 +21,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-br">
+    <html lang="pt-br" className={fontFamily.className}>
       <body>
-        <GlobalStyle />
         <StyledComponentsRegistry>
+          <GlobalStyle />
           {children}
         </StyledComponentsRegistry>
       </body>
