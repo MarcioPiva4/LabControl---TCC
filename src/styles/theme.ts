@@ -1,9 +1,10 @@
 export const theme = {
     color: {
         primary: '#84EEC1',
-        secondary: '#FFFFFF',
+        secondary: '#041833',
         terciary: '#041833',
-        quarty: '#041833',
+        white: '#fff',
+        black: '#000',
         gradient: 'linear-gradient(180deg, rgba(21,69,128,1) 0%, rgba(4,24,51,1) 100%)',
     },
     font: {

@@ -11,9 +11,6 @@ const Svg = styled.svg`
     path{
         transition: 0.3s all;
     }
-    &:hover path{
-        fill: #84EEC1;
-    }
 `;
 
 export function Icons({active, icon}: IconsProps){

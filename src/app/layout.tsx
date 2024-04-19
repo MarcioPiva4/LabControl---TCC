@@ -3,6 +3,7 @@ import StyledComponentsRegistry from "./registry";
 import { GlobalStyle } from "@/styles/GlobalStyle";
 import { Inter } from 'next/font/google'
 import { Header } from "@/Components/Header";
+import { theme } from "@/styles/theme";
 
 export const metadata: Metadata = {
   title: "LabControl",
@@ -25,9 +26,9 @@ export default function RootLayout({
     <html lang="pt-br" className={fontFamily.className}>
       <body>
         <StyledComponentsRegistry>
-          <GlobalStyle />
-          <Header></Header>
-          {children}
+            <GlobalStyle theme={theme}/>
+            <Header></Header>
+            {children}
         </StyledComponentsRegistry>
       </body>
     </html>
