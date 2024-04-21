@@ -13,15 +13,15 @@ export const theme = {
             weight: '700',
             height: '29px',
         },
-        headerLinks: {
+        headerSubMenuLinks: {
             size: '18px',
             weight: '400',
             height: '24px',
         },
         subtitle: {
-            size: '14px',
+            size: '16px',
             weight: '700',
-            height: '19',
+            height: '19px',
         },
         label: {
             size: '16px',
@@ -32,6 +32,12 @@ export const theme = {
             size: '12px',
             weight: '400',
             height: '16px',
-        }
+        },
+        button: {
+            size: '18px',
+            weight: '700',
+            height: '22px',
+        },
+        minSize: '10.5px',
     }
 }

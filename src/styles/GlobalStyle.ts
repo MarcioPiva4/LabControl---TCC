@@ -16,4 +16,9 @@ export const GlobalStyle = createGlobalStyle`
     flex-direction: column;
     font-family: "Inter", sans-serif;
   }
+  main{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
 `

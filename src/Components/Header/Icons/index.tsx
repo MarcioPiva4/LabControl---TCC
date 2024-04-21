@@ -3,17 +3,20 @@
 import styled from "styled-components";
 
 interface IconsProps {
-    active?: boolean;
     icon: "cadastro" | "manutencao" | "home" | "baixaAulas" | "relatorios";
 }
 
 const Svg = styled.svg`
+    @media screen and (max-width: 370px){
+        width: 20px;
+        height: 20px;
+    }
     path{
         transition: 0.3s all;
     }
 `;
 
-export function Icons({active, icon}: IconsProps){
+export function Icons({icon}: IconsProps){
     switch(icon){
         case 'cadastro': 
             return(
