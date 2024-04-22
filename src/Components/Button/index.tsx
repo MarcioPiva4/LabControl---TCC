@@ -7,14 +7,17 @@ interface PropButton {
   children: React.ReactNode;
   is: "isTransparent" | "isNotTransparent";
   icon?: boolean;
+  bottom?: boolean;
 }
 
 const ButtonWrapper = styled.button.attrs<{
   $is: boolean;
   $icon?: boolean;
+  $bottom?: boolean;
 }>((props) => ({
   $is: props.$is || false,
   $icon: props.$icon || false,
+  $bottom: props.$bottom || false,
 }))`
     width: 100%;
     padding: 5px 15px;
@@ -45,10 +48,11 @@ const ButtonWrapper = styled.button.attrs<{
         }
     }
 `;
-export default function Button({ type, children, is, icon }: PropButton) {
+
+export default function Button({ type, children, is, icon, bottom }: PropButton) {
   return (
     <ThemeProvider theme={theme}>
-        <ButtonWrapper $icon={icon} $is={is === "isNotTransparent"} type={type}>{children}</ButtonWrapper>
+        <ButtonWrapper $bottom={bottom} $icon={icon} $is={is === "isNotTransparent"} type={type}>{children}</ButtonWrapper>
     </ThemeProvider>
   );
 }

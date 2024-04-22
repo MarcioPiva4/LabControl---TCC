@@ -36,6 +36,12 @@ const Li = styled.li.attrs<{ $active?: boolean }>((props) => ({
 }))`
   list-style: none;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: ${(props) => props.theme.color.white};
+  text-decoration: none;
   & > a {
     display: flex;
     flex-direction: column;
@@ -48,7 +54,7 @@ const Li = styled.li.attrs<{ $active?: boolean }>((props) => ({
     transition: 0.3s all;
     color: ${(props) =>
       props.$active ? props.theme.color.primary : props.theme.color.white};
-    @media screen and (max-width: 355px){
+    @media screen and (max-width: 355px) {
       font-size: ${(props) => props.theme.font.minSize};
     }
     font-size: ${(props) => props.theme.font.text.size};
@@ -167,32 +173,30 @@ export function Header() {
         <div>
           <nav>
             <ul>
-              <Li $active={menu}>
-                <Link href={""} onClick={() => setMenu(!menu)}>
-                  <p>Cadastro</p>
-                  <Icons icon="cadastro"></Icons>
-                </Link>
+              <Li $active={menu} onClick={() => setMenu(!menu)}>
+                <p>Cadastro</p>
+                <Icons icon="cadastro"></Icons>
               </Li>
               <Li>
-                <Link href={"#"}>
+                <Link href={"#"} onClick={() => setMenu(false)}>
                   <p>Manutenção</p>
                   <Icons icon="manutencao"></Icons>
                 </Link>
               </Li>
               <Li>
-                <Link href={"#"}>
+                <Link href={"/"} onClick={() => setMenu(false)}>
                   <p>Home</p>
                   <Icons icon="home"></Icons>
                 </Link>
               </Li>
               <Li>
-                <Link href={"#"}>
+                <Link href={"#"} onClick={() => setMenu(false)}>
                   <p>Baixa de aulas</p>
                   <Icons icon="baixaAulas"></Icons>
                 </Link>
               </Li>
               <Li>
-                <Link href={"#"}>
+                <Link href={"#"} onClick={() => setMenu(false)}>
                   <p>Relatorios</p>
                   <Icons icon="relatorios"></Icons>
                 </Link>
@@ -211,47 +215,59 @@ export function Header() {
         <SubMenu ref={subMenuRef}>
           <ul>
             <li>
-              <Link href={"#"}>
+              <Link
+                href={"/cadastro/administrador"}
+                onClick={() => setMenu(!menu)}
+              >
                 <span>Administrador</span>
               </Link>
             </li>
             <li>
-              <Link href={"#"}>
+              <Link
+                href={"/cadastro/agente-reagente"}
+                onClick={() => setMenu(!menu)}
+              >
                 <span>Agentes/Reagentes</span>
               </Link>
             </li>
             <li>
-              <Link href={"#"}>
+              <Link href={"#"} onClick={() => setMenu(!menu)}>
                 <span>Aulas</span>
               </Link>
             </li>
             <li>
-              <Link href={"#"}>
+              <Link
+                href={"/cadastro/equipamentos"}
+                onClick={() => setMenu(!menu)}
+              >
                 <span>Equipamentos</span>
               </Link>
             </li>
             <li>
-              <Link href={"#"}>
+              <Link href={"#"} onClick={() => setMenu(!menu)}>
                 <span>Fornecedor</span>
               </Link>
             </li>
             <li>
-              <Link href={"#"}>
+              <Link
+                href={"/cadastro/laboratorio"}
+                onClick={() => setMenu(!menu)}
+              >
                 <span>Laboratorio</span>
               </Link>
             </li>
             <li>
-              <Link href={"#"}>
+              <Link href={"/cadastro/materias"} onClick={() => setMenu(!menu)}>
                 <span>Matérias</span>
               </Link>
             </li>
             <li>
-              <Link href={"#"}>
+              <Link href={"/cadastro/professor"} onClick={() => setMenu(!menu)}>
                 <span>Professor</span>
               </Link>
             </li>
             <li>
-              <Link href={"#"}>
+              <Link href={"/cadastro/vidrarias"} onClick={() => setMenu(!menu)}>
                 <span>Vidrarias</span>
               </Link>
             </li>

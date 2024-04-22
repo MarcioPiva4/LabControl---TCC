@@ -28,9 +28,9 @@ const InputWrapper = styled.input`
   height: 30px;
   padding: 0 15px;
   margin-bottom: 20px;
-  font-weight: 500;
   color: ${(props) => props.theme.color.black};
-
+  font-size: ${props => props.theme.font.label.size};
+  font-weight: ${props => props.theme.font.label.weight};
   &::-webkit-input-placeholder {
     color: ${(props) => props.theme.color.secondary};
   }
@@ -76,4 +76,34 @@ export default function Input({
       </ThemeProvider>
     </>
   );
+}
+
+
+interface propTextArea{
+  labelText?: string;
+};
+
+const TextAreaWrapper = styled.textarea`
+  resize: none;
+  height: 180px;
+  border-radius: 20px;
+  width: 100%;
+  padding: 10px 20px;
+  outline: none;
+  font-family: ${props => props.theme.font.fontFamily};
+  color: ${props => props.theme.color.secondary};
+  font-size: ${props => props.theme.font.label.size};
+  font-weight: ${props => props.theme.font.label.weight};
+  margin-bottom: 25px;
+`;
+
+export function TextArea({labelText}: propTextArea){
+  return(
+    <>
+      <ThemeProvider theme={theme}>
+        <Label>{labelText}</Label>
+        <TextAreaWrapper></TextAreaWrapper>
+      </ThemeProvider>
+    </>
+  )
 }

@@ -39,5 +39,6 @@ export const theme = {
             height: '22px',
         },
         minSize: '10.5px',
+        fontFamily: "Inter, sans-serif",
     }
 }

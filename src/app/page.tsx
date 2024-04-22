@@ -43,7 +43,7 @@ export default function Home() {
         <BoxList title="banner" description="banner"></BoxList>
       </Section>
 
-      <Section title="Patrocinadores" direction="row">
+      <Section title="Patrocinadores" direction="row" bottom>
         <BoxList title="Empresa XYZ " description="lorem ipsum dolor "></BoxList>
         <BoxList title="Empresa XYZ " description="lorem ipsum dolor "></BoxList>
         <BoxList title="Empresa XYZ " description="lorem ipsum dolor "></BoxList>
