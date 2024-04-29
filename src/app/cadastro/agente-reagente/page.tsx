@@ -9,12 +9,12 @@ export default function Agente_Reagente(){
             <DefaultForm>
                 <Input type="text" label="Nome do agente/reagente"></Input>
                 <Input type="text" label="Fórmula química"></Input>
-                <Input type="text" label="Peso molecular"></Input>
+                <Input type="text" label="Peso molecular" selectAside="variant1"></Input>
                 <Input type="text" label="Número CAS (Chemical Abstracts Service)"></Input>
                 <Input type="text" label="Fornecedor"></Input>
                 <Input type="text" label="Número de catálogo do fornecedor"></Input>
                 <Input type="text" label="Data de compra"></Input>
-                <Input type="text" label="Concentração"></Input>
+                <Input type="text" label="Concentração" selectAside="variant2"></Input>
                 <Input type="text" label="Quantidade"></Input>
                 <Input type="text" label="Armazenamento recomendado"></Input>
                 <TextArea labelText="Descrição"></TextArea>
