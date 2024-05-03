@@ -179,13 +179,39 @@ function SelectFirstVariant() {
 
 function SelectSecondVariant() {
   const [openSelect, setOpenSelect] = useState<boolean>(false);
+  const [values, setValues] = useState<
+    Array<{ id: number; nome: string; abr: string; active: boolean }>
+  >([
+    {
+      id: 1,
+      nome: "Gramas por Litro (g/L)",
+      abr: "g/l",
+      active: false,
+    },
+    {
+      id: 2,
+      nome: "Gramas por mililitro (g/mL)",
+      abr: "g/mL",
+      active: false,
+    },
+  ]);
+  const selected = values.find((e) => e.active);
+
+  function setOption(id: number) {
+    const updatedValues = values.map((e) => ({
+      ...e,
+      active: e.id === id,
+    }));
+    setValues(updatedValues);
+  }
+
   return (
     <>
       <ContentSelect
         onClick={() => setOpenSelect(!openSelect)}
         $active={openSelect}
       >
-        <p>g/ml</p>
+        <p>{selected ? selected.abr : 'Selecione'}</p>
         <Image
           src="/inputArrow.svg"
           alt="Ícone de seta virada para a esquerda"
@@ -194,7 +220,7 @@ function SelectSecondVariant() {
         ></Image>
       </ContentSelect>
       {openSelect && (
-        <FakeSelect options={['Gramas por Litro (g/L)', 'Gramas por mililitro (g/mL)']}></FakeSelect>
+        <FakeSelect options={values} setOption={setOption}></FakeSelect>
       )}
     </>
   );
@@ -247,13 +273,11 @@ const List = styled.ul`
   }
 `;
 
-function FakeSelect({options}: {options: Array<string>}){
-  //pegar a abreviação do elemento e passar em um objeto, pois precisamos retornar para aparecer no elemento da select
-  //fazer a select de formulario para passar no FORM e de alguma forma concatenar isto quando enviar para o banco
+function FakeSelect({options, setOption}: {options: Array<{id: number; nome: string; abr: string; active: boolean}>; setOption: any}){
   return(
     <ContentList>
       <List>
-        {options.map((e) => <li key={e}>{e}</li>)}
+        {options.map((e) => <li key={e.id} onClick={() => setOption(e.id)}>{e.nome}</li>)}
       </List>
     </ContentList>
   )
