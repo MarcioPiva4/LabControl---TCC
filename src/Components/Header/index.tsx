@@ -13,7 +13,7 @@ const HeaderWrapper = styled.header`
   left: 0;
   background-color: ${(props) => props.theme.color.secondary};
   height: 12vh;
-  z-index: 5;
+  z-index: 10;
 
   & > div {
     height: 100%;

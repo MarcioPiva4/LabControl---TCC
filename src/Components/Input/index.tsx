@@ -12,7 +12,8 @@ interface PropInput {
   options?: Array<{
     value: string;
   }>;
-  selectAside?: "variant1" | "variant2" | "variant3";
+  selectAside?: boolean;
+  optionsFakeSelect?: any;
 }
 
 const ContentInput = styled.div`
@@ -63,6 +64,7 @@ export default function Input({
   type,
   options,
   selectAside,
+  optionsFakeSelect,
 }: PropInput) {
   return (
     <>
@@ -76,7 +78,7 @@ export default function Input({
               name={idInput}
               type={type}
             ></InputWrapper>
-            {selectAside && RenderSelect(selectAside)}
+            {selectAside && <SelectFirstVariant options={optionsFakeSelect}></SelectFirstVariant>}
           </ContentInput>
         ) : (
           <select id={idInput} name={idInput}>
@@ -119,19 +121,6 @@ export function TextArea({ labelText }: propTextArea) {
   );
 }
 
-function RenderSelect(selectAside: any): React.ReactNode {
-  switch (selectAside) {
-    case "variant1":
-      return SelectFirstVariant();
-    case "variant2":
-      return SelectSecondVariant();
-    case "variant3":
-      return SelectThirdVariant();
-    default:
-      return null;
-  }
-}
-
 const ContentSelect = styled.div.attrs<{ $active?: boolean }>((props) => ({
   $active: props.$active,
 }))`
@@ -163,38 +152,11 @@ const ContentSelect = styled.div.attrs<{ $active?: boolean }>((props) => ({
   }
 `;
 
-function SelectFirstVariant() {
-  return (
-    <ContentSelect>
-      <p>g/mol</p>
-      <Image
-        src="/inputArrow.svg"
-        alt="Ícone de seta virada para a esquerda"
-        width={15}
-        height={15}
-      ></Image>
-    </ContentSelect>
-  );
-}
-
-function SelectSecondVariant() {
+function SelectFirstVariant({options}: {options: any}) {
   const [openSelect, setOpenSelect] = useState<boolean>(false);
   const [values, setValues] = useState<
     Array<{ id: number; nome: string; abr: string; active: boolean }>
-  >([
-    {
-      id: 1,
-      nome: "Gramas por Litro (g/L)",
-      abr: "g/l",
-      active: false,
-    },
-    {
-      id: 2,
-      nome: "Gramas por mililitro (g/mL)",
-      abr: "g/mL",
-      active: false,
-    },
-  ]);
+  >(options);
   const selected = values.find((e) => e.active);
 
   function setOption(id: number) {
@@ -203,8 +165,8 @@ function SelectSecondVariant() {
       active: e.id === id,
     }));
     setValues(updatedValues);
+    setOpenSelect(!openSelect);
   }
-
   return (
     <>
       <ContentSelect
@@ -220,26 +182,11 @@ function SelectSecondVariant() {
         ></Image>
       </ContentSelect>
       {openSelect && (
-        <FakeSelect options={values} setOption={setOption}></FakeSelect>
+        <FakeSelect options={values} setOption={setOption} selected={selected}></FakeSelect>
       )}
     </>
   );
 }
-
-function SelectThirdVariant() {
-  return (
-    <ContentSelect>
-      <p>g/mol</p>
-      <Image
-        src="/inputArrow.svg"
-        alt="Ícone de seta virada para a esquerda"
-        width={15}
-        height={15}
-      ></Image>
-    </ContentSelect>
-  );
-}
-
 
 const ContentList = styled.div`
   position: absolute;
@@ -250,7 +197,9 @@ const ContentList = styled.div`
   border-radius: 0px 0px 15px 15px;
 `;
 
-const List = styled.ul`
+const List = styled.ul.attrs<{$active: boolean}>((props) => ({
+  $active: props.$active,
+}))`
   list-style: none;
   padding: 15px 0 15px 0px;
   height: 100%;
@@ -266,6 +215,7 @@ const List = styled.ul`
     font-weight: ${(props) => props.theme.font.label.weight};
     line-height: ${(props) => props.theme.font.label.height};
     padding: 7px 10px;
+    background-color: ${(props) => props.$active ? '#0c3b78' : ''};
 
     &:hover{
       background-color: #0c3b78;
@@ -273,10 +223,12 @@ const List = styled.ul`
   }
 `;
 
-function FakeSelect({options, setOption}: {options: Array<{id: number; nome: string; abr: string; active: boolean}>; setOption: any}){
+function FakeSelect({options, setOption, selected}: {options: Array<{id: number; nome: string; abr: string; active: boolean}>; setOption: any; selected: any;}){
+  console.log(selected && selected.active);
+  //arrumar a lógica para ativar a li correta
   return(
     <ContentList>
-      <List>
+      <List $active={selected && selected.active}>
         {options.map((e) => <li key={e.id} onClick={() => setOption(e.id)}>{e.nome}</li>)}
       </List>
     </ContentList>
