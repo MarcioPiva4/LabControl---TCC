@@ -1,9 +1,8 @@
 "use client";
 import { theme } from "@/styles/theme";
 import Image from "next/image";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
-
 interface PropInput {
   label?: string;
   idInput?: string;
@@ -13,7 +12,7 @@ interface PropInput {
     value: string;
   }>;
   selectAside?: boolean;
-  optionsFakeSelect?: any;
+  optionsFakeSelect?: Array<{id: number; nome: string; abr: string; active: boolean}>;
 }
 
 const ContentInput = styled.div`
@@ -78,7 +77,7 @@ export default function Input({
               name={idInput}
               type={type}
             ></InputWrapper>
-            {selectAside && <SelectFirstVariant options={optionsFakeSelect}></SelectFirstVariant>}
+            {selectAside && optionsFakeSelect && <SelectFirstVariant options={optionsFakeSelect}></SelectFirstVariant>}
           </ContentInput>
         ) : (
           <select id={idInput} name={idInput}>
@@ -152,7 +151,7 @@ const ContentSelect = styled.div.attrs<{ $active?: boolean }>((props) => ({
   }
 `;
 
-function SelectFirstVariant({options}: {options: any}) {
+function SelectFirstVariant({options}: {options: Array<{id: number; nome: string; abr: string; active: boolean}>}) {
   const [openSelect, setOpenSelect] = useState<boolean>(false);
   const [values, setValues] = useState<
     Array<{ id: number; nome: string; abr: string; active: boolean }>
@@ -197,8 +196,9 @@ const ContentList = styled.div`
   border-radius: 0px 0px 15px 15px;
 `;
 
-const List = styled.ul.attrs<{$active: boolean}>((props) => ({
+const List = styled.ul.attrs<{$active: boolean; $number: number}>((props) => ({
   $active: props.$active,
+  $number: props.$number,
 }))`
   list-style: none;
   padding: 15px 0 15px 0px;
@@ -215,7 +215,10 @@ const List = styled.ul.attrs<{$active: boolean}>((props) => ({
     font-weight: ${(props) => props.theme.font.label.weight};
     line-height: ${(props) => props.theme.font.label.height};
     padding: 7px 10px;
-    background-color: ${(props) => props.$active ? '#0c3b78' : ''};
+
+    &:nth-child(${(props) => props.$number}) {
+      background-color: ${(props) => props.$active ? '#0c3b78' : ''};
+    }
 
     &:hover{
       background-color: #0c3b78;
@@ -224,11 +227,9 @@ const List = styled.ul.attrs<{$active: boolean}>((props) => ({
 `;
 
 function FakeSelect({options, setOption, selected}: {options: Array<{id: number; nome: string; abr: string; active: boolean}>; setOption: any; selected: any;}){
-  console.log(selected && selected.active);
-  //arrumar a lógica para ativar a li correta
   return(
     <ContentList>
-      <List $active={selected && selected.active}>
+      <List $active={selected && selected.active} $number={selected && selected.id}>
         {options.map((e) => <li key={e.id} onClick={() => setOption(e.id)}>{e.nome}</li>)}
       </List>
     </ContentList>

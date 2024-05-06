@@ -1,9 +1,10 @@
 "use client";
 import { theme } from "@/styles/theme";
+import { useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 
 interface PropButton {
-  type: "button" | "submit" | "reset";
+  type: "submit" | "reset";
   children: React.ReactNode;
   is: "isTransparent" | "isNotTransparent";
   icon?: boolean;
@@ -50,9 +51,32 @@ const ButtonWrapper = styled.button.attrs<{
 `;
 
 export default function Button({ type, children, is, icon, bottom }: PropButton) {
+  const [openMenu, setOpenMenu] = useState<boolean>(false);
+  function buttonClick(e: React.MouseEvent<HTMLButtonElement>, type: "submit" | "reset"){
+    switch(type){
+      case "submit":
+      e.preventDefault();
+      setOpenMenu(!openMenu);
+      break
+    }
+    
+  }
   return (
     <ThemeProvider theme={theme}>
-        <ButtonWrapper $bottom={bottom} $icon={icon} $is={is === "isNotTransparent"} type={type}>{children}</ButtonWrapper>
+        <ButtonWrapper $bottom={bottom} $icon={icon} $is={is === "isNotTransparent"} type={type} onClick={(e) => buttonClick(e, type)}>{children}</ButtonWrapper>
+        {openMenu && <MenuSubmit></MenuSubmit>}
     </ThemeProvider>
   );
+}
+
+function MenuSubmit(){
+  return(
+    <div>
+      <div>
+        <h2>Cadastrar novamente?</h2>
+        <button type="submit">SIM</button>
+        <button type="submit">NÃO</button>
+      </div>
+    </div>
+  )
 }
