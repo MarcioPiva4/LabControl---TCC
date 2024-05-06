@@ -2,6 +2,7 @@
 import { theme } from "@/styles/theme";
 import { useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
+import MenuSubmit from "../MenuSubmit";
 
 interface PropButton {
   type: "submit" | "reset";
@@ -69,14 +70,3 @@ export default function Button({ type, children, is, icon, bottom }: PropButton)
   );
 }
 
-function MenuSubmit(){
-  return(
-    <div>
-      <div>
-        <h2>Cadastrar novamente?</h2>
-        <button type="submit">SIM</button>
-        <button type="submit">NÃO</button>
-      </div>
-    </div>
-  )
-}

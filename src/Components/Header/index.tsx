@@ -244,7 +244,7 @@ export function Header() {
               </Link>
             </li>
             <li>
-              <Link href={"#"} onClick={() => setMenu(!menu)}>
+              <Link href={"/cadastro/fornecedor"} onClick={() => setMenu(!menu)}>
                 <span>Fornecedor</span>
               </Link>
             </li>
