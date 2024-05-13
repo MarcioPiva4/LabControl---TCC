@@ -11,6 +11,8 @@ interface PropInput {
   options?: Array<{
     value: string;
   }>;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<any>) => void;
   selectAside?: boolean;
   optionsFakeSelect?: Array<{id: number; nome: string; abr: string; active: boolean}>;
 }
@@ -62,6 +64,8 @@ export default function Input({
   placeHolder,
   type,
   options,
+  value,
+  onChange,
   selectAside,
   optionsFakeSelect,
 }: PropInput) {
@@ -75,7 +79,9 @@ export default function Input({
               placeholder={placeHolder}
               id={idInput}
               name={idInput}
+              value={value}
               type={type}
+              onChange={onChange}
             ></InputWrapper>
             {selectAside && optionsFakeSelect && <SelectFirstVariant options={optionsFakeSelect}></SelectFirstVariant>}
           </ContentInput>

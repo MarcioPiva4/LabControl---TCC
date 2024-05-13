@@ -3,9 +3,10 @@ import { theme } from "@/styles/theme";
 import { useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import MenuSubmit from "../MenuSubmit";
+import { useRouter } from "next/navigation";
 
 interface PropButton {
-  type: "submit" | "reset";
+  type: "submit" | "reset" | "button";
   children: React.ReactNode;
   is: "isTransparent" | "isNotTransparent";
   icon?: boolean;
@@ -53,18 +54,10 @@ const ButtonWrapper = styled.button.attrs<{
 
 export default function Button({ type, children, is, icon, bottom }: PropButton) {
   const [openMenu, setOpenMenu] = useState<boolean>(false);
-  function buttonClick(e: React.MouseEvent<HTMLButtonElement>, type: "submit" | "reset"){
-    switch(type){
-      case "submit":
-      e.preventDefault();
-      setOpenMenu(!openMenu);
-      break
-    }
-    
-  }
+  const router = useRouter();
   return (
     <ThemeProvider theme={theme}>
-        <ButtonWrapper $bottom={bottom} $icon={icon} $is={is === "isNotTransparent"} type={type} onClick={(e) => buttonClick(e, type)}>{children}</ButtonWrapper>
+        <ButtonWrapper $bottom={bottom} $icon={icon} $is={is === "isNotTransparent"} type={type}>{children}</ButtonWrapper>
         {openMenu && <MenuSubmit></MenuSubmit>}
     </ThemeProvider>
   );
