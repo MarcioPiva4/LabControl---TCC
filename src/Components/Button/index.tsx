@@ -52,7 +52,8 @@ const ButtonWrapper = styled.button.attrs<{
     }
 `;
 
-export default function Button({ type, children, is, icon, bottom }: PropButton) {
+export default function 
+Button({ type, children, is, icon, bottom }: PropButton) {
   const [openMenu, setOpenMenu] = useState<boolean>(false);
   const router = useRouter();
   return (
