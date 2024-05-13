@@ -22,13 +22,13 @@ export default function Professor(){
         }
     });
     return(
-        <Section title="Cadastre um fornecedor" children>
+        <Section title="Cadastre um fornecedor">
             <DefaultForm handleSubmit={formik.handleSubmit}>
                 <Input type="text" label="Nome" idInput="nome" value={formik.values.nome} onChange={formik.handleChange}></Input>
                 <Input type="text" label="CNPJ" idInput="cnpj" value={formik.values.cnpj} onChange={formik.handleChange}></Input>
                 <Input type="text" label="Telefone" selectAside  idInput="telefone" value={formik.values.telefone} onChange={formik.handleChange}></Input>
                 <Input type="text" label="E-mail" idInput="email" value={formik.values.email} onChange={formik.handleChange}></Input>
-                <Button type="submit" is="isNotTransparent" children>Proximo</Button>
+                <Button type="submit" is="isNotTransparent">Proximo</Button>
             </DefaultForm>
         </Section>
     )

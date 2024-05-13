@@ -29,7 +29,7 @@ export default function Professor(){
         },
       });
     return (
-        <Section title="Informe a localização" bottom children>
+        <Section title="Informe a localização" bottom>
           <DefaultForm handleSubmit={formik.handleSubmit}>
             <Input type="text" label="CEP" idInput="cep" value={formik.values.cep} onChange={formik.handleChange}/>
             <Input type="text" label="Estado" idInput="estado" value={formik.values.estado} onChange={formik.handleChange}/>
@@ -37,7 +37,7 @@ export default function Professor(){
             <Input type="text" label="Bairro" idInput="bairro" value={formik.values.bairro} onChange={formik.handleChange}/>
             <Input type="text" label="Rua" idInput="rua" value={formik.values.rua} onChange={formik.handleChange}/>
             <Input type="text" label="N°" idInput="numero" value={formik.values.numero} onChange={formik.handleChange}/>
-            <Button type="submit" is="isNotTransparent" children>CADASTRAR</Button>
+            <Button type="submit" is="isNotTransparent">CADASTRAR</Button>
           </DefaultForm>
         </Section>
       );

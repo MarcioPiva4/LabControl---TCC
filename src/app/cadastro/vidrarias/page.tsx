@@ -25,7 +25,7 @@ export default function Equipamentos(){
         }
     })
     return(
-        <Section title="Cadastre uma Vidraria" bottom children>
+        <Section title="Cadastre uma Vidraria" bottom>
             <DefaultForm handleSubmit={formik.handleSubmit}>
                 <Input type="text" label="Vidraria" idInput="vidrarias" value={formik.values.vidrarias} onChange={formik.handleChange}></Input>
                 <Input type="text" label="Tipo de Vidraria" idInput="tipovidraria" value={formik.values.tipovidraria} onChange={formik.handleChange}></Input>
@@ -75,7 +75,7 @@ export default function Equipamentos(){
                 <Input type="text" label="Preço de Compra" idInput="precocompra" value={formik.values.precocompra} onChange={formik.handleChange}></Input>
                 <Input type="text" label="Localização" idInput="localizacao" value={formik.values.localizacao} onChange={formik.handleChange}></Input>
                 <TextArea labelText="Observações adicionais"></TextArea>
-                <Button type="submit" is="isNotTransparent" children>CADASTRAR</Button>
+                <Button type="submit" is="isNotTransparent">CADASTRAR</Button>
             </DefaultForm>
         </Section>
     )
