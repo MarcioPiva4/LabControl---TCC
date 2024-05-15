@@ -1,8 +1,9 @@
 'use client'
 import Button from "@/Components/Button";
 import DefaultForm from "@/Components/DefaultForm";
-import Input, { TextArea } from "@/Components/Input";
+import Input from "@/Components/Input";
 import Section from "@/Components/Section";
+import TextArea from "@/Components/TextArea/index";
 import { useFormik } from "formik";
 
 export default function Equipamentos(){
@@ -36,7 +37,7 @@ export default function Equipamentos(){
                 <Input type="text" label="Fornecedor" idInput="fornecedor" value={formik.values.fornecedor} onChange={formik.handleChange}></Input>
                 <Input type="text" label="Preço de Compra" idInput="precocompra" value={formik.values.precocompra} onChange={formik.handleChange}></Input>
                 <Input type="text" label="Localização" idInput="localizacao" value={formik.values.localizacao} onChange={formik.handleChange}></Input>
-                <TextArea labelText="Observações adicionais"></TextArea>
+                <TextArea labelText="Observações adicionais" id="observacoes" value={formik.values.observacoes} onChange={formik.handleChange}></TextArea>
                 <Button type="submit" is="isNotTransparent">CADASTRAR</Button>
             </DefaultForm>
         </Section>
