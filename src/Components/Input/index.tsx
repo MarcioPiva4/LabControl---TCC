@@ -14,7 +14,7 @@ interface PropInput {
   value?: string;
   onChange?: (e: React.ChangeEvent<any>) => void;
   selectAside?: boolean;
-  optionsFakeSelect?: Array<{id: number; nome: string; abr: string; active: boolean}>;
+  optionsFakeSelect?: Array<{id: number; nome: string; abr: string; active: boolean; icon?: any;}>;
 }
 
 const ContentInput = styled.div`
@@ -128,7 +128,7 @@ const ContentSelect = styled.div.attrs<{ $active?: boolean }>((props) => ({
   }
 `;
 
-function SelectFirstVariant({options}: {options: Array<{id: number; nome: string; abr: string; active: boolean}>}) {
+function SelectFirstVariant({options}: {options: Array<{id: number; nome: string; abr: string; active: boolean; icon?: any}>}) {
   const [openSelect, setOpenSelect] = useState<boolean>(false);
   const [values, setValues] = useState<
     Array<{ id: number; nome: string; abr: string; active: boolean }>
@@ -203,11 +203,11 @@ const List = styled.ul.attrs<{$active: boolean; $number: number}>((props) => ({
   }
 `;
 
-function FakeSelect({options, setOption, selected}: {options: Array<{id: number; nome: string; abr: string; active: boolean}>; setOption: any; selected: any;}){
+function FakeSelect({options, setOption, selected}: {options: Array<{id: number; nome: string; abr: string; active: boolean; icon?: any;}>; setOption: any; selected: any;}){
   return(
     <ContentList>
       <List $active={selected && selected.active} $number={selected && selected.id}>
-        {options.map((e) => <li key={e.id} onClick={() => setOption(e.id)}>{e.nome}</li>)}
+        {options.map((e) => <li key={e.id} onClick={() => setOption(e.id)}>{e.icon ?? e.icon}{e.nome}</li>)}
       </List>
     </ContentList>
   )
