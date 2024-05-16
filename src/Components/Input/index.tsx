@@ -7,14 +7,13 @@ interface PropInput {
   label?: string;
   idInput?: string;
   placeHolder?: string;
-  type: "text" | "number" | "search" | "select";
-  options?: Array<{
-    value: string;
-  }>;
+  type: "text" | "number" | "search";
   value?: string;
   onChange?: (e: React.ChangeEvent<any>) => void;
   selectAside?: boolean;
-  optionsFakeSelect?: Array<{id: number; nome: string; abr: string; active: boolean; icon?: any;}>;
+  optionsFakeSelect?: Array<{id: number; nome: string | React.ReactNode; abr: string | React.ReactNode; active: boolean; icon?: boolean; value: string;}>;
+  icon?: boolean;
+  selectRef?: any;
 }
 
 const ContentInput = styled.div`
@@ -63,17 +62,17 @@ export default function Input({
   idInput,
   placeHolder,
   type,
-  options,
   value,
   onChange,
   selectAside,
   optionsFakeSelect,
+  icon,
+  selectRef,
 }: PropInput) {
   return (
     <>
       <ThemeProvider theme={theme}>
         {label && <Label>{label}</Label>}
-        {type != "select" ? (
           <ContentInput>
             <InputWrapper
               placeholder={placeHolder}
@@ -83,15 +82,8 @@ export default function Input({
               type={type}
               onChange={onChange}
             ></InputWrapper>
-            {selectAside && optionsFakeSelect && <SelectFirstVariant options={optionsFakeSelect}></SelectFirstVariant>}
+            {selectAside && optionsFakeSelect && <SelectFirstVariant selectRef={selectRef} icon={icon} options={optionsFakeSelect}></SelectFirstVariant>}
           </ContentInput>
-        ) : (
-          <select id={idInput} name={idInput}>
-            {options?.map((e) => (
-              <option key={e.value}>{e.value}</option>
-            ))}
-          </select>
-        )}
       </ThemeProvider>
     </>
   );
@@ -120,6 +112,10 @@ const ContentSelect = styled.div.attrs<{ $active?: boolean }>((props) => ({
     font-size: ${(props) => props.theme.font.label.size};
     font-weight: ${(props) => props.theme.font.label.weight};
     line-height: ${(props) => props.theme.font.label.height};
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   img{
@@ -128,10 +124,10 @@ const ContentSelect = styled.div.attrs<{ $active?: boolean }>((props) => ({
   }
 `;
 
-function SelectFirstVariant({options}: {options: Array<{id: number; nome: string; abr: string; active: boolean; icon?: any}>}) {
+function SelectFirstVariant({selectRef, icon, options}: {selectRef?: any;icon?: boolean;options: Array<{id: number; nome: string | React.ReactNode; abr: string | React.ReactNode; active: boolean; value: string;}>}) {
   const [openSelect, setOpenSelect] = useState<boolean>(false);
   const [values, setValues] = useState<
-    Array<{ id: number; nome: string; abr: string; active: boolean }>
+    Array<{ id: number; nome: string | React.ReactNode; abr: string | React.ReactNode; active: boolean; value: string; }>
   >(options);
   const selected = values.find((e) => e.active);
 
@@ -158,17 +154,19 @@ function SelectFirstVariant({options}: {options: Array<{id: number; nome: string
         ></Image>
       </ContentSelect>
       {openSelect && (
-        <FakeSelect options={values} setOption={setOption} selected={selected}></FakeSelect>
+        <FakeSelect selectRef={selectRef} icon={icon} options={values} setOption={setOption} selected={selected}></FakeSelect>
       )}
     </>
   );
 }
 
-const ContentList = styled.div`
+const ContentList = styled.div.attrs<{$icon: boolean}>((props) => ({
+  $icon: props.$icon
+}))`
   position: absolute;
   background-color: ${(props) => props.theme.color.secondary};
   right: -1px;
-  width: 60%;
+  width: ${(props) => props.$icon ? '30%' : '60%'};
   z-index: 5;
   border-radius: 0px 0px 15px 15px;
 `;
@@ -200,15 +198,22 @@ const List = styled.ul.attrs<{$active: boolean; $number: number}>((props) => ({
     &:hover{
       background-color: #0c3b78;
     }
+
+    svg{
+      width: 100%;
+    }
   }
 `;
 
-function FakeSelect({options, setOption, selected}: {options: Array<{id: number; nome: string; abr: string; active: boolean; icon?: any;}>; setOption: any; selected: any;}){
+function FakeSelect({selectRef, icon, options, setOption, selected}: {selectRef?: any; icon?: boolean; options: Array<{id: number; nome: string | React.ReactNode; abr: string | React.ReactNode; active: boolean;value: string;}>; setOption: any; selected: any;}){
   return(
-    <ContentList>
+    <ContentList $icon={icon ?? false}>
       <List $active={selected && selected.active} $number={selected && selected.id}>
-        {options.map((e) => <li key={e.id} onClick={() => setOption(e.id)}>{e.icon ?? e.icon}{e.nome}</li>)}
+        {options.map((e) => <li key={e.id} onClick={() => setOption(e.id)}>{e.nome}</li>)}
       </List>
+      <select ref={selectRef}>
+        {options.map((e) => <option key={e.id} value={e.value}>{e.value}</option>)}
+      </select>
     </ContentList>
   )
 }

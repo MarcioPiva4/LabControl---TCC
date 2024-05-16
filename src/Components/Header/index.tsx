@@ -37,14 +37,14 @@ const Li = styled.li.attrs<{ $active?: boolean }>((props) => ({
   list-style: none;
   cursor: pointer;
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   align-items: center;
   gap: 8px;
   color: ${(props) => props.theme.color.white};
   text-decoration: none;
   & > a {
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     align-items: center;
     gap: 8px;
     color: ${(props) => props.theme.color.white};
