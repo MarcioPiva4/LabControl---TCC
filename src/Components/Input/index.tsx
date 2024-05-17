@@ -1,8 +1,17 @@
 "use client";
 import { theme } from "@/styles/theme";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
+
+interface OptionType {
+  id: number;
+  nome: string | React.ReactNode;
+  abr: string | React.ReactNode;
+  active: boolean;
+  icon?: boolean;
+  value: string;
+}
 interface PropInput {
   label?: string;
   idInput?: string;
@@ -11,7 +20,7 @@ interface PropInput {
   value?: string;
   onChange?: (e: React.ChangeEvent<any>) => void;
   selectAside?: boolean;
-  optionsFakeSelect?: Array<{id: number; nome: string | React.ReactNode; abr: string | React.ReactNode; active: boolean; icon?: boolean; value: string;}>;
+  optionsFakeSelect?: Array<OptionType>;
   icon?: boolean;
   selectRef?: any;
 }
@@ -68,22 +77,29 @@ export default function Input({
   optionsFakeSelect,
   icon,
   selectRef,
-}: PropInput) {
+}: PropInput
+) {
   return (
     <>
       <ThemeProvider theme={theme}>
         {label && <Label>{label}</Label>}
-          <ContentInput>
-            <InputWrapper
-              placeholder={placeHolder}
-              id={idInput}
-              name={idInput}
-              value={value}
-              type={type}
-              onChange={onChange}
-            ></InputWrapper>
-            {selectAside && optionsFakeSelect && <SelectFirstVariant selectRef={selectRef} icon={icon} options={optionsFakeSelect}></SelectFirstVariant>}
-          </ContentInput>
+        <ContentInput>
+          <InputWrapper
+            placeholder={placeHolder}
+            id={idInput}
+            name={idInput}
+            value={value}
+            type={type}
+            onChange={onChange}
+          ></InputWrapper>
+          {selectAside && optionsFakeSelect && (
+            <SelectFirstVariant
+              selectRef={selectRef}
+              icon={icon}
+              options={optionsFakeSelect}
+            ></SelectFirstVariant>
+          )}
+        </ContentInput>
       </ThemeProvider>
     </>
   );
@@ -206,6 +222,7 @@ const List = styled.ul.attrs<{$active: boolean; $number: number}>((props) => ({
 `;
 
 function FakeSelect({selectRef, icon, options, setOption, selected}: {selectRef?: any; icon?: boolean; options: Array<{id: number; nome: string | React.ReactNode; abr: string | React.ReactNode; active: boolean;value: string;}>; setOption: any; selected: any;}){
+  console.log(selectRef.current)
   return(
     <ContentList $icon={icon ?? false}>
       <List $active={selected && selected.active} $number={selected && selected.id}>

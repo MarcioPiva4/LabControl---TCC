@@ -19,10 +19,11 @@ export default function Professor(){
         },
         onSubmit: (values) => {
             const selectedValue = selectRef.current.value;
+            console.log(selectedValue)
             alert(selectedValue)
             alert(JSON.stringify(values));
             localStorage.setItem("screenbefore", JSON.stringify(values))
-            router.push('/cadastro/fornecedor/finish')
+            //router.push('/cadastro/fornecedor/finish')
         }
     });
     return(
