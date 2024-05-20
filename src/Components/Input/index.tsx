@@ -140,10 +140,10 @@ const ContentSelect = styled.div.attrs<{ $active?: boolean }>((props) => ({
   }
 `;
 
-function SelectFirstVariant({selectRef, icon, options}: {selectRef?: any;icon?: boolean;options: Array<{id: number; nome: string | React.ReactNode; abr: string | React.ReactNode; active: boolean; value: string;}>}) {
+function SelectFirstVariant({selectRef, icon, options}: {selectRef?: any;icon?: boolean;options: Array<OptionType>}) {
   const [openSelect, setOpenSelect] = useState<boolean>(false);
   const [values, setValues] = useState<
-    Array<{ id: number; nome: string | React.ReactNode; abr: string | React.ReactNode; active: boolean; value: string; }>
+    Array<OptionType>
   >(options);
   const selected = values.find((e) => e.active);
 
@@ -169,9 +169,7 @@ function SelectFirstVariant({selectRef, icon, options}: {selectRef?: any;icon?: 
           height={15}
         ></Image>
       </ContentSelect>
-      {openSelect && (
-        <FakeSelect selectRef={selectRef} icon={icon} options={values} setOption={setOption} selected={selected}></FakeSelect>
-      )}
+      <FakeSelect openSelect={openSelect} selectRef={selectRef} icon={icon} options={values} setOption={setOption} selected={selected}></FakeSelect>
     </>
   );
 }
@@ -221,14 +219,19 @@ const List = styled.ul.attrs<{$active: boolean; $number: number}>((props) => ({
   }
 `;
 
-function FakeSelect({selectRef, icon, options, setOption, selected}: {selectRef?: any; icon?: boolean; options: Array<{id: number; nome: string | React.ReactNode; abr: string | React.ReactNode; active: boolean;value: string;}>; setOption: any; selected: any;}){
-  console.log(selectRef.current)
+function FakeSelect({openSelect, selectRef, icon, options, setOption, selected}: {openSelect: boolean;selectRef?: any; icon?: boolean; options: Array<OptionType>; setOption: any; selected: any;}){
+  useEffect(() => {
+    if (selectRef?.current && selected) {
+      selectRef.current.value = selected.value;
+    }
+  }, [selectRef, selected]);
+
   return(
-    <ContentList $icon={icon ?? false}>
+    <ContentList $icon={icon ?? false} style={openSelect ? {} : {display: 'none'}}>
       <List $active={selected && selected.active} $number={selected && selected.id}>
         {options.map((e) => <li key={e.id} onClick={() => setOption(e.id)}>{e.nome}</li>)}
       </List>
-      <select ref={selectRef}>
+      <select ref={selectRef} style={{display: 'none'}}>
         {options.map((e) => <option key={e.id} value={e.value}>{e.value}</option>)}
       </select>
     </ContentList>
