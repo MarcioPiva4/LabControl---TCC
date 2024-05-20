@@ -5,8 +5,10 @@ import Input from "@/Components/Input";
 import Section from "@/Components/Section";
 import TextArea from "@/Components/TextArea/index";
 import { useFormik } from "formik";
+import { useRef } from "react";
 
 export default function Equipamentos(){
+    const selectQuantidade = useRef<null | HTMLInputElement>(null);
     const formik = useFormik({
         initialValues: {
             vidrarias: '',
@@ -23,6 +25,7 @@ export default function Equipamentos(){
 
         onSubmit: (values) => {
             alert(JSON.stringify(values));
+            alert(selectQuantidade.current?.value);
         }
     })
     return(
@@ -30,43 +33,49 @@ export default function Equipamentos(){
             <DefaultForm handleSubmit={formik.handleSubmit}>
                 <Input type="text" label="Vidraria" idInput="vidrarias" value={formik.values.vidrarias} onChange={formik.handleChange}></Input>
                 <Input type="text" label="Tipo de Vidraria" idInput="tipovidraria" value={formik.values.tipovidraria} onChange={formik.handleChange}></Input>
-                <Input type="text" label="Capacidade" idInput="capacidade" value={formik.values.capacidade} onChange={formik.handleChange} selectAside
+                <Input type="text" selectRef={selectQuantidade} label="Capacidade" idInput="capacidade" value={formik.values.capacidade} onChange={formik.handleChange} selectAside
                     optionsFakeSelect={[
                         {
                             id: 1,
                             nome: "Gramas (g)",
                             abr: "g",
                             active: false,
+                            value: "g"
                         },
                         {
                             id: 2,
                             nome: "Quilogramas (Kg)",
                             abr: "Kg",
                             active: false,
+                            value: "Kg"
                         },
                         {
                             id: 3,
                             nome: "Toneladas (T)",
                             abr: "T",
                             active: false,
+                            value: "T"
                         },
                         {
                             id: 4,
                             nome: "Mililitros (ml)",
                             abr: "ml",
                             active: false,
+                            value: "ml"
                         },
                         {
                             id: 5,
                             nome: "Litros (L)",
                             abr: "L",
                             active: false,
+                            value: "L"
                         },
                         {
                             id: 6,
                             nome: "Unidade (Un)",
                             abr: "Un",
                             active: false,
+                            value: "Un"
                         },
                     ]}></Input>
                 <Input type="text" label="Material" idInput="material" value={formik.values.material} onChange={formik.handleChange}></Input>

@@ -29,7 +29,7 @@ export default function Professor(){
         },
       });
     return (
-        <Section title="Informe a localização" bottom>
+        <Section title="Informe a localização" bottom arrowBefore>
           <DefaultForm handleSubmit={formik.handleSubmit}>
             <Input type="text" label="CEP" idInput="cep" value={formik.values.cep} onChange={formik.handleChange}/>
             <Input type="text" label="Estado" idInput="estado" value={formik.values.estado} onChange={formik.handleChange}/>

@@ -1,5 +1,6 @@
 "use client";
 import { theme } from "@/styles/theme";
+import { useRouter } from "next/navigation";
 import React from "react";
 import styled, { ThemeProvider } from "styled-components";
 
@@ -8,12 +9,18 @@ interface propsSection {
   children: React.ReactNode;
   direction?: "row"|"column";
   bottom?: boolean;
+  arrowBefore?: boolean;
 }
 
 const SectionWrapper = styled.section`
   width: 100%;
   max-width: 90%;
   margin: 5vh auto;
+
+  svg{
+    margin-bottom: 20px;
+    cursor: pointer;
+  }
 `;
 
 const Title = styled.h2`
@@ -33,11 +40,12 @@ const Content = styled.div.attrs<{$direction?: "row"|"column"; $bottom?: boolean
   flex-wrap: wrap;
   padding-bottom: ${(props) => props.$bottom ? '15vh' : '0px'}
 `;
-
-export default function Section({ title, children, direction, bottom }: propsSection) {
+export default function Section({ title, children, direction, bottom, arrowBefore }: propsSection) {
+  const router = useRouter();
   return (
     <ThemeProvider theme={theme}>
       <SectionWrapper>
+        {arrowBefore && <svg onClick={() => router.push('/cadastro/fornecedor')} width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.69375 15.75L16.4937 25.55L14 28L0 14L14 0L16.4937 2.45L6.69375 12.25H28V15.75H6.69375Z" fill="white"/></svg>}
         <Title>{title}</Title>
         <Content $bottom={bottom} $direction={direction}>{children}</Content>
       </SectionWrapper>
