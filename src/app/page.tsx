@@ -1,20 +1,35 @@
+"use client"
 import BoxList from "@/Components/BoxList";
 import Button from "@/Components/Button";
 import DefaultForm from "@/Components/DefaultForm";
 import Input from "@/Components/Input";
 import Section from "@/Components/Section";
+import { useFormik } from "formik";
 
 export default function Home() {
+  const formik = useFormik({
+    initialValues: {
+      estado: '',
+      cidade: '',
+      escola: '',
+    },
+    onSubmit: () => {
+      alert(JSON.stringify(formik.values))
+    }
+  });
   return (
     <main>
       <Section title="Localize seu laboratorio" direction="column">
-        <DefaultForm>
-          <Input label="Estado" type="text" placeHolder="São Paulo..."></Input>
-          <Input label="Cidade" type="text" placeHolder="Garça..."></Input>
+        <DefaultForm handleSubmit={formik.handleSubmit}>
+          <Input label="Estado" type="text" placeHolder="São Paulo..." idInput="estado" value={formik.values.estado} onChange={formik.handleChange}></Input>
+          <Input label="Cidade" type="text" placeHolder="Garça..." idInput="cidade" value={formik.values.cidade} onChange={formik.handleChange}></Input>
           <Input
             label="Escola"
             type="text"
             placeHolder="ETEC Paulo Ornelas ..."
+            idInput="escola"
+            value={formik.values.escola} 
+            onChange={formik.handleChange}
           ></Input>
           <Button type="submit" is="isNotTransparent" icon>
             <svg

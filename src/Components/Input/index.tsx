@@ -28,7 +28,7 @@ interface PropInput {
 const ContentInput = styled.div`
   position: relative;
   height: auto;
-  margin-bottom: 20px;
+  margin-bottom: 20px;-b
 `;
 
 const Label = styled.label`
