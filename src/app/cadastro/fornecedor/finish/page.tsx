@@ -59,6 +59,7 @@ export default function Professor(){
               setLocalidade(data.localidade)
               setUf(data.uf)
               setBairro(data.bairro)
+              console.log(data);
             })
             .catch((error) => {
               console.error('Error fetching the data:', error);
