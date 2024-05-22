@@ -1,16 +1,18 @@
 interface PropSelect {
-    options?: Array<{
-        value: string;
-    }>;
+    options?: Array<string>;
     id: string;
+    selectLabel: string;
 }
 
-export default function Select({options, id}: PropSelect){
+export default function Select({options, id, selectLabel}: PropSelect){
     return(
-        <select id={id} name={id}>
-        {options?.map((e) => (
-          <option key={e.value}>{e.value}</option>
-        ))}
-      </select>
+        <>
+          <label>{selectLabel}</label>
+          <select id={id} name={id}>
+          {options?.map((e) => (
+            <option key={e}>{e}</option>
+          ))}
+        </select>
+        </>
     )
 }
