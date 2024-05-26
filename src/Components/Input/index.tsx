@@ -17,18 +17,20 @@ interface PropInput {
   idInput?: string;
   placeHolder?: string;
   type: "text" | "number" | "search";
-  value?: string;
+  value?: string | number;
   onChange?: (e: React.ChangeEvent<any>) => void;
   selectAside?: boolean;
   optionsFakeSelect?: Array<OptionType>;
   icon?: boolean;
   selectRef?: any;
+  max?: number;
+  min?: number;
 }
 
 const ContentInput = styled.div`
   position: relative;
   height: auto;
-  margin-bottom: 20px;-b
+  margin-bottom: 20px;
 `;
 
 const Label = styled.label`
@@ -64,6 +66,16 @@ const InputWrapper = styled.input`
   &:-ms-input-placeholder {
     color: ${(props) => props.theme.color.secondary};
   }
+
+  &[type=number]::-webkit-inner-spin-button { 
+      -webkit-appearance: none;
+      
+  }
+  &[type=number] { 
+    -moz-appearance: textfield;
+    appearance: textfield;
+
+  }
 `;
 
 export default function Input({
@@ -77,6 +89,8 @@ export default function Input({
   optionsFakeSelect,
   icon,
   selectRef,
+  max,
+  min,
 }: PropInput
 ) {
   return (
@@ -91,6 +105,8 @@ export default function Input({
             value={value}
             type={type}
             onChange={onChange}
+            max={max}
+            min={min}
           ></InputWrapper>
           {selectAside && optionsFakeSelect && (
             <SelectFirstVariant

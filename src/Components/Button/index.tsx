@@ -52,10 +52,8 @@ const ButtonWrapper = styled.button.attrs<{
     }
 `;
 
-export default function 
-Button({ type, children, is, icon, bottom }: PropButton) {
+export default function Button({ type, children, is, icon, bottom }: PropButton) {
   const [openMenu, setOpenMenu] = useState<boolean>(false);
-  const router = useRouter();
   return (
     <ThemeProvider theme={theme}>
         <ButtonWrapper $bottom={bottom} $icon={icon} $is={is === "isNotTransparent"} type={type}>{children}</ButtonWrapper>
@@ -64,3 +62,18 @@ Button({ type, children, is, icon, bottom }: PropButton) {
   );
 }
 
+
+interface PropButtonLink extends PropButton{
+  link: 'backone' | 'link' ;
+  href?: string;
+  type: 'button';
+}
+
+export function ButtonLink({ type, children, is, icon, bottom, link, href }: PropButtonLink) {
+  const router = useRouter();
+  return (
+    <ThemeProvider theme={theme}>
+        <ButtonWrapper onClick={() => link == 'backone' ? router.back() : router.push(href ?? '')} $bottom={bottom} $icon={icon} $is={is === "isNotTransparent"} type={type}>{children}</ButtonWrapper>
+    </ThemeProvider>
+  );
+}
