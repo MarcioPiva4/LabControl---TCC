@@ -25,6 +25,7 @@ interface PropInput {
   selectRef?: any;
   max?: number;
   min?: number;
+  dynamicOptions?: any;
 }
 
 const ContentInput = styled.div`
@@ -91,8 +92,12 @@ export default function Input({
   selectRef,
   max,
   min,
+  dynamicOptions,
 }: PropInput
 ) {
+  const handleOptionClick = (option: OptionType) => {
+    dynamicOptions(option.value); // Update state in parent component
+  };
   return (
     <>
       <ThemeProvider theme={theme}>
@@ -109,11 +114,12 @@ export default function Input({
             min={min}
           ></InputWrapper>
           {selectAside && optionsFakeSelect && (
-            <SelectFirstVariant
+            <SelectVariant
               selectRef={selectRef}
               icon={icon}
               options={optionsFakeSelect}
-            ></SelectFirstVariant>
+              dynamicOptions={dynamicOptions}
+            ></SelectVariant>
           )}
         </ContentInput>
       </ThemeProvider>
@@ -156,20 +162,25 @@ const ContentSelect = styled.div.attrs<{ $active?: boolean }>((props) => ({
   }
 `;
 
-function SelectFirstVariant({selectRef, icon, options}: {selectRef?: any;icon?: boolean;options: Array<OptionType>}) {
+function SelectVariant({selectRef, icon, options, dynamicOptions}: {selectRef?: any;icon?: boolean;options: Array<OptionType>; dynamicOptions: any}) {
   const [openSelect, setOpenSelect] = useState<boolean>(false);
   const [values, setValues] = useState<
     Array<OptionType>
   >(options);
-  const selected = values.find((e) => e.active);
 
+  const selected = values.find((e) => e.active);
   function setOption(id: number) {
     const updatedValues = values.map((e) => ({
       ...e,
       active: e.id === id,
     }));
     setValues(updatedValues);
-    setOpenSelect(!openSelect);
+    setOpenSelect(false);
+
+    const selectedOption = updatedValues.find((e) => e.id === id);
+    if (selectedOption) {
+      dynamicOptions(1, selectedOption);
+    }
   }
   return (
     <>

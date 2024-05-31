@@ -3,6 +3,7 @@ import { ButtonLink } from "@/Components/Button";
 import InputBoxSelect from "@/Components/InputBoxSelect";
 import InputSearch from "@/Components/InputSeach";
 import Section from "@/Components/Section";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Equipamentos() {
@@ -18,7 +19,7 @@ export default function Equipamentos() {
       id: 2,
       nome: "teste2",
       quantidadeTrue: 2, 
-      quantidadeFloat: 1,
+      quantidadeFloat: 4,
       active: false,
     },
     {
@@ -52,6 +53,7 @@ export default function Equipamentos() {
   }
 
   const selecteds = data.filter((e) => e.active);
+  const selectedIds = selecteds.map(e => e.id).join(',');
 
   return (
     <Section title="Equipamentos" arrowBefore>
@@ -59,7 +61,7 @@ export default function Equipamentos() {
       {data.map((e, i) => ( 
         <InputBoxSelect name={e.nome} key={i} id={e.id} activeOption={activeOption} disableOption={disableOption} active={e.active}></InputBoxSelect>
       ))}
-        <ButtonLink is="isNotTransparent" type="button" link="link" href={`equipamentos/revisar?data=${encodeURIComponent(JSON.stringify(selecteds))}`}>Revisar</ButtonLink>
+        <ButtonLink is="isNotTransparent" type="button" link="link" href={`equipamentos/revisar/${selectedIds}`}>Revisar</ButtonLink>
     </Section>
   );
 }
