@@ -21,6 +21,7 @@ const SectionWrapper = styled.section`
   .svg{
     margin-bottom: 20px;
     cursor: pointer;
+    aspect-ratio: auto;
   }
 `;
 

@@ -1,14 +1,14 @@
 "use client";
 import Button, { ButtonLink } from "@/Components/Button";
 import DefaultForm from "@/Components/DefaultForm";
-import Input from "@/Components/Input";
+import Input, { OptionType } from "@/Components/Input";
 import InputBoxSelect, {
   InputBoxSelectWithQuntity,
 } from "@/Components/InputBoxSelect";
 import Section from "@/Components/Section";
 import { useFormik } from "formik";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import styled from "styled-components";
 
 const Adjust = styled.div`
@@ -47,19 +47,19 @@ interface PropPageRevisar {
 export default function Revisar({ params }: PropPageRevisar) {
   const { id } = params;
   const arrayIds = id.replaceAll('%2C', ',').split(',');
-  const [data,setData] = useState([
+  const [data, setData] = useState([
     {
       id: 1,
       nome: "teste",
-      quantidadeTrue: 2, //real quantidade q tem estoque, so sera desconto apos a baixa da aula
-      quantidadeFloat: 1, //quantidade antes do professor dar baixa
+      quantidadeTrue: 2,
+      quantidadeFloat: 1,
       active: false,
       abr: '',
     },
     {
       id: 2,
       nome: "teste2",
-      quantidadeTrue: 2, 
+      quantidadeTrue: 2,
       quantidadeFloat: 4,
       active: false,
       abr: '',
@@ -79,22 +79,29 @@ export default function Revisar({ params }: PropPageRevisar) {
       abr: '',
     },
   ]);
-  const itens = data.filter((e, i) => arrayIds.includes(e.id.toString()));
+  const itens = data.filter((e) => arrayIds.includes(e.id.toString()));
 
   const router = useRouter();
-  const [parsedData, setParsedData] = useState<Itens[]>([]);
-  const [quantities, setQuantities] = useState<{ [key: number]: number | null; }>({});
-  const initialValues: { [key: string]: number | string } = {};
+  const [quantities, setQuantities] = useState<{ [key: number]: number | null }>({});
+  const [abr, setAbr] = useState<{ [key: number]: OptionType | undefined }>({});
+  const initialValues: { [key: string]: string } = {};
   itens.forEach((item) => {
-    initialValues[item.id.toString()] = item.quantidadeFloat.toString() + item.abr;
+    initialValues[item.id.toString()] = item.quantidadeFloat.toString();
   });
 
   const formik = useFormik({
     initialValues,
     onSubmit: (values) => {
-      console.log(values);
-      localStorage.setItem('equipamentos', JSON.stringify(values))
-      router.push('/cadastro/aula')
+      const combinedValues = itens.reduce((acc, item) => {
+        acc[item.id] = {
+          quantidade: values[item.id.toString()],
+          abreviacao: abr[item.id]?.abr || ''
+        };
+        return acc;
+      }, {} as { [key: number]: { quantidade: string, abreviacao: string } });
+
+      localStorage.setItem('equipamentos', JSON.stringify(combinedValues));
+      router.push('/cadastro/aula');
     },
   });
 
@@ -114,29 +121,12 @@ export default function Revisar({ params }: PropPageRevisar) {
     formik.setFieldValue(id.toString(), Math.max((quantities[id] || 1) - 1, 0));
   };
 
-  const handleUpdateAbr = (id: number, abrValue: string) => {
-    setData((prevData) => {
-      // Encontrar o índice do item com o ID correspondente
-      const index = prevData.findIndex((item) => item.id === id);
-  
-      if (index !== -1) {
-        // Criar uma cópia do array de dados
-        const newData = [...prevData];
-  
-        // Atualizar o valor de 'abr' no item específico
-        newData[index] = {
-          ...newData[index],
-          abr: abrValue,
-        };
-  
-        return newData;
-      }
-  
-      // Se o ID não for encontrado, retornar os dados sem modificação
-      return prevData;
-    });
+  const handleSelectOption = (id: number, value: OptionType) => {
+    setAbr((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
   };
-  
 
   return (
     <>
@@ -175,7 +165,7 @@ export default function Revisar({ params }: PropPageRevisar) {
                       { id: 5, nome: "Litros (L)", abr: "L", active: false, value: "L" },
                       { id: 6, nome: "Unidade (Un)", abr: "Un", active: true, value: "Un" },
                     ]}
-                    dynamicOptions={handleUpdateAbr}
+                    dynamicOption={(value) => handleSelectOption(e.id, value)}
                   />
                 </div>
               ))}
@@ -193,5 +183,4 @@ export default function Revisar({ params }: PropPageRevisar) {
       )}
     </>
   );
-  
 }

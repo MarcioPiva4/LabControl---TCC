@@ -5,6 +5,7 @@ import { theme } from "@/styles/theme";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
+import { usePathname } from "next/navigation";
 
 const HeaderWrapper = styled.header`
   width: 100%;
@@ -165,7 +166,13 @@ const SubMenu = styled.aside`
 `;
 
 export function Header() {
+  const pathName = usePathname();
   const [menu, setMenu] = useState<boolean>(false);
+  const [home, setHome] = useState<boolean>(pathName == "/")
+  const [manutencao, setManutencao] = useState<boolean>(pathName == "/manutencao");
+  const [baixaAulas, setBaixaAulas] = useState<boolean>(pathName == "/baixa-de-aulas");
+  const [relatorios, setRelatorios] = useState<boolean>(pathName == "/relatorios");
+
   const subMenuRef = useRef<HTMLDivElement>(null);
   return (
     <ThemeProvider theme={theme}>
@@ -177,25 +184,25 @@ export function Header() {
                 <p>Cadastro</p>
                 <Icons icon="cadastro"></Icons>
               </Li>
-              <Li>
+              <Li $active={manutencao}>
                 <Link href={"#"} onClick={() => setMenu(false)}>
                   <p>Manutenção</p>
                   <Icons icon="manutencao"></Icons>
                 </Link>
               </Li>
-              <Li>
+              <Li $active={home}>
                 <Link href={"/"} onClick={() => setMenu(false)}>
                   <p>Home</p>
                   <Icons icon="home"></Icons>
                 </Link>
               </Li>
-              <Li>
+              <Li $active={baixaAulas}>
                 <Link href={"#"} onClick={() => setMenu(false)}>
                   <p>Baixa de aulas</p>
                   <Icons icon="baixaAulas"></Icons>
                 </Link>
               </Li>
-              <Li>
+              <Li $active={relatorios}>
                 <Link href={"#"} onClick={() => setMenu(false)}>
                   <p>Relatorios</p>
                   <Icons icon="relatorios"></Icons>

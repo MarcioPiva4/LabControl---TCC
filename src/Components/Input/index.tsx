@@ -4,7 +4,7 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 
-interface OptionType {
+export interface OptionType {
   id: number;
   nome: string | React.ReactNode;
   abr: string | React.ReactNode;
@@ -25,7 +25,7 @@ interface PropInput {
   selectRef?: any;
   max?: number;
   min?: number;
-  dynamicOptions?: any;
+  dynamicOption: any;
 }
 
 const ContentInput = styled.div`
@@ -92,12 +92,9 @@ export default function Input({
   selectRef,
   max,
   min,
-  dynamicOptions,
+  dynamicOption
 }: PropInput
 ) {
-  const handleOptionClick = (option: OptionType) => {
-    dynamicOptions(option.value); // Update state in parent component
-  };
   return (
     <>
       <ThemeProvider theme={theme}>
@@ -118,7 +115,7 @@ export default function Input({
               selectRef={selectRef}
               icon={icon}
               options={optionsFakeSelect}
-              dynamicOptions={dynamicOptions}
+              dynamicOption={dynamicOption}
             ></SelectVariant>
           )}
         </ContentInput>
@@ -162,7 +159,7 @@ const ContentSelect = styled.div.attrs<{ $active?: boolean }>((props) => ({
   }
 `;
 
-function SelectVariant({selectRef, icon, options, dynamicOptions}: {selectRef?: any;icon?: boolean;options: Array<OptionType>; dynamicOptions: any}) {
+function SelectVariant({selectRef, icon, options, dynamicOption}: {selectRef?: any;icon?: boolean;options: Array<OptionType>; dynamicOption: any;}) {
   const [openSelect, setOpenSelect] = useState<boolean>(false);
   const [values, setValues] = useState<
     Array<OptionType>
@@ -176,12 +173,11 @@ function SelectVariant({selectRef, icon, options, dynamicOptions}: {selectRef?: 
     }));
     setValues(updatedValues);
     setOpenSelect(false);
-
-    const selectedOption = updatedValues.find((e) => e.id === id);
-    if (selectedOption) {
-      dynamicOptions(1, selectedOption);
-    }
   }
+
+  useEffect(() => {
+    dynamicOption(selected);
+  }, [values])
   return (
     <>
       <ContentSelect
