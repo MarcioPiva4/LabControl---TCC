@@ -177,6 +177,7 @@ function SelectVariant({selectRef, icon, options, dynamicOption}: {selectRef?: a
 
   useEffect(() => {
     dynamicOption(selected);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values])
   return (
     <>

@@ -8,7 +8,7 @@ import InputBoxSelect, {
 import Section from "@/Components/Section";
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const Adjust = styled.div`
@@ -54,7 +54,6 @@ export default function Revisar({ params }: PropPageRevisar) {
       quantidadeTrue: 2,
       quantidadeFloat: 1,
       active: false,
-      abr: '',
     },
     {
       id: 2,
@@ -62,14 +61,13 @@ export default function Revisar({ params }: PropPageRevisar) {
       quantidadeTrue: 2,
       quantidadeFloat: 4,
       active: false,
-      abr: '',
     },
     {
       id: 3,
       nome: "teste3",
       quantidadeTrue: 2,
       quantidadeFloat: 1,
-      abr: '',
+      active: false,
     },
     {
       id: 4,
@@ -84,6 +82,14 @@ export default function Revisar({ params }: PropPageRevisar) {
   const router = useRouter();
   const [quantities, setQuantities] = useState<{ [key: number]: number | null }>({});
   const [abr, setAbr] = useState<{ [key: number]: OptionType | undefined }>({});
+  const [option, setOptions] = useState<Array<OptionType>>([
+    { id: 1, nome: "Gramas (g)", abr: "g", active: false, value: "g" },
+    { id: 2, nome: "Quilogramas (Kg)", abr: "Kg", active: false, value: "Kg" },
+    { id: 3, nome: "Toneladas (T)", abr: "T", active: false, value: "T" },
+    { id: 4, nome: "Mililitros (ml)", abr: "ml", active: false, value: "ml" },
+    { id: 5, nome: "Litros (L)", abr: "L", active: false, value: "L" },
+    { id: 6, nome: "Unidade (Un)", abr: "Un", active: true, value: "Un" },
+  ])
   const initialValues: { [key: string]: string } = {};
   itens.forEach((item) => {
     initialValues[item.id.toString()] = item.quantidadeFloat.toString();
@@ -98,7 +104,7 @@ export default function Revisar({ params }: PropPageRevisar) {
           abreviacao: abr[item.id]?.abr || ''
         };
         return acc;
-      }, {} as { [key: number]: { quantidade: string, abreviacao: string } });
+      }, {} as { [key: number]: { quantidade: string, abreviacao: Object } });
 
       localStorage.setItem('equipamentos', JSON.stringify(combinedValues));
       router.push('/cadastro/aula');
@@ -127,6 +133,13 @@ export default function Revisar({ params }: PropPageRevisar) {
       [id]: value,
     }));
   };
+
+  //caso exista recupera quantidade e a abr do localstorage
+  useEffect(() => {
+    //inicialmente apenas recuperar a abr
+    const storage = localStorage.getItem('equipamentos')
+    // console.log(JSON.parse(storage));
+  }, [])
 
   return (
     <>
@@ -157,15 +170,8 @@ export default function Revisar({ params }: PropPageRevisar) {
                       const value = event.target.value === '' ? null : parseInt(event.target.value);
                       formik.setFieldValue(e.id.toString(), value);
                     }}
-                    optionsFakeSelect={[
-                      { id: 1, nome: "Gramas (g)", abr: "g", active: false, value: "g" },
-                      { id: 2, nome: "Quilogramas (Kg)", abr: "Kg", active: false, value: "Kg" },
-                      { id: 3, nome: "Toneladas (T)", abr: "T", active: false, value: "T" },
-                      { id: 4, nome: "Mililitros (ml)", abr: "ml", active: false, value: "ml" },
-                      { id: 5, nome: "Litros (L)", abr: "L", active: false, value: "L" },
-                      { id: 6, nome: "Unidade (Un)", abr: "Un", active: true, value: "Un" },
-                    ]}
-                    dynamicOption={(value) => handleSelectOption(e.id, value)}
+                    optionsFakeSelect={option}
+                    dynamicOption={(value: OptionType) => handleSelectOption(e.id, value)}
                   />
                 </div>
               ))}
