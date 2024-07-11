@@ -1,9 +1,8 @@
 'use client'
-import Button from "@/Components/Button";
-import DefaultForm from "@/Components/DefaultForm";
-import Input from "@/Components/Input";
-import Section from "@/Components/Section";
-import { useFormik } from "formik";
+import Button from "@/components/Button";
+import DefaultForm from "@/components/DefaultForm";
+import Input from "@/components/Input";
+import Section from "@/components/Section";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -11,24 +10,6 @@ export default function Fornecedor(){
     const selectRef = useRef<null | HTMLInputElement>(null);
     const router = useRouter();
     const [dataBefore, setDataBefore] = useState<any>({});
-
-    const formik = useFormik({
-        initialValues: {
-            nome: dataBefore.nome || "",
-            cnpj: dataBefore.cnpj || "",
-            telefone: dataBefore.telefone || "",
-            email: dataBefore.email || "",
-        },
-        enableReinitialize: true,
-        onSubmit: (values) => {
-            localStorage.removeItem("screenbefore");
-            const selectedValue = selectRef.current?.value;
-            alert(selectedValue)
-            alert(JSON.stringify(values));
-            localStorage.setItem("screenbefore", JSON.stringify(values))
-            router.push('/cadastro/fornecedor/finish')
-        }
-    });
 
     useEffect(() => {
         const storedData = localStorage.getItem('screenbefore');
@@ -39,28 +20,22 @@ export default function Fornecedor(){
 
     return(
         <Section title="Cadastre um fornecedor">
-            <DefaultForm handleSubmit={formik.handleSubmit}>
+            <DefaultForm>
                 <Input 
                     type="text" 
                     label="Nome" 
                     idInput="nome" 
-                    value={formik.values.nome} 
-                    onChange={formik.handleChange} 
                 />
                 <Input 
                     type="text" 
                     label="CNPJ" 
                     idInput="cnpj" 
-                    value={formik.values.cnpj} 
-                    onChange={formik.handleChange} 
                 />
                 <Input 
                     type="text" 
                     label="Telefone" 
                     selectAside 
                     idInput="telefone" 
-                    value={formik.values.telefone} 
-                    onChange={formik.handleChange} 
                     optionsFakeSelect={[
                         {
                             id: 1,
@@ -83,8 +58,6 @@ export default function Fornecedor(){
                     label="Email" 
                     idInput="email" 
                     type="text"
-                    value={formik.values.email} 
-                    onChange={formik.handleChange} 
                 />
                 <Button 
                     type="submit" 

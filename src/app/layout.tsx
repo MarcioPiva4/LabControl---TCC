@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import StyledComponentsRegistry from "./registry";
 import { GlobalStyle } from "@/styles/GlobalStyle";
 import { Inter } from 'next/font/google'
-import { Header } from "@/Components/Header";
+import { Header } from "@/components/Header";
 import { theme } from "@/styles/theme";
 
 export const metadata: Metadata = {

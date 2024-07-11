@@ -1,12 +1,11 @@
-"use client";
-import Button, { ButtonLink } from "@/Components/Button";
-import DefaultForm from "@/Components/DefaultForm";
-import Input, { OptionType } from "@/Components/Input";
+/*"use client";
+import Button, { ButtonLink } from "@/components/Button";
+import DefaultForm from "@/components/DefaultForm";
+import Input, { OptionType } from "@/components/Input";
 import InputBoxSelect, {
   InputBoxSelectWithQuntity,
-} from "@/Components/InputBoxSelect";
-import Section from "@/Components/Section";
-import { useFormik } from "formik";
+} from "@/components/InputBoxSelect";
+import Section from "@/components/Section";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
@@ -46,7 +45,17 @@ interface PropPageRevisar {
 
 export default function Revisar({ params }: PropPageRevisar) {
   const { id } = params;
-  const arrayIds = id.replaceAll('%2C', ',').split(',');
+  const arrayIds = id.replaceAll("%2C", ",").split(",");
+  const [quantityStorage, setQuantityStorage] = useState<Array<string>>();
+  const [abrStorage, setAbrStorage] = useState<Array<string>>();
+  //caso exista recupera quantidade e a abr do localstorage
+  useEffect(() => {
+    const storage = JSON.parse(localStorage.getItem("equipamentos")!);
+    setQuantityStorage(Object.values(storage).map((e: any) => e.quantidade));
+    setAbrStorage(Object.values(storage).map((e: any) => e.abreviacao));
+  }, []);
+
+  //dados para teste
   const [data, setData] = useState([
     {
       id: 1,
@@ -74,14 +83,11 @@ export default function Revisar({ params }: PropPageRevisar) {
       nome: "teste4",
       quantidadeTrue: 2,
       quantidadeFloat: 1,
-      abr: '',
+      abr: "",
     },
   ]);
-  const itens = data.filter((e) => arrayIds.includes(e.id.toString()));
 
-  const router = useRouter();
-  const [quantities, setQuantities] = useState<{ [key: number]: number | null }>({});
-  const [abr, setAbr] = useState<{ [key: number]: OptionType | undefined }>({});
+  //opções para selecionara unidade
   const [option, setOptions] = useState<Array<OptionType>>([
     { id: 1, nome: "Gramas (g)", abr: "g", active: false, value: "g" },
     { id: 2, nome: "Quilogramas (Kg)", abr: "Kg", active: false, value: "Kg" },
@@ -89,7 +95,38 @@ export default function Revisar({ params }: PropPageRevisar) {
     { id: 4, nome: "Mililitros (ml)", abr: "ml", active: false, value: "ml" },
     { id: 5, nome: "Litros (L)", abr: "L", active: false, value: "L" },
     { id: 6, nome: "Unidade (Un)", abr: "Un", active: true, value: "Un" },
-  ])
+  ]);
+
+  //dados filtrados de acordo com o id dinamico vindo da rota
+  const itens = data.filter((e) => arrayIds.includes(e.id.toString()));
+  const router = useRouter();
+
+  //quantidade dos campos
+  const [quantities, setQuantities] = useState<{
+    [key: number]: number | null;
+  }>({});
+
+  //setando os valores vindo do localstorage para o componente, valor: quantidade
+  useEffect(() => {
+    const quantitiesObject = quantityStorage?.reduce((acc: any, e, i) => {
+      acc[i+1] = Number(e);
+      return acc;
+    }, {} as { [key: number]: number | null });
+    setQuantities(quantitiesObject);
+  }, [quantityStorage])
+
+  //setando os valores vindo do localstorage para o componente, valor: abreviacao
+  useEffect(() => {
+    console.log(abrStorage)
+    // const abrObject = abrStorage?.reduce((acc: any, e, i) => {
+    //   acc[i+1] = Number(e);
+    //   return acc;
+    // }, {} as { [key: number]: number | null });
+    // setOptions(abrObject);
+  }, [abrStorage])
+  console.log(abrStorage)
+  console.log(option);
+  const [abr, setAbr] = useState<{ [key: number]: OptionType | undefined }>({});
   const initialValues: { [key: string]: string } = {};
   itens.forEach((item) => {
     initialValues[item.id.toString()] = item.quantidadeFloat.toString();
@@ -101,13 +138,13 @@ export default function Revisar({ params }: PropPageRevisar) {
       const combinedValues = itens.reduce((acc, item) => {
         acc[item.id] = {
           quantidade: values[item.id.toString()],
-          abreviacao: abr[item.id]?.abr || ''
+          abreviacao: abr[item.id]?.abr || "",
         };
         return acc;
-      }, {} as { [key: number]: { quantidade: string, abreviacao: Object } });
+      }, {} as { [key: number]: { quantidade: string; abreviacao: Object } });
 
-      localStorage.setItem('equipamentos', JSON.stringify(combinedValues));
-      router.push('/cadastro/aula');
+      localStorage.setItem("equipamentos", JSON.stringify(combinedValues));
+      router.push("/cadastro/aula");
     },
   });
 
@@ -133,14 +170,6 @@ export default function Revisar({ params }: PropPageRevisar) {
       [id]: value,
     }));
   };
-
-  //caso exista recupera quantidade e a abr do localstorage
-  useEffect(() => {
-    //inicialmente apenas recuperar a abr
-    const storage = localStorage.getItem('equipamentos')
-    // console.log(JSON.parse(storage));
-  }, [])
-
   return (
     <>
       {itens.length <= 0 && <h1>Selecione uma opção antes de continuar</h1>}
@@ -165,18 +194,28 @@ export default function Revisar({ params }: PropPageRevisar) {
                     selectAside
                     max={e.quantidadeFloat}
                     min={1}
-                    value={formik.values[e.id.toString()] || ''}
+                    value={formik.values[e.id.toString()] || ""}
                     onChange={(event) => {
-                      const value = event.target.value === '' ? null : parseInt(event.target.value);
+                      const value =
+                        event.target.value === ""
+                          ? null
+                          : parseInt(event.target.value);
                       formik.setFieldValue(e.id.toString(), value);
                     }}
                     optionsFakeSelect={option}
-                    dynamicOption={(value: OptionType) => handleSelectOption(e.id, value)}
+                    dynamicOption={(value: OptionType) =>
+                      handleSelectOption(e.id, value)
+                    }
                   />
                 </div>
               ))}
               <Content>
-                <ButtonLink type="button" link="link" is="isTransparent" href={`/cadastro/aula/equipamentos/${itens.map(e => e.id)}`}>
+                <ButtonLink
+                  type="button"
+                  link="link"
+                  is="isTransparent"
+                  href={`/cadastro/aula/equipamentos/${itens.map((e) => e.id)}`}
+                >
                   CANCELAR
                 </ButtonLink>
                 <Button type="submit" is="isNotTransparent">
@@ -190,3 +229,4 @@ export default function Revisar({ params }: PropPageRevisar) {
     </>
   );
 }
+*/

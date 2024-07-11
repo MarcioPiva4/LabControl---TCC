@@ -1,44 +1,21 @@
 'use client'
-import Button from "@/Components/Button";
-import DefaultForm from "@/Components/DefaultForm";
-import Input from "@/Components/Input";
-import Section from "@/Components/Section";
-import TextArea from "@/Components/TextArea/index";
-import { useFormik } from "formik";
+import Button from "@/components/Button";
+import DefaultForm from "@/components/DefaultForm";
+import Input from "@/components/Input";
+import Section from "@/components/Section";
+import TextArea from "@/components/TextArea/index";
 import { useRef } from "react";
 
 export default function Agente_Reagente() {
     const selectPesoMolecular = useRef<null | HTMLInputElement>(null);
     const selectConcentracao = useRef<null | HTMLInputElement>(null);
     const selectQuantidade = useRef<null | HTMLInputElement>(null);
-    const formik = useFormik({
-        initialValues: {
-            nome: '',
-            formulaquimica: '',
-            pesomolecular: '',
-            numerocas: '',
-            fornecedor: '',
-            numerocatalogofornecedor: '',
-            datacompra: '',
-            concentracao: '',
-            quantidade: '',
-            armazenamentorecomendado: '',
-            descricao: '',
-        },
-
-        onSubmit: (values) => {
-            alert(JSON.stringify(values));
-            alert(selectPesoMolecular.current?.value);
-            alert(selectConcentracao.current?.value);
-            alert(selectQuantidade.current?.value);
-        }
-    })
     return (
         <Section title="Cadastre um Agente/Reagente" bottom>
-            <DefaultForm handleSubmit={formik.handleSubmit}>
-                <Input type="text" label="Nome do agente/reagente" idInput={'nome'} value={formik.values.nome} onChange={formik.handleChange}></Input>
-                <Input type="text" label="Fórmula química" idInput={'formulaquimica'} value={formik.values.formulaquimica} onChange={formik.handleChange}></Input>
-                <Input type="text" selectRef={selectPesoMolecular} label="Peso molecular" idInput={'pesomolecular'} value={formik.values.pesomolecular} onChange={formik.handleChange} selectAside
+            <DefaultForm>
+                <Input type="text" label="Nome do agente/reagente" idInput={'nome'}></Input>
+                <Input type="text" label="Fórmula química" idInput={'formulaquimica'}></Input>
+                <Input type="text" selectRef={selectPesoMolecular} label="Peso molecular" idInput={'pesomolecular'} selectAside
                     optionsFakeSelect={[
                         {
                             id: 1,
@@ -48,11 +25,11 @@ export default function Agente_Reagente() {
                             value: "g/mol"
                         },
                     ]} ></Input>
-                <Input type="text" label="Número CAS (Chemical Abstracts Service)" idInput={'numerocas'} value={formik.values.numerocas} onChange={formik.handleChange}></Input>
-                <Input type="text" label="Fornecedor" idInput={'fornecedor'} value={formik.values.fornecedor} onChange={formik.handleChange}></Input>
-                <Input type="text" label="Número de catálogo do fornecedor" idInput={'numerocatalogofornecedor'} value={formik.values.numerocatalogofornecedor} onChange={formik.handleChange}></Input>
+                <Input type="text" label="Número CAS (Chemical Abstracts Service)" idInput={'numerocas'}></Input>
+                <Input type="text" label="Fornecedor" idInput={'fornecedor'}></Input>
+                <Input type="text" label="Número de catálogo do fornecedor" idInput={'numerocatalogofornecedor'}></Input>
                 <Input type="text" label="Data de compra"></Input>
-                <Input type="text" selectRef={selectConcentracao} label="Concentração" idInput={'concentracao'} value={formik.values.concentracao} onChange={formik.handleChange} selectAside
+                <Input type="text" selectRef={selectConcentracao} label="Concentração" idInput={'concentracao'} selectAside
                     optionsFakeSelect={[
                         {
                             id: 1,
@@ -69,7 +46,7 @@ export default function Agente_Reagente() {
                             value: "g/ml",
                         },
                     ]}></Input>
-                <Input type="text" selectRef={selectQuantidade} label="Quantidade" idInput={'quantidade'} value={formik.values.quantidade} onChange={formik.handleChange} selectAside
+                <Input type="text" selectRef={selectQuantidade} label="Quantidade" idInput={'quantidade'} selectAside
                     optionsFakeSelect={[
                         {
                             id: 1,
@@ -114,8 +91,8 @@ export default function Agente_Reagente() {
                             value: "Un",
                         },
                     ]}></Input>
-                <Input type="text" label="Armazenamento recomendado" idInput={'armazenamentorecomendado'} value={formik.values.armazenamentorecomendado} onChange={formik.handleChange}></Input>
-                <TextArea labelText="Descrição" id="descricao" value={formik.values.descricao} onChange={formik.handleChange}></TextArea>
+                <Input type="text" label="Armazenamento recomendado" idInput={'armazenamentorecomendado'}></Input>
+                <TextArea labelText="Descrição" id="descricao"></TextArea>
                 <Button type="submit" is="isNotTransparent">CADASTRAR</Button>
             </DefaultForm>
         </Section>

@@ -1,8 +1,8 @@
 'use client'
-import { ButtonLink } from "@/Components/Button";
-import InputBoxSelect from "@/Components/InputBoxSelect";
-import InputSearch from "@/Components/InputSeach";
-import Section from "@/Components/Section";
+import { ButtonLink } from "@/components/Button";
+import InputBoxSelect from "@/components/InputBoxSelect";
+import InputSearch from "@/components/InputSeach";
+import Section from "@/components/Section";
 import { usePathname, useRouter } from "next/navigation";
 import { Router } from "next/router";
 import { useEffect, useState } from "react";

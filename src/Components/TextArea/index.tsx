@@ -6,8 +6,6 @@ import styled from "styled-components";
 interface propTextArea {
     labelText?: string;
     id: string;
-    value: string;
-    onChange: (e: React.ChangeEvent<any>) => void;
   }
   
 
@@ -33,12 +31,12 @@ interface propTextArea {
     margin-bottom: 25px;
   `;
   
-  export default function TextArea({ labelText, id, value, onChange }: propTextArea) {
+  export default function TextArea({ labelText, id }: propTextArea) {
     return (
       <>
         <ThemeProvider theme={theme}>
           <Label>{labelText}</Label>
-          <TextAreaWrapper id={id} name={id} value={value} onChange={onChange}></TextAreaWrapper>
+          <TextAreaWrapper id={id} name={id}></TextAreaWrapper>
         </ThemeProvider>
       </>
     );

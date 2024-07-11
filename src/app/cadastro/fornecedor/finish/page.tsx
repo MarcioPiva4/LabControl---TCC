@@ -1,9 +1,7 @@
-'use client'
-import Button from "@/Components/Button";
-import DefaultForm from "@/Components/DefaultForm";
-import Input from "@/Components/Input";
-import Section from "@/Components/Section";
-import { useFormik } from "formik";
+/*import Button from "@/components/Button";
+import DefaultForm from "@/components/DefaultForm";
+import Input from "@/components/Input";
+import Section from "@/components/Section";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -12,21 +10,6 @@ export default function Professor(){
   const [dataScreenAfter, setDataScreenAfter] = useState<any>({});
   //valores anteriores para teste e enviar para o banco
   const [dataScreenBefore, setDataScreenBefore] = useState<any>({});
-  const formik = useFormik({
-        initialValues: {
-            cep: dataScreenAfter.cep || "",
-            estado: dataScreenAfter.estado || "",
-            cidade: dataScreenAfter.cidade || "",
-            bairro: dataScreenAfter.bairro || "",
-            rua: dataScreenAfter.rua || "",
-            numero: dataScreenAfter.numero || "",
-          },
-          enableReinitialize: true,
-        onSubmit: (values) => {
-          localStorage.setItem("screenafter", JSON.stringify(values))
-          alert(JSON.stringify(values, null, 2));
-        },
-      });
     
       useEffect(() => {
         const data = localStorage.getItem("screenafter");
@@ -68,11 +51,11 @@ export default function Professor(){
       }, [cep]);
     return (
         <Section title="Informe a localização" bottom arrowBefore>
-          <DefaultForm handleSubmit={formik.handleSubmit}>
-            <Input type="text" label="CEP" idInput="cep" value={formik.values.cep || cep}   onChange={(e) => { formik.handleChange(e); setCep(e.target.value);  }}/>
-            <Input type="text" label="Estado" idInput="estado" value={formik.values.estado || uf} onChange={(e) => { formik.handleChange; setUf(e.target.value) }}/>
-            <Input type="text" label="Cidade" idInput="cidade" value={formik.values.cidade || localidade} onChange={(e) => {formik.handleChange; setLocalidade(e.target.value)}}/>
-            <Input type="text" label="Bairro" idInput="bairro" value={formik.values.bairro || bairro} onChange={(e) => {formik.handleChange; setBairro(e.target.value)}}/>
+          <DefaultForm>
+            <Input type="text" label="CEP" idInput="cep" value={cep}   onChange={(e) => { formik.handleChange(e); setCep(e.target.value);  }}/>
+            <Input type="text" label="Estado" idInput="estado" value={uf} onChange={(e) => { formik.handleChange; setUf(e.target.value) }}/>
+            <Input type="text" label="Cidade" idInput="cidade" value={localidade} onChange={(e) => {formik.handleChange; setLocalidade(e.target.value)}}/>
+            <Input type="text" label="Bairro" idInput="bairro" value={bairro} onChange={(e) => {formik.handleChange; setBairro(e.target.value)}}/>
             <Input type="text" label="Rua" idInput="rua" value={formik.values.rua} onChange={formik.handleChange}/>
             <Input type="text" label="N°" idInput="numero" value={formik.values.numero} onChange={formik.handleChange}/>
             <Button type="submit" is="isNotTransparent">CADASTRAR</Button>
@@ -80,21 +63,4 @@ export default function Professor(){
         </Section>
       );
 }
-
-// export async function getServerSideProps(context: any) {
-//   const screenBefore = context.req.cookies.screenbefore;
-//   console.log(screenBefore);
-
-//   if (!screenBefore) {
-//     return {
-//       redirect: {
-//         destination: '/outra-rota',
-//         permanent: false,
-//       },
-//     };
-//   }
-
-//   return {
-//     props: {}, // Você também pode passar dados para o componente aqui
-//   };
-// }
+*/

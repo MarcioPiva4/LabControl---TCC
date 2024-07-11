@@ -17,15 +17,13 @@ interface PropInput {
   idInput?: string;
   placeHolder?: string;
   type: "text" | "number" | "search";
-  value?: string | number;
-  onChange?: (e: React.ChangeEvent<any>) => void;
   selectAside?: boolean;
   optionsFakeSelect?: Array<OptionType>;
   icon?: boolean;
   selectRef?: any;
   max?: number;
   min?: number;
-  dynamicOption: any;
+  dynamicOption?: any;
 }
 
 const ContentInput = styled.div`
@@ -84,15 +82,12 @@ export default function Input({
   idInput,
   placeHolder,
   type,
-  value,
-  onChange,
   selectAside,
   optionsFakeSelect,
   icon,
   selectRef,
   max,
   min,
-  dynamicOption
 }: PropInput
 ) {
   return (
@@ -104,9 +99,7 @@ export default function Input({
             placeholder={placeHolder}
             id={idInput}
             name={idInput}
-            value={value}
             type={type}
-            onChange={onChange}
             max={max}
             min={min}
           ></InputWrapper>
@@ -115,7 +108,6 @@ export default function Input({
               selectRef={selectRef}
               icon={icon}
               options={optionsFakeSelect}
-              dynamicOption={dynamicOption}
             ></SelectVariant>
           )}
         </ContentInput>
@@ -159,7 +151,7 @@ const ContentSelect = styled.div.attrs<{ $active?: boolean }>((props) => ({
   }
 `;
 
-function SelectVariant({selectRef, icon, options, dynamicOption}: {selectRef?: any;icon?: boolean;options: Array<OptionType>; dynamicOption: any;}) {
+function SelectVariant({selectRef, icon, options}: {selectRef?: any;icon?: boolean;options: Array<OptionType>;}) {
   const [openSelect, setOpenSelect] = useState<boolean>(false);
   const [values, setValues] = useState<
     Array<OptionType>
@@ -175,10 +167,6 @@ function SelectVariant({selectRef, icon, options, dynamicOption}: {selectRef?: a
     setOpenSelect(false);
   }
 
-  useEffect(() => {
-    dynamicOption(selected);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values])
   return (
     <>
       <ContentSelect
