@@ -1,10 +1,13 @@
 import BoxList from "@/components/BoxList";
 import Button from "@/components/Button";
 import DefaultForm from "@/components/DefaultForm";
+import { Header } from "@/components/Header";
 import Input from "@/components/Input";
 import Section from "@/components/Section";
 export default function Home() {
   return (
+    <>
+    <Header></Header>
     <main>
       <Section title="Localize seu laboratorio" direction="column">
         <DefaultForm>
@@ -52,5 +55,6 @@ export default function Home() {
       </Section>
 
     </main>
+    </>
   );
 }

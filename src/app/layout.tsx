@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import StyledComponentsRegistry from "./registry";
 import { GlobalStyle } from "@/styles/GlobalStyle";
 import { Inter } from 'next/font/google'
-import { Header } from "@/components/Header";
 import { theme } from "@/styles/theme";
 
 export const metadata: Metadata = {
@@ -27,7 +26,6 @@ export default function RootLayout({
       <body>
         <StyledComponentsRegistry>
             <GlobalStyle theme={theme}/>
-            <Header></Header>
             {children}
         </StyledComponentsRegistry>
       </body>

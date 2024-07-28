@@ -47,7 +47,7 @@ export default function Section({ title, children, direction, bottom, arrowBefor
   return (
     <ThemeProvider theme={theme}>
       <SectionWrapper>
-        {arrowBefore && <svg className="svg" onClick={() => router.push(href ?? '')} width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.69375 15.75L16.4937 25.55L14 28L0 14L14 0L16.4937 2.45L6.69375 12.25H28V15.75H6.69375Z" fill="white"/></svg>}
+        {arrowBefore && <svg className="svg" onClick={() => router.push(href ?? '/')} width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.69375 15.75L16.4937 25.55L14 28L0 14L14 0L16.4937 2.45L6.69375 12.25H28V15.75H6.69375Z" fill="white"/></svg>}
         <Title>{title}</Title>
         <Content $bottom={bottom} $direction={direction}>{children}</Content>
       </SectionWrapper>

@@ -1,14 +1,28 @@
 "use client";
 import { theme } from "@/styles/theme";
+import Link from "next/link";
 import styled, { ThemeProvider } from "styled-components";
+
+const Overlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #000000a3;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+`;
 
 const MenuWrapper = styled.div`
     position: fixed;
     background-color: #FFFFFF;
     width: 90%;
-    height: 40%;
+    height: 50%;
     display: flex;
-    justify-content: cneter;
+    justify-content: center;
     align-items: center;
     border-radius: 20px;
 
@@ -25,6 +39,7 @@ const MenuWrapper = styled.div`
             font-size: 24px;
             font-weight: 700;
             line-height: 29.05px;
+            margin-bottom: 20px;
         }
         button{
             width: 100%;
@@ -34,6 +49,15 @@ const MenuWrapper = styled.div`
             font-size: 17px;
             font-weight: 700;
             line-height: 21px;
+            a{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                height: 100%;
+                text-decoration: none;
+                color: #000;
+            }
         }
         button:nth-child(2){
             background: ${props => props.theme.color.gradient};
@@ -42,17 +66,21 @@ const MenuWrapper = styled.div`
     }
 `;
 
-export default function MenuSubmit(){
-    return(
-    <ThemeProvider theme={theme}>
-        <MenuWrapper>
+export default function MenuSubmit({ setSucess }: any){
+    return (
+      <ThemeProvider theme={theme}>
+        <Overlay>
+          <MenuWrapper>
             <div>
-            <h2>Cadastrar novamente?</h2>
-            <button type="submit">SIM</button>
-            <button type="submit">NÃO</button>
+              <h2>Cadastrar novamente?</h2>
+              <button type="reset"  onClick={() => setTimeout(() => setSucess(false), 100)}>SIM</button>
+              <button type="button">
+                <Link href={"/"}>NÃO</Link>
+              </button>
             </div>
-        </MenuWrapper>
+          </MenuWrapper>
+        </Overlay>
       </ThemeProvider>
-    )
+    );
   }
            

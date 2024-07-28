@@ -15,15 +15,12 @@ const HeaderWrapper = styled.header`
   background-color: ${(props) => props.theme.color.secondary};
   height: 12vh;
   z-index: 10;
-
   & > div {
     height: 100%;
   }
-
   & > div > nav {
     height: 100%;
   }
-
   & > div > nav > ul {
     height: 100%;
     display: flex;
@@ -32,6 +29,7 @@ const HeaderWrapper = styled.header`
     padding: 0 5%;
   }
 `;
+
 const Li = styled.li.attrs<{ $active?: boolean }>((props) => ({
   $active: props.$active || false,
 }))`
@@ -74,6 +72,7 @@ const Li = styled.li.attrs<{ $active?: boolean }>((props) => ({
     fill: ${(props) => props.theme.color.primary};
   }
 `;
+
 const SubMenu = styled.aside`
   position: fixed;
   top: 0;
@@ -168,12 +167,14 @@ const SubMenu = styled.aside`
 export function Header() {
   const pathName = usePathname();
   const [menu, setMenu] = useState<boolean>(false);
-  const [home, setHome] = useState<boolean>(pathName == "/")
-  const [manutencao, setManutencao] = useState<boolean>(pathName == "/manutencao");
-  const [baixaAulas, setBaixaAulas] = useState<boolean>(pathName == "/baixa-de-aulas");
-  const [relatorios, setRelatorios] = useState<boolean>(pathName == "/relatorios");
-
+  const [activePage, setActivePage] = useState<string>(pathName);
   const subMenuRef = useRef<HTMLDivElement>(null);
+
+  const handleLinkClick = (path: string) => {
+    setMenu(false);
+    setActivePage(path);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <HeaderWrapper>
@@ -182,30 +183,30 @@ export function Header() {
             <ul>
               <Li $active={menu} onClick={() => setMenu(!menu)}>
                 <p>Cadastro</p>
-                <Icons icon="cadastro"></Icons>
+                <Icons icon="cadastro" />
               </Li>
-              <Li $active={manutencao}>
-                <Link href={"#"} onClick={() => setMenu(false)}>
+              <Li $active={activePage === "/manutencao"}>
+                <Link href={"/manutencao"} onClick={() => handleLinkClick("/manutencao")}>
                   <p>Manutenção</p>
-                  <Icons icon="manutencao"></Icons>
+                  <Icons icon="manutencao" />
                 </Link>
               </Li>
-              <Li $active={home}>
-                <Link href={"/"} onClick={() => setMenu(false)}>
+              <Li $active={activePage === "/"}>
+                <Link href={"/"} onClick={() => handleLinkClick("/")}>
                   <p>Home</p>
-                  <Icons icon="home"></Icons>
+                  <Icons icon="home" />
                 </Link>
               </Li>
-              <Li $active={baixaAulas}>
-                <Link href={"#"} onClick={() => setMenu(false)}>
+              <Li $active={activePage === "/baixa-de-aulas"}>
+                <Link href={"/baixa-de-aulas"} onClick={() => handleLinkClick("/baixa-de-aulas")}>
                   <p>Baixa de aulas</p>
-                  <Icons icon="baixaAulas"></Icons>
+                  <Icons icon="baixaAulas" />
                 </Link>
               </Li>
-              <Li $active={relatorios}>
-                <Link href={"#"} onClick={() => setMenu(false)}>
+              <Li $active={activePage === "/relatorios"}>
+                <Link href={"/relatorios"} onClick={() => handleLinkClick("/relatorios")}>
                   <p>Relatorios</p>
-                  <Icons icon="relatorios"></Icons>
+                  <Icons icon="relatorios" />
                 </Link>
               </Li>
             </ul>
@@ -222,59 +223,47 @@ export function Header() {
         <SubMenu ref={subMenuRef}>
           <ul>
             <li>
-              <Link
-                href={"/cadastro/administrador"}
-                onClick={() => setMenu(!menu)}
-              >
+              <Link href={"/cadastro/administrador"} onClick={() => handleLinkClick("/cadastro/administrador")}>
                 <span>Administrador</span>
               </Link>
             </li>
             <li>
-              <Link
-                href={"/cadastro/agente-reagente"}
-                onClick={() => setMenu(!menu)}
-              >
+              <Link href={"/cadastro/agente-reagente"} onClick={() => handleLinkClick("/cadastro/agente-reagente")}>
                 <span>Agentes/Reagentes</span>
               </Link>
             </li>
             <li>
-              <Link href={"/cadastro/aula"} onClick={() => setMenu(!menu)}>
+              <Link href={"/cadastro/aula"} onClick={() => handleLinkClick("/cadastro/aula")}>
                 <span>Aulas</span>
               </Link>
             </li>
             <li>
-              <Link
-                href={"/cadastro/equipamentos"}
-                onClick={() => setMenu(!menu)}
-              >
+              <Link href={"/cadastro/equipamentos"} onClick={() => handleLinkClick("/cadastro/equipamentos")}>
                 <span>Equipamentos</span>
               </Link>
             </li>
             <li>
-              <Link href={"/cadastro/fornecedor"} onClick={() => setMenu(!menu)}>
+              <Link href={"/cadastro/fornecedor"} onClick={() => handleLinkClick("/cadastro/fornecedor")}>
                 <span>Fornecedor</span>
               </Link>
             </li>
             <li>
-              <Link
-                href={"/cadastro/laboratorio"}
-                onClick={() => setMenu(!menu)}
-              >
+              <Link href={"/cadastro/laboratorio"} onClick={() => handleLinkClick("/cadastro/laboratorio")}>
                 <span>Laboratorio</span>
               </Link>
             </li>
             <li>
-              <Link href={"/cadastro/materias"} onClick={() => setMenu(!menu)}>
+              <Link href={"/cadastro/materias"} onClick={() => handleLinkClick("/cadastro/materias")}>
                 <span>Matérias</span>
               </Link>
             </li>
             <li>
-              <Link href={"/cadastro/professor"} onClick={() => setMenu(!menu)}>
+              <Link href={"/cadastro/professor"} onClick={() => handleLinkClick("/cadastro/professor")}>
                 <span>Professor</span>
               </Link>
             </li>
             <li>
-              <Link href={"/cadastro/vidrarias"} onClick={() => setMenu(!menu)}>
+              <Link href={"/cadastro/vidrarias"} onClick={() => handleLinkClick("/cadastro/vidrarias")}>
                 <span>Vidrarias</span>
               </Link>
             </li>

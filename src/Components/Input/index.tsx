@@ -16,7 +16,7 @@ interface PropInput {
   label?: string;
   idInput?: string;
   placeHolder?: string;
-  type: "text" | "number" | "search";
+  type: "text" | "number" | "search" | "email";
   selectAside?: boolean;
   optionsFakeSelect?: Array<OptionType>;
   icon?: boolean;
@@ -24,6 +24,8 @@ interface PropInput {
   max?: number;
   min?: number;
   dynamicOption?: any;
+  value?: string;
+  onChange?: any;
 }
 
 const ContentInput = styled.div`
@@ -88,6 +90,8 @@ export default function Input({
   selectRef,
   max,
   min,
+  value,
+  onChange,
 }: PropInput
 ) {
   return (
@@ -100,8 +104,10 @@ export default function Input({
             id={idInput}
             name={idInput}
             type={type}
-            max={max}
-            min={min}
+            maxLength={max}
+            minLength={min}
+            value={value}
+            onChange={(e) => onChange(e)}
           ></InputWrapper>
           {selectAside && optionsFakeSelect && (
             <SelectVariant
