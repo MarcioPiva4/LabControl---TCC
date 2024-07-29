@@ -1,11 +1,16 @@
 import { Sequelize } from "sequelize";
 
-const db = new Sequelize(process.env.DB_NAME as string, process.env.DB_USER as string, process.env.DB_PASSWORD, {
-  host: process.env.DB_HOST,
-  dialect: 'mysql',
-  dialectModule: require('mysql2'),
-});
-
+const db = new Sequelize(
+  process.env.MYSQLDATABASE as string,
+  process.env.MYSQLUSER as string,
+  process.env.MYSQLPASSWORD,
+  {
+    host: process.env.MYSQLHOST,
+    port: parseInt(process.env.MYSQLPORT as string),
+    dialect: 'mysql',
+    dialectModule: require('mysql2'),
+  }
+);
 
 db.authenticate()
   .then(() => console.log('Database connected...'))
