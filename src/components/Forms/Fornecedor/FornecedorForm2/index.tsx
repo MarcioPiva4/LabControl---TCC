@@ -63,7 +63,7 @@ export default function FornecedorForm2(){
             <Input type="text" label="Cidade" idInput="cidade" disabled  value={response ? response.data.localidade: ''}/>
             <Input type="text" label="Bairro" idInput="bairro" disabled value={response ? response.data.bairro : ''}/>
             <Input type="text" label="Rua" idInput="rua" disabled value={response ? response.data.logradouro : ''}/>
-            <Input type="text" label="N°" idInput="numero" disabled/>
+            <Input type="text" label="N°" idInput="numero" disabled={response ? false : true } />
             <Button type="submit" is="isNotTransparent">CADASTRAR</Button>
         </DefaultForm>
     )

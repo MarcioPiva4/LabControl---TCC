@@ -54,7 +54,8 @@ const ProfessorForm = () => {
                 <Input type="text" label="CPF" idInput="cpf" max={11} min={11} />
                 <Input type="text" label="Telefone" idInput="telefone" />
                 <Input type="email" label="E-mail" idInput="email" />
-                <Button type="submit" is="isNotTransparent">{ submiting ? <Loader></Loader> : 'CADASTRAR'}</Button>
+                {submiting ? <Loader></Loader> : null}
+                <Button type="submit" is="isNotTransparent">CADASTRAR</Button>
                 {sucess && <MenuSubmit setSucess={setSucess}></MenuSubmit>}
             </DefaultForm>
         </>

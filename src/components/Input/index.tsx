@@ -76,6 +76,10 @@ const InputWrapper = styled.input`
     -moz-appearance: textfield;
     appearance: textfield;
   }
+
+  &:disabled{
+    color: #fff;
+  }
 `;
 
 export default function Input({
