@@ -14,9 +14,17 @@ export async function GET(){
 export async function POST(req: NextRequest){
     try{
         const { vidraria, tipo, capacidade, material, quantidade, preco_compra, observacoes, id_fornecedor } = await req.json() as any;
-
-
-        //fazer os testes lógicos para caso seja vazio e etc;
+        if(vidraria.toString().length <= 0 ||
+            tipo.toString().length <= 0 ||
+            capacidade.toString().length <= 0 ||
+            material.toString().length <= 0 ||
+            quantidade.toString().length <= 0 ||
+            preco_compra.toString().length <= 0 ||
+            observacoes.toString().length <= 0 ||
+            id_fornecedor <= 0 
+        ){
+            return NextResponse.json({status: 'error', message: 'Não pode haver campos vazios'}, {status: 400})
+        }
 
         const createVidraria = await Vidrarias.create({
             vidraria,

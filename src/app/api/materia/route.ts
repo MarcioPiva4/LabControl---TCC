@@ -15,14 +15,20 @@ export async function POST(req: NextRequest){
         const { nome, emenda } = await req.json() as any;
 
 
-        //fazer os testes lógicos para caso seja vazio e etc;
+        if(nome.toString().length <= 0 || emenda.toString().length <= 0){
+            return NextResponse.json({ status: 'error', message: `Não pode haver campos vazios`, code: 400 }, {status: 400});
+        }
+
+        if(emenda.toString().length > 255 ){
+            return NextResponse.json({ status: 'error', message: `Emenda grande demais`, code: 400 }, {status: 400});
+        }
 
         const createMateria = await Materias.create({
-            nome: nome,
-            emenda: emenda,
+            nome,
+            emenda,
         });
 
-        return NextResponse.json({status: 'sucess', message: 'Matéria criada com sucesso', createMateria}, {status: 201})
+        return NextResponse.json({status: 'sucess', message: 'Matéria criada com sucesso'}, {status: 201})
         
     } catch (error) {
         return NextResponse.json({ status: 'error', message: `erro ao fazer a solicitação: ${error}`, code: 400 }, {status: 400})

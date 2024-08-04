@@ -16,7 +16,7 @@ interface PropInput {
   label?: string;
   idInput?: string;
   placeHolder?: string;
-  type: "text" | "number" | "search" | "email";
+  type: "text" | "number" | "search" | "email" | "hidden" | "date" ;
   selectAside?: boolean;
   optionsFakeSelect?: Array<OptionType>;
   icon?: boolean;
@@ -26,7 +26,7 @@ interface PropInput {
   dynamicOption?: any;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  disabled?: boolean;
+  readOnly?: boolean;
 }
 
 const ContentInput = styled.div`
@@ -77,8 +77,10 @@ const InputWrapper = styled.input`
     appearance: textfield;
   }
 
-  &:disabled{
+  &:read-only{
     color: #fff;
+    background-color: #b3b3b3;
+    cursor: unset;
   }
 `;
 
@@ -95,12 +97,12 @@ export default function Input({
   min,
   value,
   onChange,
-  disabled,
+  readOnly,
 }: PropInput) {
   return (
     <ThemeProvider theme={theme}>
       {label && <Label>{label}</Label>}
-      <ContentInput>
+      <ContentInput style={type == 'hidden' ? {display: 'none'} : {}}>
         <InputWrapper
           placeholder={placeHolder}
           id={idInput}
@@ -110,7 +112,7 @@ export default function Input({
           minLength={min}
           value={value}
           onChange={onChange}
-          disabled={disabled}
+          readOnly={readOnly}
         />
         {selectAside && optionsFakeSelect && (
           <SelectVariant

@@ -1,4 +1,10 @@
 import { Fornecedor } from "@/models/Fornecedor";
+import { isValidateCEP } from "@/utils/cepValitador";
+import { isValidateCNPJ } from "@/utils/cnpjValitador";
+import { isValidEmail } from "@/utils/emailValitador";
+import { isValidName } from "@/utils/nameValitador";
+import { isValidateHouseNumber } from "@/utils/numHouseValidator";
+import { isValidPhoneNumber } from "@/utils/phoneValitador";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(){
@@ -14,8 +20,48 @@ export async function POST(req: NextRequest){
     try{
         const { nome, cnpj, email, telefone, telefone_tipo, cep, estado, cidade, bairro, rua, numero } = await req.json() as any;
 
+        if(nome.toString().length <= 0 || 
+            cnpj.toString().length <= 0 || 
+            telefone.toString().length <= 0 || 
+            email.toString().length <= 0 || 
+            telefone_tipo.toString().length <= 0 || 
+            cep.toString().length <= 0 || 
+            estado.toString().length <= 0 || 
+            cidade.toString().length <= 0 || 
+            bairro.toString().length <= 0 || 
+            rua.toString().length <= 0 || 
+            numero.toString().length <= 0
+        ){
+            return NextResponse.json({ status: 'error', message: `Não pode haver campos vazios`, code: 400 }, {status: 400});
+        }
 
-        //fazer os testes lógicos para caso seja vazio e etc;
+        if(!isValidName(nome)){
+            return NextResponse.json({ status: 'error', message: `Nome inválido`, code: 400 }, {status: 400});
+        }
+
+        if(!isValidEmail(email)){
+            return NextResponse.json({ status: 'error', message: `Email inválido`, code: 400 }, {status: 400});
+        }
+
+        if(!isValidPhoneNumber(telefone)){
+            return NextResponse.json({ status: 'error', message: `Telefone inválido`, code: 400 }, {status: 400});
+        }
+
+        if(!isValidateCNPJ(cnpj)){
+            return NextResponse.json({ status: 'error', message: `CPNJ inválido`, code: 400 }, {status: 400});
+        }
+
+        if(!isValidateCEP(cep)){
+            return NextResponse.json({ status: 'error', message: `CEP inválido`, code: 400 }, {status: 400});
+        }
+
+        if(!isValidateHouseNumber(numero)){
+            return NextResponse.json({ status: 'error', message: `Número inválido`, code: 400 }, {status: 400});
+        }
+
+        if(telefone_tipo != 'whatsapp' && telefone_tipo != 'telefone'){
+            return NextResponse.json({ status: 'error', message: `Tipo de telefone inválido`, code: 400 }, {status: 400});
+        }
 
         const createFornecedor = await Fornecedor.create({
             nome,
@@ -31,7 +77,7 @@ export async function POST(req: NextRequest){
             numero
         });
 
-        return NextResponse.json({status: 'sucess', message: 'Fornecedor criado com sucesso', createFornecedor}, {status: 201})
+        return NextResponse.json({status: 'sucess', message: 'Fornecedor criado com sucesso'}, {status: 201})
         
     } catch (error) {
         return NextResponse.json({ status: 'error', message: `erro ao fazer a solicitação: ${error}`, code: 400 }, {status: 400})

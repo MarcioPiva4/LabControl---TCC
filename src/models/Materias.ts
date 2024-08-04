@@ -1,6 +1,5 @@
 import { db } from "@/lib/db";
 import { DataTypes } from "sequelize";
-import { Professor } from "./Professor";
 
 const Materias = db.define('materias', {
     id: {
@@ -36,7 +35,6 @@ const Materias = db.define('materias', {
 //     as: 'professor',
 // });
 
-Professor.sync({ force: true });
 Materias.sync({ force: true });
 
 export { Materias };

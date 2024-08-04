@@ -6,8 +6,9 @@ import MenuSubmit from "@/components/MenuSubmit";
 import { useState } from "react";
 import { Loader } from "@/components/Loader";
 import ErrorMessage from "@/components/ErrorMessage";
+import TextArea from "@/components/TextArea";
 
-const ProfessorForm = () => {
+const LaboratorioForm = () => {
     const [sucess, setSucess] = useState<null | true>(null);
     const [error, setError] = useState<{error: boolean; message: string}>({ error: false, message: '' });
     const [submiting, setSubmiting] = useState<null | true>(null);
@@ -19,7 +20,7 @@ const ProfessorForm = () => {
         const data = Object.fromEntries(formData.entries());
 
         try {
-            const response = await fetch('/api/professor', {
+            const response = await fetch('/api/laboratorio', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -44,10 +45,13 @@ const ProfessorForm = () => {
         <>
             <DefaultForm onSubmit={handleSubmit}>
                 {error.error && <ErrorMessage text={error.message}></ErrorMessage>}
-                <Input type="text" label="Nome" idInput="nome" />
-                <Input type="text" label="CPF" idInput="cpf" max={11} min={11} />
-                <Input type="text" label="Telefone" idInput="telefone" />
-                <Input type="email" label="E-mail" idInput="email" />
+                <Input type="text" label="Nome do Laboratório" idInput="nome"></Input>
+                <Input type="text" label="Prédio" idInput="predio"></Input>
+                <Input type="text" label="Andar" idInput="andar"></Input>
+                <Input type="text" label="Bloco" idInput="bloco"></Input>
+                <Input type="text" label="Sala"  idInput="sala"></Input>
+                <Input type="text" label="Responsável" idInput="responsavel"></Input>
+                <TextArea labelText="Descrição" id="descricao"></TextArea>
                 {submiting ? <Loader></Loader> : null}
                 <Button type="submit" is="isNotTransparent">CADASTRAR</Button>
                 {sucess && <MenuSubmit setSucess={setSucess}></MenuSubmit>}
@@ -56,4 +60,4 @@ const ProfessorForm = () => {
     );
 };
 
-export default ProfessorForm;
+export default LaboratorioForm;

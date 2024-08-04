@@ -16,11 +16,36 @@ const Administrador = db.define('administradores', {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    celular: {
+    telefone: {
         type: DataTypes.STRING,
         allowNull: false,
-    }
+    },
+    data_contratacao: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    cep: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    estado: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    cidade: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    rua: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    numero: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+
 })
 
-Administrador.sync();
+Administrador.sync({alter: true});
 export { Administrador };

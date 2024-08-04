@@ -28,11 +28,15 @@ const Laboratorio = db.define('laboratorios', {
         type: DataTypes.STRING,
         allowNull: true,
     },
+    responsavel: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     descricao: {
         type: DataTypes.STRING,
         allowNull: true,
     },
 })
 
-Laboratorio.sync();
+Laboratorio.sync({alter: true});
 export { Laboratorio };

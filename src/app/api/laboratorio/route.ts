@@ -12,10 +12,22 @@ export async function GET(){
 
 export async function POST(req: NextRequest){
     try{
-        const { nome, predio, andar, bloco, sala, descricao } = await req.json() as any;
+        const { nome, predio, andar, bloco, sala, descricao, responsavel } = await req.json() as any;
 
+        if(nome.toString().length <= 0 ||
+            predio.toString().length <= 0 ||
+            andar.toString().length <= 0 ||
+            bloco.toString().length <= 0 ||
+            sala.toString().length <= 0 ||
+            descricao.toString().length <= 0 ||
+            responsavel.toString().length <= 0
+        ){
+            return NextResponse.json({status: 'error', message: 'Não pode haver campos vazios'}, {status: 400})
+        }
 
-        //fazer os testes lógicos para caso seja vazio e etc;
+        if(descricao.toString().length > 255){
+            return NextResponse.json({status: 'error', message: 'Descrição deve ser menor que 255 caracteres'}, {status: 400})
+        }
 
         const createLaboratorio = await Laboratorio.create({
             nome,
@@ -23,10 +35,11 @@ export async function POST(req: NextRequest){
             andar,
             bloco,
             sala,
-            descricao
+            descricao,
+            responsavel
         });
 
-        return NextResponse.json({status: 'sucess', message: 'Laboratorio criado com sucesso', createLaboratorio}, {status: 201})
+        return NextResponse.json({status: 'sucess', message: 'Laboratorio criado com sucesso'}, {status: 201})
         
     } catch (error) {
         return NextResponse.json({ status: 'error', message: `erro ao fazer a solicitação: ${error}`, code: 400 }, {status: 400})

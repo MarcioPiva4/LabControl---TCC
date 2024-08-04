@@ -1,10 +1,11 @@
 "use client";
 import { theme } from "@/styles/theme";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import styled, { ThemeProvider } from "styled-components";
 
 const Overlay = styled.div`
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   background-color: #000000a3;
@@ -66,14 +67,15 @@ const MenuWrapper = styled.div`
     }
 `;
 
-export default function MenuSubmit({ setSucess }: any){
+export default function MenuSubmit({ setSucess, href, link }: {setSucess?: any; href?: string; link?: boolean;}){
+  const router = useRouter();
     return (
       <ThemeProvider theme={theme}>
         <Overlay>
           <MenuWrapper>
             <div>
               <h2>Cadastrar novamente?</h2>
-              <button type="reset"  onClick={() => setTimeout(() => setSucess(false), 100)}>SIM</button>
+              <button type="reset"  onClick={() => link ? router.push(href as string) : setTimeout(() => setSucess(false), 100)}>SIM</button>
               <button type="button">
                 <Link href={"/"}>NÃO</Link>
               </button>

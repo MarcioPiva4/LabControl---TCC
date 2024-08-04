@@ -78,6 +78,7 @@ Vidrarias.belongsToMany(Fornecedor, {
     as: 'fornecedores'
 });
 
+FornecedorVidrarias.sync();
 Vidrarias.sync();
 
 export { Vidrarias };
