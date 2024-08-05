@@ -36,7 +36,7 @@ export default function Aula(){
     )
 }*/
 
-export function Aula(){
+export default function Aula(){
     return(
         <div>Page aula</div>
     )
