@@ -9,28 +9,12 @@ import ErrorMessage from "@/components/ErrorMessage";
 import TextArea from "@/components/TextArea";
 import Select from "@/components/Select";
 
-const VidrariasForm = () => {
-    const [fornecedores, setFornecedores] = useState() as any;
+const VidrariasForm = ({data}: {data: unknown}) => {
+    const [fornecedores, setFornecedores] = useState(data) as any;
     const selectQuantidade = useRef<null | HTMLInputElement>(null);
     const [sucess, setSucess] = useState<null | true>(null);
     const [error, setError] = useState<{error: boolean; message: string}>({ error: false, message: '' });
     const [submiting, setSubmiting] = useState<null | true>(null);
-    useEffect(() => {
-        async function getFornecedores(){
-            try{
-                setSubmiting(true);
-                const response = await fetch('/api/fornecedor');
-                const data = await response.json();
-                setFornecedores(data);
-            } catch{
-                console.error('erro ao fazer a requisição');
-            } finally{
-                setSubmiting(null);
-            }
-
-        }
-        getFornecedores();
-    }, []);
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setSubmiting(true);
@@ -60,8 +44,6 @@ const VidrariasForm = () => {
             setSubmiting(null);
         }
     };
-
-    console.log(fornecedores)
     return (
         <>
             <DefaultForm onSubmit={handleSubmit}>
@@ -119,9 +101,9 @@ const VidrariasForm = () => {
                     <Select
                     id="id_fornecedor"
                     selectLabel="Fornecedores"
-                    options={fornecedores.map((e: any) => ({
-                        name: e.data?.nome || 'Unknown',
-                        id: e.data?.id || ''
+                    options={fornecedores.data?.map((e: any) => ({
+                        name: e.nome,
+                        id: e.id
                     }))}
                     />
                 ) : null}
