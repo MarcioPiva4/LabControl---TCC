@@ -115,7 +115,17 @@ const VidrariasForm = () => {
                     ]}></Input>
                 <Input type="text" label="Material" idInput="material"></Input>
                 <Input type="text" label="Quantidade" idInput="quantidade" ></Input>
-                {fornecedores ? <Select id="id_fornecedor" selectLabel="Fornecedores" options={[{name: fornecedores?.data[0]?.nome, id: fornecedores?.data[0]?.id}]}></Select> : null}
+                {fornecedores ? (
+                <Select
+                    id="id_fornecedor"
+                    selectLabel="Fornecedores"
+                    options={fornecedores.map(e => ({
+                    name: e.data.nome,
+                    id: e.data?.id
+                    }))}
+                />
+                ) : null}
+
                 <Input type="text" label="Preço de Compra" idInput="preco_compra" ></Input>
                 <Input type="text" label="Localização" idInput="localizacao"></Input>
                 <TextArea labelText="Observações adicionais" id="observacoes"></TextArea>
