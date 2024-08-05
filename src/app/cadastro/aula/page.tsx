@@ -1,4 +1,4 @@
-"use client"
+/*"use client"
 import Button from "@/components/Button";
 import DefaultForm from "@/components/DefaultForm";
 import Input from "@/components/Input";
@@ -34,4 +34,4 @@ export default function Aula(){
             </DefaultForm>
         </Section>
     )
-}
+}*/
