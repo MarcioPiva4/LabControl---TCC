@@ -35,3 +35,9 @@ export default function Aula(){
         </Section>
     )
 }*/
+
+export function Aula(){
+    return(
+        <div>Page aula</div>
+    )
+}
