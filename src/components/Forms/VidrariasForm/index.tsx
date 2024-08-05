@@ -119,7 +119,7 @@ const VidrariasForm = () => {
                 <Select
                     id="id_fornecedor"
                     selectLabel="Fornecedores"
-                    options={fornecedores.map(e => ({
+                    options={fornecedores.map((e: any) => ({
                     name: e.data.nome,
                     id: e.data?.id
                     }))}
