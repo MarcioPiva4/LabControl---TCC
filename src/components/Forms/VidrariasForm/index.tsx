@@ -116,14 +116,14 @@ const VidrariasForm = () => {
                 <Input type="text" label="Material" idInput="material"></Input>
                 <Input type="text" label="Quantidade" idInput="quantidade" ></Input>
                 {fornecedores ? (
-                <Select
+                    <Select
                     id="id_fornecedor"
                     selectLabel="Fornecedores"
                     options={fornecedores.map((e: any) => ({
-                    name: e.data.nome,
-                    id: e.data?.id
+                        name: e.data?.nome || 'Unknown',
+                        id: e.data?.id || ''
                     }))}
-                />
+                    />
                 ) : null}
 
                 <Input type="text" label="Preço de Compra" idInput="preco_compra" ></Input>
