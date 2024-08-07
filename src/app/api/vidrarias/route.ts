@@ -24,13 +24,13 @@ export async function POST(req: NextRequest){
             quantidade,
             preco_compra,
             observacoes,
-        });
+        }) as any;
 
         // Associa os fornecedores selecionados
         await Promise.all(id_fornecedor.map(async (fornecedorId: number) => {
             await FornecedorVidrarias.create({
                 id_fornecedor: fornecedorId,
-                id_vidraria: createVidraria.id
+                id_vidraria: createVidraria.id 
             });
         }));
 

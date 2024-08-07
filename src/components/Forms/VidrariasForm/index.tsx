@@ -3,11 +3,21 @@ import Input from "@/components/Input";
 import Button from "@/components/Button";
 import DefaultForm from "@/components/DefaultForm";
 import MenuSubmit from "@/components/MenuSubmit";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Loader } from "@/components/Loader";
 import ErrorMessage from "@/components/ErrorMessage";
 import TextArea from "@/components/TextArea";
-import Select from "@/components/Select";
+import styled from "styled-components";
+
+const InputCheckboxWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    div{
+        margin-bottom: 0px;
+    }
+`;
 
 const VidrariasForm = ({data}: {data: unknown}) => {
     const [fornecedores, setFornecedores] = useState(data) as any;
@@ -103,7 +113,7 @@ const VidrariasForm = ({data}: {data: unknown}) => {
                 <Input type="text" label="Material" idInput="material"></Input>
                 <Input type="text" label="Quantidade" idInput="quantidade" ></Input>
                 {fornecedores.data?.map((e: any) => (
-                    <div key={e.id}>
+                    <InputCheckboxWrapper key={e.id}>
                         <Input
                         key={e.id}
                         type="checkbox"
@@ -111,7 +121,7 @@ const VidrariasForm = ({data}: {data: unknown}) => {
                         value={e.id}
                         label={e.nome}
                         />
-                    </div>
+                    </InputCheckboxWrapper>
                 ))}
                 <Input type="text" label="Preço de Compra" idInput="preco_compra" ></Input>
                 <Input type="text" label="Localização" idInput="localizacao"></Input>
