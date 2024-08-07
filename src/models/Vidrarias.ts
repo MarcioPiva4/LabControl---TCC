@@ -18,7 +18,7 @@ const Vidrarias = db.define('vidrarias', {
         allowNull: false,
     },
     capacidade: {
-        type: DataTypes.FLOAT,
+        type: DataTypes.STRING,
         allowNull: false,
     },
     material: {
@@ -36,14 +36,7 @@ const Vidrarias = db.define('vidrarias', {
     observacoes: {
         type: DataTypes.STRING,
         allowNull: false,
-    },
-    id_fornecedor: {
-        type: DataTypes.INTEGER, 
-        references: {
-            model: Fornecedor,
-            key: 'id',
-        }
-    },
+    }
 });
 
 const FornecedorVidrarias = db.define('FornecedorVidrarias', {
@@ -78,7 +71,4 @@ Vidrarias.belongsToMany(Fornecedor, {
     as: 'fornecedores'
 });
 
-FornecedorVidrarias.sync();
-Vidrarias.sync();
-
-export { Vidrarias };
+export { Vidrarias, FornecedorVidrarias };

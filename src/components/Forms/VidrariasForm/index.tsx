@@ -20,7 +20,12 @@ const VidrariasForm = ({data}: {data: unknown}) => {
         setSubmiting(true);
         const form = e.currentTarget;
         const formData = new FormData(form);
-        const data = Object.fromEntries(formData.entries());
+        const data = Object.fromEntries(formData.entries()) as any;
+        data.capacidade = data.capacidade.toString() + selectQuantidade.current?.value;
+
+        // Captura dos fornecedores selecionados
+        const selectedFornecedores = formData.getAll('id_fornecedor');
+        data.id_fornecedor = selectedFornecedores;
 
         try {
             const response = await fetch('/api/vidrarias', {
@@ -97,17 +102,17 @@ const VidrariasForm = ({data}: {data: unknown}) => {
                     ]}></Input>
                 <Input type="text" label="Material" idInput="material"></Input>
                 <Input type="text" label="Quantidade" idInput="quantidade" ></Input>
-                {fornecedores ? (
-                    <Select
-                    id="id_fornecedor"
-                    selectLabel="Fornecedores"
-                    options={fornecedores.data?.map((e: any) => ({
-                        name: e.nome,
-                        id: e.id
-                    }))}
-                    />
-                ) : null}
-
+                {fornecedores.data?.map((e: any) => (
+                    <div key={e.id}>
+                        <Input
+                        key={e.id}
+                        type="checkbox"
+                        idInput="id_fornecedor"
+                        value={e.id}
+                        label={e.nome}
+                        />
+                    </div>
+                ))}
                 <Input type="text" label="Preço de Compra" idInput="preco_compra" ></Input>
                 <Input type="text" label="Localização" idInput="localizacao"></Input>
                 <TextArea labelText="Observações adicionais" id="observacoes"></TextArea>
@@ -120,3 +125,5 @@ const VidrariasForm = ({data}: {data: unknown}) => {
 };
 
 export default VidrariasForm;
+
+
