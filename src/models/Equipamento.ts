@@ -39,7 +39,7 @@ const Equipamento = db.define('equipamentos', {
     },
     observacoes: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
 });
 

@@ -33,7 +33,7 @@ const AgenteReajenteForm = ({data}: {data: unknown}) => {
         const form = e.currentTarget;
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries()) as any;
-        data.quantidade = data.capacidade?.toString() + selectQuantidade.current?.value;
+        data.quantidade = data.quantidade?.toString() + selectQuantidade.current?.value;
         data.peso_molecular = data.peso_molecular?.toString() + selectPesoMolecular.current?.value;
         data.concentracao = data.concentracao?.toString() + selectConcentracao.current?.value;
         
@@ -42,7 +42,7 @@ const AgenteReajenteForm = ({data}: {data: unknown}) => {
         data.id_fornecedor = selectedFornecedores;
 
         try {
-            const response = await fetch('/api/vidrarias', {
+            const response = await fetch('/api/agente-reajente', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -68,7 +68,8 @@ const AgenteReajenteForm = ({data}: {data: unknown}) => {
             <DefaultForm onSubmit={handleSubmit}>
                 {error.error && <ErrorMessage text={error.message}></ErrorMessage>}
                 <Input type="text" label="Nome do agente/reagente" idInput={'nome'}></Input>
-                <Input type="text" label="Fórmula química" idInput={'formulaquimica'}></Input>
+                <Input type="text" label="Fórmula química" idInput={'formula'}></Input>
+                <Input type="text" label="Material" idInput={'material'}></Input>
                 <Input type="text" selectRef={selectPesoMolecular} label="Peso molecular" idInput={'peso_molecular'} selectAside
                     optionsFakeSelect={[
                         {
@@ -79,7 +80,7 @@ const AgenteReajenteForm = ({data}: {data: unknown}) => {
                             value: "g/mol"
                         },
                     ]} ></Input>
-                <Input type="text" label="Número CAS (Chemical Abstracts Service)" idInput={'numerocas'}></Input>
+                <Input type="text" label="Número CAS (Chemical Abstracts Service)" idInput={'cas'}></Input>
                 {fornecedores.data?.map((e: any) => (
                     <InputCheckboxWrapper key={e.id}>
                         <Input
@@ -91,8 +92,8 @@ const AgenteReajenteForm = ({data}: {data: unknown}) => {
                         />
                     </InputCheckboxWrapper>
                 ))}
-                <Input type="text" label="Número de catálogo do fornecedor" idInput={'numerocatalogofornecedor'}></Input>
-                <Input type="text" label="Data de compra"></Input>
+                <Input type="text" label="Data de compra" idInput={'data_compra'}></Input>
+                <Input type="text" label="Data de validade" idInput={'data_validade'}></Input>
                 <Input type="text" selectRef={selectConcentracao} label="Concentração" idInput={'concentracao'} selectAside
                     optionsFakeSelect={[
                         {
@@ -155,8 +156,8 @@ const AgenteReajenteForm = ({data}: {data: unknown}) => {
                             value: "Un",
                         },
                     ]}></Input>
-                <Input type="text" label="Armazenamento recomendado" idInput={'armazenamentorecomendado'}></Input>
-                <TextArea labelText="Descrição" id="descricao"></TextArea>
+                <Input type="text" label="Armazenamento recomendado" idInput={'armazenamento_recomendado'}></Input>
+                <TextArea labelText="Descrição" id="observacoes"></TextArea>
                 {submiting ? <Loader></Loader> : null}
                 <Button type="submit" is="isNotTransparent">CADASTRAR</Button>
                 {sucess && <MenuSubmit setSucess={setSucess}></MenuSubmit>}

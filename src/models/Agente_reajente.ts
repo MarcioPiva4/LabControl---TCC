@@ -51,7 +51,7 @@ const AgenteReajente = db.define('agentes_reajentes', {
     },
     observacoes: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     id_fornecedor: {
         type: DataTypes.INTEGER, 
@@ -95,5 +95,6 @@ AgenteReajente.belongsToMany(Fornecedor, {
 });
 
 AgenteReajente.sync({alter: true});
+FornecedorAgenteReajente.sync({alter: true});
 
-export { AgenteReajente };
+export { AgenteReajente, FornecedorAgenteReajente };

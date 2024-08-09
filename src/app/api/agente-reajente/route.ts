@@ -1,4 +1,4 @@
-import { AgenteReajente } from "@/models/Agente_reajente";
+import { AgenteReajente, FornecedorAgenteReajente } from "@/models/Agente_reajente";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(){
@@ -14,6 +14,19 @@ export async function POST(req: NextRequest){
     try{
         const { nome, formula, peso_molecular, material, cas, data_compra, data_validade, concentracao, quantidade, armazenamento_recomendado, observacoes, id_fornecedor } = await req.json() as any;
 
+            if(nome.toString().length <= 0 || 
+            formula.toString().length <= 0 || 
+            peso_molecular.toString().length <= 0 || 
+            material.toString().length <= 0 || 
+            cas.toString().length <= 0 || 
+            data_compra.toString().length <= 0 || 
+            data_validade.toString().length <= 0 || 
+            concentracao.toString().length <= 0 || 
+            quantidade.toString().length <= 0 || 
+            armazenamento_recomendado.toString().length <= 0 || 
+            id_fornecedor){
+                return NextResponse.json({status: 'error', message: 'Não pode haver campos vazios'}, {status: 400})
+            }
 
         //fazer os testes lógicos para caso seja vazio e etc;
 
@@ -30,7 +43,14 @@ export async function POST(req: NextRequest){
             armazenamento_recomendado,
             observacoes,
             id_fornecedor
-        });
+        }) as any;
+
+        await Promise.all(id_fornecedor.map(async (fornecedorId: number) => {
+            await FornecedorAgenteReajente.create({
+                id_fornecedor: fornecedorId,
+                id_vidraria: createAgenteReajente.id 
+            });
+        }));
 
         return NextResponse.json({status: 'sucess', message: 'Agente e reajente criado com sucesso', createAgenteReajente}, {status: 201})
         

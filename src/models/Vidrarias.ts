@@ -35,7 +35,7 @@ const Vidrarias = db.define('vidrarias', {
     },
     observacoes: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     }
 });
 
