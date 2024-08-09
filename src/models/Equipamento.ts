@@ -41,13 +41,6 @@ const Equipamento = db.define('equipamentos', {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    id_fornecedor: {
-        type: DataTypes.INTEGER, 
-        references: {
-            model: Fornecedor,
-            key: 'id',
-        }
-    },
 });
 
 const FornecedorEquipamentos = db.define('FornecedorEquipamentos', {
@@ -82,6 +75,7 @@ Equipamento.belongsToMany(Fornecedor, {
     as: 'fornecedores'
 });
 
-Equipamento.sync();
+Equipamento.sync({alter: true});
+FornecedorEquipamentos.sync();
 
-export { Equipamento };
+export { Equipamento, FornecedorEquipamentos };
