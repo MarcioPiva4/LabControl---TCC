@@ -65,13 +65,13 @@ const VidrariasForm = ({data}: {data: unknown}) => {
                 {error.error && <ErrorMessage text={error.message}></ErrorMessage>}
                 <Input type="text" label="Vidraria" idInput="vidraria"></Input>
                 <Input type="text" label="Tipo de Vidraria" idInput="tipo"></Input>
-                <Input type="text" selectRef={selectQuantidade} label="Capacidade" idInput="capacidade" selectAside
+                <Input type="number" selectRef={selectQuantidade} label="Capacidade" idInput="capacidade" selectAside
                     optionsFakeSelect={[
                         {
                             id: 1,
                             nome: "Gramas (g)",
                             abr: "g",
-                            active: false,
+                            active: true,
                             value: "g"
                         },
                         {
@@ -111,7 +111,7 @@ const VidrariasForm = ({data}: {data: unknown}) => {
                         },
                     ]}></Input>
                 <Input type="text" label="Material" idInput="material"></Input>
-                <Input type="text" label="Quantidade" idInput="quantidade" ></Input>
+                <Input type="number" label="Quantidade" idInput="quantidade" ></Input>
                 {fornecedores.data?.map((e: any) => (
                     <InputCheckboxWrapper key={e.id}>
                         <Input
@@ -125,7 +125,7 @@ const VidrariasForm = ({data}: {data: unknown}) => {
                 ))}
                 <Input type="text" label="Preço de Compra" idInput="preco_compra" ></Input>
                 <Input type="text" label="Localização" idInput="localizacao"></Input>
-                <TextArea labelText="Observações adicionais" id="observacoes"></TextArea>
+                <TextArea labelText="Observações adicionais" id="observacoes" length></TextArea>
                 {submiting ? <Loader></Loader> : null}
                 <Button type="submit" is="isNotTransparent">CADASTRAR</Button>
                 {sucess && <MenuSubmit setSucess={setSucess}></MenuSubmit>}

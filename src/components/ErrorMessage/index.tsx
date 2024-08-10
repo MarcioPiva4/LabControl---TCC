@@ -1,4 +1,6 @@
 'use client'
+import { scrollTop } from "@/utils/scrollTop";
+import { useEffect } from "react";
 import styled from "styled-components";
 
 const ErrorMessageWrapper = styled.p`
@@ -11,6 +13,9 @@ const ErrorMessageWrapper = styled.p`
 `;
 
 export default function ErrorMessage({text}: {text: string}){
+    useEffect(() => {
+        scrollTop();
+    }, [])
     return(
         <ErrorMessageWrapper>{text}</ErrorMessageWrapper>
     )

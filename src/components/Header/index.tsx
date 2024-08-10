@@ -3,7 +3,7 @@ import styled, { ThemeProvider } from "styled-components";
 import { Icons } from "./Icons";
 import { theme } from "@/styles/theme";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import { usePathname } from "next/navigation";
 
@@ -175,6 +175,18 @@ export function Header() {
     setActivePage(path);
   };
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (subMenuRef.current && event.target instanceof Node && !subMenuRef.current.contains(event.target)) {
+      setMenu(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside, true);
+    return () => {
+      document.removeEventListener('click', handleClickOutside, true);
+    };
+  }, []);
   return (
     <ThemeProvider theme={theme}>
       <HeaderWrapper>

@@ -1,4 +1,5 @@
 import { Equipamento, FornecedorEquipamentos } from "@/models/Equipamento";
+import { isDescriptionLengthMore } from "@/utils/descriptionValidatador";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(){
@@ -24,6 +25,10 @@ export async function POST(req: NextRequest){
             localizacao.length <= 0
         ){
             return NextResponse.json({status: 'error', message: 'Não pode haver campos obrigatórios vazios'}, {status: 400})
+        }
+
+        if(isDescriptionLengthMore(observacoes)){
+            return NextResponse.json({status: 'error', message: 'Não ultrapasse os 255 caracteres nas observações'}, {status: 400});
         }
 
         const createEquipamento = await Equipamento.create({

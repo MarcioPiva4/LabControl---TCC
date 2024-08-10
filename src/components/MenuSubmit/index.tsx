@@ -1,7 +1,9 @@
 "use client";
 import { theme } from "@/styles/theme";
+import { scrollTop } from "@/utils/scrollTop";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import styled, { ThemeProvider } from "styled-components";
 
 const Overlay = styled.div`
@@ -69,13 +71,27 @@ const MenuWrapper = styled.div`
 
 export default function MenuSubmit({ setSucess, href, link }: {setSucess?: any; href?: string; link?: boolean;}){
   const router = useRouter();
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
     return (
       <ThemeProvider theme={theme}>
         <Overlay>
           <MenuWrapper>
             <div>
               <h2>Cadastrar novamente?</h2>
-              <button type="reset"  onClick={() => link ? router.push(href as string) : setTimeout(() => setSucess(false), 100)}>SIM</button>
+              <button
+                type="reset"
+                onClick={() =>
+                  link
+                    ? router.push(href as string)
+                    : setTimeout(() => setSucess(false), 100) && scrollTop()
+                }>
+                SIM
+              </button>
               <button type="button">
                 <Link href={"/"}>NÃO</Link>
               </button>

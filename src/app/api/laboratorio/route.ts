@@ -1,4 +1,5 @@
 import { Laboratorio } from "@/models/Laboratorio";
+import { isDescriptionLengthMore } from "@/utils/descriptionValidatador";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(){
@@ -25,8 +26,8 @@ export async function POST(req: NextRequest){
             return NextResponse.json({status: 'error', message: 'Não pode haver campos vazios'}, {status: 400})
         }
 
-        if(descricao.toString().length > 255){
-            return NextResponse.json({status: 'error', message: 'Descrição deve ser menor que 255 caracteres'}, {status: 400})
+        if(isDescriptionLengthMore(descricao)){
+            return NextResponse.json({status: 'error', message: 'Não ultrapasse os 255 caracteres na descrição'}, {status: 400});
         }
 
         const createLaboratorio = await Laboratorio.create({
