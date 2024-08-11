@@ -64,7 +64,7 @@ const EquipamentosForm = ({data}: {data: unknown}) => {
                 <Input type="text" label="Número de Série" idInput="numero_serie"></Input>
                 <Input type="text" label="Marca/Modelo" idInput="marca_modelo"></Input>
                 <Input type="text" label="Quantidade" idInput="quantidade"></Input>
-                {fornecedores.data?.map((e: any) => (
+                {fornecedores ?? fornecedores.data?.map((e: any) => (
                     <InputCheckboxWrapper key={e.id}>
                         <Input
                         key={e.id}
