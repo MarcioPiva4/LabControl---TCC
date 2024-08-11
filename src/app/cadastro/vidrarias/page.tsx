@@ -4,7 +4,7 @@ import Section from "@/components/Section";
 async function getData() {
     try {
         const response = await fetch('https://lab-control-g8wb7u7w7-marciop457s-projects.vercel.app/api/fornecedor');
-        const text = await response.text();
+        const text = await response.json();
 
         if (response.ok) {
             try {
