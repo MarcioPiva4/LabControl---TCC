@@ -1,19 +1,27 @@
-import Button from "@/components/Button";
-import DefaultForm from "@/components/DefaultForm";
 import EquipamentosForm from "@/components/Forms/EquipamentosForm";
-import Input from "@/components/Input";
 import Section from "@/components/Section";
-import TextArea from "@/components/TextArea/index";
 
 async function getData() {
-    const response = await fetch('https://lab-control-tcc-git-devlopment-marciop457s-projects.vercel.app/api/fornecedor');
-    if(response.ok){
-        return await response.json();
-    } else {
-        return console.error("ocorreu um erro");
+    try {
+        const response = await fetch('https://lab-control-tcc-git-devlopment-marciop457s-projects.vercel.app/api/fornecedor');
+        const text = await response.text();
+
+        if (response.ok) {
+            try {
+                return JSON.parse(text);
+            } catch (error) {
+                console.error('Failed to parse JSON:', error);
+                return null;
+            }
+        } else {
+            console.error('HTTP Error:', response.status, response.statusText);
+            return null;
+        }
+    } catch (error) {
+        console.error('Fetch error:', error);
+        return null;
     }
 }
-
 export default async function Equipamentos(){
     const data = await getData();
     return(

@@ -2,12 +2,24 @@ import AgenteReajenteForm from "@/components/Forms/AgenteReajenteForm";
 import Section from "@/components/Section";
 
 async function getData() {
-    const response = await fetch('https://lab-control-tcc-git-devlopment-marciop457s-projects.vercel.app/api/fornecedor');
+    try {
+        const response = await fetch('https://lab-control-tcc-git-devlopment-marciop457s-projects.vercel.app/api/fornecedor');
+        const text = await response.text();
 
-    if(response.ok){
-        return await response.json();
-    } else {
-        return console.error("ocorreu um erro");
+        if (response.ok) {
+            try {
+                return JSON.parse(text);
+            } catch (error) {
+                console.error('Failed to parse JSON:', error);
+                return null;
+            }
+        } else {
+            console.error('HTTP Error:', response.status, response.statusText);
+            return null;
+        }
+    } catch (error) {
+        console.error('Fetch error:', error);
+        return null;
     }
 }
 
