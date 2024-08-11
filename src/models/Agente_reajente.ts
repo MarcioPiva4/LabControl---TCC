@@ -94,7 +94,7 @@ AgenteReajente.belongsToMany(Fornecedor, {
     as: 'fornecedores'
 });
 
-AgenteReajente.sync({alter: true});
-FornecedorAgenteReajente.sync({alter: true});
+// AgenteReajente.sync({alter: true});
+// FornecedorAgenteReajente.sync({alter: true});
 
 export { AgenteReajente, FornecedorAgenteReajente };

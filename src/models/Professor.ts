@@ -26,6 +26,6 @@ const Professor = db.define('professores', {
     }
 });
 
-Professor.sync({alter: true});
+// Professor.sync({alter: true});
 
 export { Professor };
