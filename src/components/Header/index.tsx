@@ -169,6 +169,7 @@ export function Header() {
   const [menu, setMenu] = useState<boolean>(false);
   const [activePage, setActivePage] = useState<string>(pathName);
   const subMenuRef = useRef<HTMLDivElement>(null);
+  const iconMenu = useRef<HTMLLIElement>(null);
 
   const handleLinkClick = (path: string) => {
     setMenu(false);
@@ -176,7 +177,12 @@ export function Header() {
   };
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (subMenuRef.current && event.target instanceof Node && !subMenuRef.current.contains(event.target)) {
+    if (
+      subMenuRef.current &&
+      !subMenuRef.current.contains(event.target as Node) &&
+      iconMenu.current &&
+      !iconMenu.current.contains(event.target as Node)
+    ) {
       setMenu(false);
     }
   };
@@ -193,7 +199,7 @@ export function Header() {
         <div>
           <nav>
             <ul>
-              <Li $active={menu} onClick={() => setMenu(!menu)}>
+              <Li $active={menu} onClick={() => setMenu(!menu)} ref={iconMenu}>
                 <p>Cadastro</p>
                 <Icons icon="cadastro" />
               </Li>

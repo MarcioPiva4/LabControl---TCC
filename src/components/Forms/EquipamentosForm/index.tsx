@@ -77,7 +77,7 @@ const EquipamentosForm = ({data}: {data: unknown}) => {
                 ))}
                 <Input type="text" label="Preço de Compra" idInput="preco_compra"></Input>
                 <Input type="text" label="Localização" idInput="localizacao"></Input>
-                <TextArea labelText="Observações adicionais" id="observacoes"></TextArea>
+                <TextArea labelText="Observações adicionais" id="observacoes" length></TextArea>
                 {submiting ? <Loader></Loader> : null}
                 <Button type="submit" is="isNotTransparent">CADASTRAR</Button>
                 {sucess && <MenuSubmit setSucess={setSucess}></MenuSubmit>}

@@ -157,7 +157,7 @@ const AgenteReajenteForm = ({data}: {data: unknown}) => {
                         },
                     ]}></Input>
                 <Input type="text" label="Armazenamento recomendado" idInput={'armazenamento_recomendado'}></Input>
-                <TextArea labelText="Descrição" id="observacoes"></TextArea>
+                <TextArea labelText="Descrição" id="observacoes" length></TextArea>
                 {submiting ? <Loader></Loader> : null}
                 <Button type="submit" is="isNotTransparent">CADASTRAR</Button>
                 {sucess && <MenuSubmit setSucess={setSucess}></MenuSubmit>}

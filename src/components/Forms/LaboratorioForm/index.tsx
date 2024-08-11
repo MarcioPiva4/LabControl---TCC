@@ -51,7 +51,7 @@ const LaboratorioForm = () => {
                 <Input type="text" label="Bloco" idInput="bloco"></Input>
                 <Input type="text" label="Sala"  idInput="sala"></Input>
                 <Input type="text" label="Responsável" idInput="responsavel"></Input>
-                <TextArea labelText="Descrição" id="descricao"></TextArea>
+                <TextArea labelText="Descrição" id="descricao" length></TextArea>
                 {submiting ? <Loader></Loader> : null}
                 <Button type="submit" is="isNotTransparent">CADASTRAR</Button>
                 {sucess && <MenuSubmit setSucess={setSucess}></MenuSubmit>}
