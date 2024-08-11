@@ -112,7 +112,7 @@ const VidrariasForm = ({data}: {data: unknown}) => {
                     ]}></Input>
                 <Input type="text" label="Material" idInput="material"></Input>
                 <Input type="number" label="Quantidade" idInput="quantidade" ></Input>
-                {fornecedores ?? fornecedores.data?.map((e: any) => (
+                {fornecedores && fornecedores.data?.map((e: any) => (
                     <InputCheckboxWrapper key={e.id}>
                         <Input
                         key={e.id}

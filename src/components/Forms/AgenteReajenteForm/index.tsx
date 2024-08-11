@@ -81,7 +81,7 @@ const AgenteReajenteForm = ({data}: {data: unknown}) => {
                         },
                     ]} ></Input>
                 <Input type="text" label="Número CAS (Chemical Abstracts Service)" idInput={'cas'}></Input>
-                {fornecedores ?? fornecedores.data?.map((e: any) => (
+                {fornecedores && fornecedores.data?.map((e: any) => (
                     <InputCheckboxWrapper key={e.id}>
                         <Input
                         key={e.id}

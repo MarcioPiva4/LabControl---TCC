@@ -6,7 +6,7 @@ async function getData() {
     return await response.json();
 }
 
-export default async function Equipamentos(){
+export default async function Vidrarias(){
     const data = await getData();
     return(
         <Section title="Cadastre uma Vidraria" bottom>
