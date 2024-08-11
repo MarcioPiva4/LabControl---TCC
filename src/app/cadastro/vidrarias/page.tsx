@@ -3,7 +3,7 @@ import Section from "@/components/Section";
 
 async function getData() {
     try {
-        const response = await fetch('https://lab-control-tcc-git-devlopment-marciop457s-projects.vercel.app/api/fornecedor');
+        const response = await fetch('https://lab-control-g8wb7u7w7-marciop457s-projects.vercel.app/api/fornecedor');
         const text = await response.text();
 
         if (response.ok) {
