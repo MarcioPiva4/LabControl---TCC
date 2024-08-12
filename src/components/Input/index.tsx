@@ -16,7 +16,7 @@ interface PropInput {
   label?: string;
   idInput?: string;
   placeHolder?: string;
-  type: "text" | "number" | "search" | "email" | "hidden" | "date" | "checkbox" ;
+  type: "text" | "number" | "search" | "email" | "hidden" | "date" | "checkbox"| "time" ;
   selectAside?: boolean;
   optionsFakeSelect?: Array<OptionType>;
   icon?: boolean;

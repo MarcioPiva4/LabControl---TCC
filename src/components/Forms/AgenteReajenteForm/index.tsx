@@ -76,7 +76,7 @@ const AgenteReajenteForm = ({data}: {data: unknown}) => {
                             id: 1,
                             nome: "Gramas por moleculas (g/mol)",
                             abr: "g/mol",
-                            active: false,
+                            active: true,
                             value: "g/mol"
                         },
                     ]} ></Input>
@@ -100,7 +100,7 @@ const AgenteReajenteForm = ({data}: {data: unknown}) => {
                             id: 1,
                             nome: "Gramas por Litro (g/L)",
                             abr: "g/l",
-                            active: false,
+                            active: true,
                             value: "g/l"
                         },
                         {
@@ -117,7 +117,7 @@ const AgenteReajenteForm = ({data}: {data: unknown}) => {
                             id: 1,
                             nome: "Gramas (g)",
                             abr: "g",
-                            active: false,
+                            active: true,
                             value: "g",
                         },
                         {
