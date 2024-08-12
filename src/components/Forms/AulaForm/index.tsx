@@ -60,15 +60,10 @@ const AulaForm = () => {
             <Select id="laboratorio" selectLabel="Laboratório" options={[{name: 'matematica', id: '1'}, {name: 'portugues', id: '2'}, {name: 'geografia', id: '3'}, {name: 'euzemar', id: '4'}]}></Select>
             <InputBoxSelectLink name="Equipamentos" href={ids ? `/cadastro/aula/equipamentos/${ids.map(e => e)}` : "/cadastro/aula/equipamentos"}></InputBoxSelectLink>
             <Input type="text" label="Tópico da Aula " idInput="topicoaula"></Input>
-            <div>
-                <Input type="date"></Input>
-                <Input type="time"></Input>
-            </div>
-            <div>
-                <Input type="date"></Input>
-                <Input type="time"></Input>
-            </div>
-            <Input type="text" label="Data de aula" idInput="dataaula"></Input>
+            <Input type="time" label="Horário de inicio"></Input>
+            <Input type="time" label="Horário de finalização"></Input>
+            <Input type="date" label="Data de aula" idInput="dataaula"></Input>
+            <TextArea labelText="Observações" id="observacoes" length></TextArea>
             {submiting ? <Loader></Loader> : null}
             <Button type="submit" is="isNotTransparent">CADASTRAR</Button>
             {sucess && <MenuSubmit setSucess={setSucess}></MenuSubmit>}
