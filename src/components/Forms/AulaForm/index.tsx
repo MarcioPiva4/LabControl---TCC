@@ -55,9 +55,9 @@ const AulaForm = () => {
     return (
         <DefaultForm onSubmit={handleSubmit}>
             {error.error && <ErrorMessage text={error.message}></ErrorMessage>}
-            <Select id="materia" options={[{name: 'matematica', id: '1'}, {name: 'portugues', id: '2'}, {name: 'geografia', id: '3'}, {name: 'euzemar', id: '4'}]} selectLabel="Matérias"></Select>
-            <Select id="professor" selectLabel="Professor (a)" options={[{name: 'matematica', id: '1'}, {name: 'portugues', id: '2'}, {name: 'geografia', id: '3'}, {name: 'euzemar', id: '4'}]}></Select>
-            <Select id="laboratorio" selectLabel="Laboratório" options={[{name: 'matematica', id: '1'}, {name: 'portugues', id: '2'}, {name: 'geografia', id: '3'}, {name: 'euzemar', id: '4'}]}></Select>
+            <Select id="materia" options={[{name: '', id: ''}, {name: 'matematica', id: '1'}, {name: 'portugues', id: '2'}, {name: 'geografia', id: '3'}, {name: 'euzemar', id: '4'}]} selectLabel="Matérias"></Select>
+            <Select id="professor" selectLabel="Professor (a)" options={[{name: '', id: ''},{name: 'matematica', id: '1'}, {name: 'portugues', id: '2'}, {name: 'geografia', id: '3'}, {name: 'euzemar', id: '4'}]}></Select>
+            <Select id="laboratorio" selectLabel="Laboratório" options={[{name: '', id: ''},{name: 'matematica', id: '1'}, {name: 'portugues', id: '2'}, {name: 'geografia', id: '3'}, {name: 'euzemar', id: '4'}]}></Select>
             <InputBoxSelectLink name="Equipamentos" href={ids ? `/cadastro/aula/equipamentos/${ids.map(e => e)}` : "/cadastro/aula/equipamentos"}></InputBoxSelectLink>
             <Input type="text" label="Tópico da Aula " idInput="topicoaula"></Input>
             <Input type="time" label="Horário de inicio"></Input>
