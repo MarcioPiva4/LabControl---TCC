@@ -31,7 +31,7 @@ const AulaForm = () => {
         const data = Object.fromEntries(formData.entries());
 
         try {
-            const response = await fetch('/api/laboratorio', {
+            const response = await fetch('/api/aula', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -59,10 +59,10 @@ const AulaForm = () => {
             <Select id="professor" selectLabel="Professor (a)" options={[{name: '', id: ''},{name: 'matematica', id: '1'}, {name: 'portugues', id: '2'}, {name: 'geografia', id: '3'}, {name: 'euzemar', id: '4'}]}></Select>
             <Select id="laboratorio" selectLabel="Laboratório" options={[{name: '', id: ''},{name: 'matematica', id: '1'}, {name: 'portugues', id: '2'}, {name: 'geografia', id: '3'}, {name: 'euzemar', id: '4'}]}></Select>
             <InputBoxSelectLink name="Equipamentos" href={ids ? `/cadastro/aula/equipamentos/${ids.map(e => e)}` : "/cadastro/aula/equipamentos"}></InputBoxSelectLink>
-            <Input type="text" label="Tópico da Aula " idInput="topicoaula"></Input>
-            <Input type="time" label="Horário de inicio"></Input>
-            <Input type="time" label="Horário de finalização"></Input>
-            <Input type="date" label="Data de aula" idInput="dataaula"></Input>
+            <Input type="text" label="Tópico da Aula" idInput="topico_aula"></Input>
+            <Input type="time" label="Horário de inicio" idInput="horario_inicio"></Input>
+            <Input type="time" label="Horário de finalização" idInput="horario_finalizacao"></Input>
+            <Input type="date" label="Data de aula" idInput="data"></Input>
             <TextArea labelText="Observações" id="observacoes" length></TextArea>
             {submiting ? <Loader></Loader> : null}
             <Button type="submit" is="isNotTransparent">CADASTRAR</Button>
