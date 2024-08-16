@@ -10,7 +10,7 @@ import MenuSubmit from "@/components/MenuSubmit";
 import Select from "@/components/Select";
 import { InputBoxSelectLink } from "@/components/InputBoxSelect";
 
-const AulaForm = () => {
+const AulaForm = ({materias, professor, laboratorio}: {materias: any; professor: any; laboratorio: any}) => {
     const [ids, setIds] = useState<number[]>();
     useEffect(() => {
         const idsEquipamentos = localStorage.getItem('equipamentos')
@@ -55,9 +55,9 @@ const AulaForm = () => {
     return (
         <DefaultForm onSubmit={handleSubmit}>
             {error.error && <ErrorMessage text={error.message}></ErrorMessage>}
-            <Select id="materia" options={[{name: '', id: ''}, {name: 'matematica', id: '1'}, {name: 'portugues', id: '2'}, {name: 'geografia', id: '3'}, {name: 'euzemar', id: '4'}]} selectLabel="Matérias"></Select>
-            <Select id="professor" selectLabel="Professor (a)" options={[{name: '', id: ''},{name: 'matematica', id: '1'}, {name: 'portugues', id: '2'}, {name: 'geografia', id: '3'}, {name: 'euzemar', id: '4'}]}></Select>
-            <Select id="laboratorio" selectLabel="Laboratório" options={[{name: '', id: ''},{name: 'matematica', id: '1'}, {name: 'portugues', id: '2'}, {name: 'geografia', id: '3'}, {name: 'euzemar', id: '4'}]}></Select>
+            <Select id="materia" options={materias} selectLabel="Matérias"></Select>
+            <Select id="professor" selectLabel="Professor (a)" options={laboratorio}></Select>
+            <Select id="laboratorio" selectLabel="Laboratório" options={professor}></Select>
             <InputBoxSelectLink name="Equipamentos" href={ids ? `/cadastro/aula/equipamentos/${ids.map(e => e)}` : "/cadastro/aula/equipamentos"}></InputBoxSelectLink>
             <Input type="text" label="Tópico da Aula" idInput="topico_aula"></Input>
             <Input type="time" label="Horário de inicio" idInput="horario_inicio"></Input>

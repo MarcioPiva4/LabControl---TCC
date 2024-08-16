@@ -2,7 +2,7 @@ import { theme } from "@/styles/theme";
 import styled, { ThemeProvider } from "styled-components";
 
 interface PropSelect {
-    options?: Array<{name: string; id: string}>;
+    options?: Array<{nome: string; id: string}>;
     id: string;
     selectLabel: string;
     onChange?: (e: React.ChangeEvent<any>) => void;
@@ -37,7 +37,7 @@ export default function Select({options, id, selectLabel, value, onChange}: Prop
             <Label>{selectLabel}</Label>
             <SelectWrapper id={id} name={id} value={value} onChange={onChange}>
             {options?.map((e) => (
-              <option key={e.name} value={e.id}>{e.name}</option>
+              <option key={e.nome} value={e.id}>{e.nome}</option>
             ))}
             </SelectWrapper>
           </ThemeProvider>
