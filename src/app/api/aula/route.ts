@@ -40,26 +40,22 @@ export async function POST(req: NextRequest){
             observacoes,
         }) as any;
 
-        await Promise.all(id_professor.map(async (professorId: number) => {
-            await ProfessorAula.create({
-                id_professor: professorId,
-                id_aula: createAula.id
-            });
-        }));
+        await ProfessorAula.create({
+            id_professor: id_professor,
+            id_aula: createAula.id
+        });
 
-        await Promise.all(id_laboratorio.map(async (laboratorioId: number) => {
-            await LaboratorioAula.create({
-                id_professor: laboratorioId,
-                id_aula: createAula.id
-            });
-        }));
 
-        await Promise.all(id_materia.map(async (materiaId: number) => {
-            await MateriaAula.create({
-                id_professor: materiaId,
-                id_aula: createAula.id
-            });
-        }));
+        await LaboratorioAula.create({
+            id_professor: id_laboratorio,
+            id_aula: createAula.id
+        });
+
+
+        await MateriaAula.create({
+            id_professor: id_materia,
+            id_aula: createAula.id
+        });
 
         return NextResponse.json({status: 'sucess', message: 'Aula criado com sucesso'}, {status: 201})
         
