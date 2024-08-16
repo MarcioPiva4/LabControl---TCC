@@ -1,4 +1,4 @@
-import { Aula } from "@/models/Aula";
+import { Aula, LaboratorioAula, MateriaAula, ProfessorAula } from "@/models/Aula";
 import { isValidateDate } from "@/utils/dateValidator";
 import { isDescriptionLengthMore } from "@/utils/descriptionValidatador";
 import { NextResponse, NextRequest } from "next/server";
@@ -14,7 +14,7 @@ export async function GET(){
 
 export async function POST(req: NextRequest){
     try{
-        const { topico_aula, horario_inicio, horario_finalizacao, data, observacoes } = await req.json() as any;
+        const { topico_aula, horario_inicio, horario_finalizacao, data, observacoes, id_laboratorio, id_professor, id_materia } = await req.json() as any;
 
         if(topico_aula.toString().length <= 0 ||
             horario_inicio.toString().length <= 0 ||
@@ -40,12 +40,26 @@ export async function POST(req: NextRequest){
             observacoes,
         }) as any;
 
-        /*await Promise.all(id_fornecedor.map(async (fornecedorId: number) => {
-            await FornecedorEquipamentos.create({
-                id_fornecedor: fornecedorId,
-                id_equipamentos: createEquipamento.id
+        await Promise.all(id_professor.map(async (professorId: number) => {
+            await ProfessorAula.create({
+                id_professor: professorId,
+                id_aula: createAula.id
             });
-        }));*/
+        }));
+
+        await Promise.all(id_laboratorio.map(async (laboratorioId: number) => {
+            await LaboratorioAula.create({
+                id_professor: laboratorioId,
+                id_aula: createAula.id
+            });
+        }));
+
+        await Promise.all(id_materia.map(async (materiaId: number) => {
+            await MateriaAula.create({
+                id_professor: materiaId,
+                id_aula: createAula.id
+            });
+        }));
 
         return NextResponse.json({status: 'sucess', message: 'Aula criado com sucesso'}, {status: 201})
         

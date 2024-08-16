@@ -2,7 +2,6 @@
 import { theme } from "@/styles/theme";
 import { useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
-import MenuSubmit from "../MenuSubmit";
 import { useRouter } from "next/navigation";
 
 interface PropButton {
@@ -53,11 +52,9 @@ const ButtonWrapper = styled.button.attrs<{
 `;
 
 export default function Button({ type, children, is, icon, bottom }: PropButton) {
-  const [openMenu, setOpenMenu] = useState<boolean>(false);
   return (
     <ThemeProvider theme={theme}>
         <ButtonWrapper $bottom={bottom} $icon={icon} $is={is === "isNotTransparent"} type={type}>{children}</ButtonWrapper>
-        {openMenu && <MenuSubmit></MenuSubmit>}
     </ThemeProvider>
   );
 }

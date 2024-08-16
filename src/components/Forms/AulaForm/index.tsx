@@ -29,7 +29,6 @@ const AulaForm = ({materias, professor, laboratorio}: {materias: any; professor:
         const form = e.currentTarget;
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
-
         try {
             const response = await fetch('/api/aula', {
                 method: 'POST',
@@ -55,9 +54,9 @@ const AulaForm = ({materias, professor, laboratorio}: {materias: any; professor:
     return (
         <DefaultForm onSubmit={handleSubmit}>
             {error.error && <ErrorMessage text={error.message}></ErrorMessage>}
-            <Select id="materia" options={materias} selectLabel="Matérias"></Select>
-            <Select id="professor" selectLabel="Professor (a)" options={laboratorio}></Select>
-            <Select id="laboratorio" selectLabel="Laboratório" options={professor}></Select>
+            <Select id="id_materia" options={materias} selectLabel="Matérias"></Select>
+            <Select id="id_professor" selectLabel="Professor (a)" options={professor}></Select>
+            <Select id="id_laboratorio" selectLabel="Laboratório" options={laboratorio}></Select>
             <InputBoxSelectLink name="Equipamentos" href={ids ? `/cadastro/aula/equipamentos/${ids.map(e => e)}` : "/cadastro/aula/equipamentos"}></InputBoxSelectLink>
             <Input type="text" label="Tópico da Aula" idInput="topico_aula"></Input>
             <Input type="time" label="Horário de inicio" idInput="horario_inicio"></Input>

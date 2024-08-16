@@ -20,7 +20,6 @@ export async function POST(req: NextRequest){
             andar.toString().length <= 0 ||
             bloco.toString().length <= 0 ||
             sala.toString().length <= 0 ||
-            descricao.toString().length <= 0 ||
             responsavel.toString().length <= 0
         ){
             return NextResponse.json({status: 'error', message: 'Não pode haver campos vazios'}, {status: 400})
