@@ -44,8 +44,12 @@ const Administrador = db.define('administradores', {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
+    senha: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    }
 
 })
 
-//Administrador.sync({alter: true});
+Administrador.sync({alter: true});
 export { Administrador };

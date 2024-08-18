@@ -23,9 +23,13 @@ const Professor = db.define('professores', {
     email: {
         type: DataTypes.STRING,
         allowNull: false,
+    },
+    senha: {
+        type: DataTypes.STRING,
+        allowNull: true,
     }
 });
 
-// Professor.sync({alter: true});
+Professor.sync({alter: true});
 
 export { Professor };

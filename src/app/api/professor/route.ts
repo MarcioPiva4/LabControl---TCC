@@ -16,7 +16,7 @@ export async function GET(){
 
 export async function POST(req: NextRequest){
     try{
-        const { nome, telefone, email, cpf } = await req.json() as any;
+        const { nome, telefone, email, cpf, senha } = await req.json() as any;
 
         if(nome.toString().length <= 0 || cpf.toString().length <= 0 || telefone.toString().length <= 0 || email.toString().length <= 0){
             return NextResponse.json({ status: 'error', message: `Não pode haver campos vazios`, code: 400 }, {status: 400});
@@ -42,7 +42,8 @@ export async function POST(req: NextRequest){
             nome,
             telefone,
             email,
-            cpf
+            cpf,
+            senha,
         });
 
         return NextResponse.json({status: 'sucess', message: 'Professor criado com sucesso'}, {status: 201})

@@ -18,7 +18,7 @@ export async function GET(){
 
 export async function POST(req: NextRequest){
     try{
-        const { nome, email, telefone, data_contratacao, cep, estado, cidade, rua, numero } = await req.json() as any;
+        const { nome, email, telefone, data_contratacao, cep, estado, cidade, rua, numero, senha } = await req.json() as any;
 
         if(nome.toString().length <= 0 || 
         data_contratacao.toString().length <= 0 || 
@@ -66,7 +66,8 @@ export async function POST(req: NextRequest){
             estado,
             cidade,
             rua,
-            numero
+            numero,
+            senha
         });
 
         return NextResponse.json({status: 'sucess', message: 'Administrador criado com sucesso', createAdministrador}, {status: 201})
