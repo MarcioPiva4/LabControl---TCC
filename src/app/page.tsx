@@ -4,7 +4,10 @@ import DefaultForm from "@/components/DefaultForm";
 import { Header } from "@/components/Header";
 import Input from "@/components/Input";
 import Section from "@/components/Section";
-export default function Home() {
+import { getServerSession } from "next-auth";
+export default async function Home() {
+  const session = await getServerSession();
+  console.log(session);
   return (
     <>
     <Header></Header>

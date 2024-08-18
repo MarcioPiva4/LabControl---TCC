@@ -15,6 +15,7 @@ export const GlobalStyle = createGlobalStyle`
     display: flex;
     flex-direction: column;
     font-family: "Inter", sans-serif;
+    overflow-x: hidden;
   }
   main{
     display: flex;

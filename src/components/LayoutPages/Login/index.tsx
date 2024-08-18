@@ -3,9 +3,9 @@
 import Image from "next/image";
 import styled from "styled-components"
 import logo from "../../../../public/logo.png";
-import triangle from "../../../../public/triangle.png";
 import DefaultForm from "@/components/DefaultForm";
 import { useState } from "react";
+import { signIn } from "next-auth/react";
 
 
 const SectionWrappaper = styled.section`
@@ -17,10 +17,7 @@ const SectionWrappaper = styled.section`
         flex-direction: column;
         height: 100%;
         align-items: center;
-        background-image: url(${triangle.src});
-        background-repeat: no-repeat;
-        background-position: bottom;
-        background-size: 100%;
+        position: relative;
 
         &__morebuttons{
             display: flex;
@@ -153,6 +150,20 @@ const SectionWrappaper = styled.section`
 export default function LoginLayout(){
     const [valueEmail, setValueEmail] = useState('');
     const [valuePassword, setValuePassword] = useState('');
+
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>){
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const data = {
+            email: formData.get('email'),
+            password: formData.get('password')
+        };
+
+        signIn("credentials", {
+            ...data,
+            callbackUrl: '/'
+        });
+    } 
     return(
         <SectionWrappaper>
             <div className="login">
@@ -163,15 +174,15 @@ export default function LoginLayout(){
 
                 <div className="login__content">
                     <h2>Login</h2>
-                    <DefaultForm>
+                    <DefaultForm onSubmit={e => handleSubmit(e)}>
                         <label className={valueEmail.length >= 1  ? 'active' : ''}>
                             <span>Email</span>
-                            <input type="email" onChange={(e) => setValueEmail(e.target.value)} value={valueEmail}></input>
+                            <input type="email" onChange={(e) => setValueEmail(e.target.value)} value={valueEmail} name="email"></input>
                         </label>
 
                         <label className={valuePassword.length >= 1  ? 'active' : ''}>
                             <span>Senha</span>
-                            <input type="text" onChange={(e) => setValuePassword(e.target.value)} value={valuePassword}></input>
+                            <input type="password" onChange={(e) => setValuePassword(e.target.value)} value={valuePassword} name="password"></input>
                         </label>
                         <button type="submit">Entrar</button>
                     </DefaultForm>
