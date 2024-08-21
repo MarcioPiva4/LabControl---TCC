@@ -19,6 +19,28 @@ const SectionWrappaper = styled.section`
         align-items: center;
         position: relative;
 
+        &::after{
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 200px;
+            bottom: 0;
+            background-color: #041833;
+            z-index: -1;
+        }
+
+        .background {
+            position: absolute;
+            z-index: -1;
+            top: 23%;
+            width: 100%;
+            height: auto;
+            svg{
+                height: 100%;
+            }
+        }
+
+
         &__morebuttons{
             display: flex;
             justify-content: center;
@@ -170,8 +192,11 @@ export default function LoginLayout(){
                 <div>
                     <Image src={logo} alt="logo da labcontrol"></Image>
                 </div>
-
-
+                <div className="background">
+                    <svg viewBox="0 0 360 350" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fillRule="evenodd" clipRule="evenodd" d="M8.69437 146.346C4.44282 150.255 1.45197 155.267 0 160.748V350H360V168.429C360 160.036 356.484 152.027 350.306 146.346L199.806 7.96216C188.326 -2.59314 170.674 -2.59314 159.194 7.96216L8.69437 146.346Z" fill="#041833"/>
+                    </svg>
+                </div>
                 <div className="login__content">
                     <h2>Login</h2>
                     <DefaultForm onSubmit={e => handleSubmit(e)}>
