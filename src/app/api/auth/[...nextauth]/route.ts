@@ -1,10 +1,9 @@
-import { Administrador } from "@/models/Administrador";
-import { Professor } from "@/models/Professor";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { Administrador } from "@/models/Administrador";
+import { Professor } from "@/models/Professor";
 
-// Extend the default session and JWT types
-declare module "next-auth" {
+
   interface Session {
     user: {
       id: string;
@@ -19,9 +18,9 @@ declare module "next-auth" {
     id: string;
     role: string;
   }
-}
 
-const handler = NextAuth({
+
+export const authOptions = {
   pages: {
     signIn: "/login",
   },
@@ -32,20 +31,12 @@ const handler = NextAuth({
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         const userEmailAdministrador = await Administrador.findOne({
-          where: {
-            email: credentials?.email,
-          },
+          where: { email: credentials?.email },
         }) as any;
 
-        const userPasswordAdministrador = userEmailAdministrador ? await Administrador.findOne({
-          where: {
-            senha: credentials?.password,
-          },
-        }) as any : null;
-
-        if (userEmailAdministrador && userPasswordAdministrador) {
+        if (userEmailAdministrador && userEmailAdministrador.senha === credentials?.password) {
           return {
             id: userEmailAdministrador.id,
             name: userEmailAdministrador.nome,
@@ -55,18 +46,10 @@ const handler = NextAuth({
         }
 
         const userEmailProfessor = await Professor.findOne({
-          where: {
-            email: credentials?.email,
-          },
+          where: { email: credentials?.email },
         }) as any;
 
-        const userPasswordProfessor = userEmailProfessor ? await Professor.findOne({
-          where: {
-            senha: credentials?.password,
-          },
-        }) as any : null;
-
-        if (userEmailProfessor && userPasswordProfessor) {
+        if (userEmailProfessor && userEmailProfessor.senha === credentials?.password) {
           return {
             id: userEmailProfessor.id,
             name: userEmailProfessor.nome,
@@ -79,6 +62,22 @@ const handler = NextAuth({
       },
     }),
   ],
-});
+  callbacks: {
+    async jwt({ token, user }: any) {
+      if (user) {
+        token.id = user.id;
+        token.role = user.role;
+      }
+      return token;
+    },
+    async session({ session, token }: any) {
+      if (token) {
+        session.user.id = token.id as string;
+        session.user.role = token.role as string;
+      }
+      return session;
+    },
+  },
+};
 
-export { handler as GET, handler as POST };
+export default NextAuth(authOptions);

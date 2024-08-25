@@ -164,13 +164,12 @@ const SubMenu = styled.aside`
   }
 `;
 
-export function Header() {
+export function Header( { session }: { session?: any }) {
   const pathName = usePathname();
   const [menu, setMenu] = useState<boolean>(false);
   const [activePage, setActivePage] = useState<string>(pathName);
   const subMenuRef = useRef<HTMLDivElement>(null);
   const iconMenu = useRef<HTMLLIElement>(null);
-
   const handleLinkClick = (path: string) => {
     setMenu(false);
     setActivePage(path);
@@ -204,7 +203,9 @@ export function Header() {
                 <Icons icon="cadastro" />
               </Li>
               <Li $active={activePage === "/manutencao"}>
-                <Link href={"/manutencao"} onClick={() => handleLinkClick("/manutencao")}>
+                <Link
+                  href={"/manutencao"}
+                  onClick={() => handleLinkClick("/manutencao")}>
                   <p>Manutenção</p>
                   <Icons icon="manutencao" />
                 </Link>
@@ -216,13 +217,17 @@ export function Header() {
                 </Link>
               </Li>
               <Li $active={activePage === "/baixa-de-aulas"}>
-                <Link href={"/baixa-de-aulas"} onClick={() => handleLinkClick("/baixa-de-aulas")}>
+                <Link
+                  href={"/baixa-de-aulas"}
+                  onClick={() => handleLinkClick("/baixa-de-aulas")}>
                   <p>Baixa de aulas</p>
                   <Icons icon="baixaAulas" />
                 </Link>
               </Li>
               <Li $active={activePage === "/relatorios"}>
-                <Link href={"/relatorios"} onClick={() => handleLinkClick("/relatorios")}>
+                <Link
+                  href={"/relatorios"}
+                  onClick={() => handleLinkClick("/relatorios")}>
                   <p>Relatorios</p>
                   <Icons icon="relatorios" />
                 </Link>
@@ -236,52 +241,75 @@ export function Header() {
         timeout={500}
         in={menu}
         unmountOnExit
-        nodeRef={subMenuRef}
-      >
+        nodeRef={subMenuRef}>
         <SubMenu ref={subMenuRef}>
           <ul>
+            {session.user.role != "prof" && (
+              <li>
+                <Link
+                  href={"/cadastro/administrador"}
+                  onClick={() => handleLinkClick("/cadastro/administrador")}>
+                  <span>Administrador</span>
+                </Link>
+              </li>
+            )}
             <li>
-              <Link href={"/cadastro/administrador"} onClick={() => handleLinkClick("/cadastro/administrador")}>
-                <span>Administrador</span>
-              </Link>
-            </li>
-            <li>
-              <Link href={"/cadastro/agente-reagente"} onClick={() => handleLinkClick("/cadastro/agente-reagente")}>
+              <Link
+                href={"/cadastro/agente-reagente"}
+                onClick={() => handleLinkClick("/cadastro/agente-reagente")}>
                 <span>Agentes/Reagentes</span>
               </Link>
             </li>
             <li>
-              <Link href={"/cadastro/aula"} onClick={() => handleLinkClick("/cadastro/aula")}>
+              <Link
+                href={"/cadastro/aula"}
+                onClick={() => handleLinkClick("/cadastro/aula")}>
                 <span>Aulas</span>
               </Link>
             </li>
             <li>
-              <Link href={"/cadastro/equipamentos"} onClick={() => handleLinkClick("/cadastro/equipamentos")}>
+              <Link
+                href={"/cadastro/equipamentos"}
+                onClick={() => handleLinkClick("/cadastro/equipamentos")}>
                 <span>Equipamentos</span>
               </Link>
             </li>
+            {session.user.role != "prof" && (
+              <li>
+                <Link
+                  href={"/cadastro/fornecedor"}
+                  onClick={() => handleLinkClick("/cadastro/fornecedor")}>
+                  <span>Fornecedor</span>
+                </Link>
+              </li>
+            )}
             <li>
-              <Link href={"/cadastro/fornecedor"} onClick={() => handleLinkClick("/cadastro/fornecedor")}>
-                <span>Fornecedor</span>
-              </Link>
-            </li>
-            <li>
-              <Link href={"/cadastro/laboratorio"} onClick={() => handleLinkClick("/cadastro/laboratorio")}>
+              <Link
+                href={"/cadastro/laboratorio"}
+                onClick={() => handleLinkClick("/cadastro/laboratorio")}>
                 <span>Laboratorio</span>
               </Link>
             </li>
             <li>
-              <Link href={"/cadastro/materias"} onClick={() => handleLinkClick("/cadastro/materias")}>
+              <Link
+                href={"/cadastro/materias"}
+                onClick={() => handleLinkClick("/cadastro/materias")}>
                 <span>Matérias</span>
               </Link>
             </li>
+            {session.user.role != "prof" && (
+              <li>
+                <Link
+                  href={"/cadastro/professor"}
+                  onClick={() => handleLinkClick("/cadastro/professor")}>
+                  <span>Professor</span>
+                </Link>
+              </li>
+            )}
             <li>
-              <Link href={"/cadastro/professor"} onClick={() => handleLinkClick("/cadastro/professor")}>
-                <span>Professor</span>
-              </Link>
-            </li>
-            <li>
-              <Link href={"/cadastro/vidrarias"} onClick={() => handleLinkClick("/cadastro/vidrarias")}>
+              <Link
+                href={"/cadastro/vidrarias"}
+                onClick={() => handleLinkClick("/cadastro/vidrarias")}>
                 <span>Vidrarias</span>
               </Link>
             </li>
