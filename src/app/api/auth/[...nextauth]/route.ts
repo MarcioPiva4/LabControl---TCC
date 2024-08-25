@@ -3,22 +3,20 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { Administrador } from "@/models/Administrador";
 import { Professor } from "@/models/Professor";
 
-
-  interface Session {
-    user: {
-      id: string;
-      role: string;
-      name?: string | null;
-      email?: string | null;
-      image?: string | null;
-    };
-  }
-
-  interface JWT {
+interface Session {
+  user: {
     id: string;
     role: string;
-  }
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+  };
+}
 
+interface JWT {
+  id: string;
+  role: string;
+}
 
 export const authOptions = {
   pages: {
@@ -80,4 +78,8 @@ export const authOptions = {
   },
 };
 
-export default NextAuth(authOptions);
+// Create a handler function for NextAuth
+const handler = NextAuth(authOptions);
+
+// Export the handler as GET and POST
+export { handler as GET, handler as POST };
