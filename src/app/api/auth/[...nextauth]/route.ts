@@ -78,8 +78,6 @@ export const authOptions = {
   },
 };
 
-// Create a handler function for NextAuth
+//erro em build
 const handler = NextAuth(authOptions);
-
-// Export the handler as GET and POST
 export { handler as GET, handler as POST };

@@ -18,6 +18,7 @@ const SectionWrappaper = styled.section`
         height: 100%;
         align-items: center;
         position: relative;
+        overflow: hidden;
 
         &::after{
             content: '';
