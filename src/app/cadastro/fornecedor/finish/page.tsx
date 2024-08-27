@@ -1,11 +1,13 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
 import FornecedorForm2 from "@/components/Forms/Fornecedor/FornecedorForm2";
 import Section from "@/components/Section";
+import { Session } from "@/types/session";
+import { authOptions } from "@/utils/authOptions";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
 export default async function FornecedorFinish(){
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions) as Session;
   if (session?.user?.role === 'prof') {
       redirect('/')
   }

@@ -4,8 +4,8 @@ import DefaultForm from "@/components/DefaultForm";
 import { Header } from "@/components/Header";
 import Input from "@/components/Input";
 import Section from "@/components/Section";
+import { authOptions } from "@/utils/authOptions";
 import { getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]/route";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);

@@ -1,12 +1,12 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import ProfessorForm from "@/components/Forms/ProfessorForm";
 import Section from "@/components/Section";
+import { Session } from "@/types/session";
+import { authOptions } from "@/utils/authOptions";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { FormEvent } from "react";
 
 export default async function Professor(){
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions) as Session;
     if (session?.user?.role === 'prof') {
         redirect('/')
     }
