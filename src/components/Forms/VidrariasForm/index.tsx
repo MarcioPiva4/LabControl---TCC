@@ -8,6 +8,7 @@ import { Loader } from "@/components/Loader";
 import ErrorMessage from "@/components/ErrorMessage";
 import TextArea from "@/components/TextArea";
 import styled from "styled-components";
+import InputSelectCheckbox from "@/components/InputSelectCheckbox";
 
 const InputCheckboxWrapper = styled.div`
     display: flex;
@@ -112,17 +113,7 @@ const VidrariasForm = ({data}: {data: unknown}) => {
                     ]}></Input>
                 <Input type="text" label="Material" idInput="material"></Input>
                 <Input type="number" label="Quantidade" idInput="quantidade" ></Input>
-                {fornecedores && fornecedores.data?.map((e: any) => (
-                    <InputCheckboxWrapper key={e.id}>
-                        <Input
-                        key={e.id}
-                        type="checkbox"
-                        idInput="id_fornecedor"
-                        value={e.id}
-                        label={e.nome}
-                        />
-                    </InputCheckboxWrapper>
-                ))}
+                {fornecedores && <InputSelectCheckbox id={'id_fornecedor'} values={fornecedores.data}></InputSelectCheckbox>}
                 <Input type="text" label="Preço de Compra" idInput="preco_compra" ></Input>
                 <Input type="text" label="Localização" idInput="localizacao"></Input>
                 <TextArea labelText="Observações adicionais" id="observacoes" length></TextArea>
