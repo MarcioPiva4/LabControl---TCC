@@ -8,6 +8,7 @@ import { Loader } from "@/components/Loader";
 import ErrorMessage from "@/components/ErrorMessage";
 import TextArea from "@/components/TextArea";
 import styled from "styled-components";
+import InputSelectCheckbox from "@/components/InputSelectCheckbox";
 
 const InputCheckboxWrapper = styled.div`
     display: flex;
@@ -64,17 +65,7 @@ const EquipamentosForm = ({data}: {data: unknown}) => {
                 <Input type="text" label="Número de Série" idInput="numero_serie"></Input>
                 <Input type="text" label="Marca/Modelo" idInput="marca_modelo"></Input>
                 <Input type="text" label="Quantidade" idInput="quantidade"></Input>
-                {fornecedores && fornecedores.data?.map((e: any) => (
-                    <InputCheckboxWrapper key={e.id}>
-                        <Input
-                        key={e.id}
-                        type="checkbox"
-                        idInput="id_fornecedor"
-                        value={e.id}
-                        label={e.nome}
-                        />
-                    </InputCheckboxWrapper>
-                ))}
+                {fornecedores && <InputSelectCheckbox id={'id_fornecedor'} values={fornecedores.data} title="Fornecedores"></InputSelectCheckbox>}
                 <Input type="text" label="Preço de Compra" idInput="preco_compra"></Input>
                 <Input type="text" label="Localização" idInput="localizacao"></Input>
                 <TextArea labelText="Observações adicionais" id="observacoes" length></TextArea>

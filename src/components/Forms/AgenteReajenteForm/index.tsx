@@ -8,6 +8,7 @@ import { Loader } from "@/components/Loader";
 import ErrorMessage from "@/components/ErrorMessage";
 import TextArea from "@/components/TextArea";
 import styled from "styled-components";
+import InputSelectCheckbox from "@/components/InputSelectCheckbox";
 
 const InputCheckboxWrapper = styled.div`
     display: flex;
@@ -81,17 +82,7 @@ const AgenteReajenteForm = ({data}: {data: unknown}) => {
                         },
                     ]} ></Input>
                 <Input type="text" label="Número CAS (Chemical Abstracts Service)" idInput={'cas'}></Input>
-                {fornecedores && fornecedores.data?.map((e: any) => (
-                    <InputCheckboxWrapper key={e.id}>
-                        <Input
-                        key={e.id}
-                        type="checkbox"
-                        idInput="id_fornecedor"
-                        value={e.id}
-                        label={e.nome}
-                        />
-                    </InputCheckboxWrapper>
-                ))}
+                {fornecedores && <InputSelectCheckbox id={'id_fornecedor'} values={fornecedores.data} title="Fornecedores"></InputSelectCheckbox>}
                 <Input type="text" label="Data de compra" idInput={'data_compra'}></Input>
                 <Input type="text" label="Data de validade" idInput={'data_validade'}></Input>
                 <Input type="text" selectRef={selectConcentracao} label="Concentração" idInput={'concentracao'} selectAside

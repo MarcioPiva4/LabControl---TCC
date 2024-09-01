@@ -113,7 +113,7 @@ const VidrariasForm = ({data}: {data: unknown}) => {
                     ]}></Input>
                 <Input type="text" label="Material" idInput="material"></Input>
                 <Input type="number" label="Quantidade" idInput="quantidade" ></Input>
-                {fornecedores && <InputSelectCheckbox id={'id_fornecedor'} values={fornecedores.data}></InputSelectCheckbox>}
+                {fornecedores && <InputSelectCheckbox id={'id_fornecedor'} values={fornecedores.data} title="Fornecedores"></InputSelectCheckbox>}
                 <Input type="text" label="Preço de Compra" idInput="preco_compra" ></Input>
                 <Input type="text" label="Localização" idInput="localizacao"></Input>
                 <TextArea labelText="Observações adicionais" id="observacoes" length></TextArea>
