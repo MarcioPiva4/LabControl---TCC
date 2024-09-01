@@ -62,7 +62,7 @@ const AgenteReajente = db.define('agentes_reajentes', {
     },
 });
 
-const FornecedorAgenteReajente = db.define('FornecedorAgentesReajentes', {
+const FornecedorAgenteReajente = db.define('FornecedorReajentes', {
     id_fornecedor: {
         type: DataTypes.INTEGER,
         references: {

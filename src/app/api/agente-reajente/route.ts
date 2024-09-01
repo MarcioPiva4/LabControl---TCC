@@ -51,8 +51,7 @@ export async function POST(req: NextRequest) {
       data_validade.toString().length <= 0 ||
       concentracao.toString().length <= 0 ||
       quantidade.toString().length <= 0 ||
-      armazenamento_recomendado.toString().length <= 0 ||
-      id_fornecedor
+      armazenamento_recomendado.toString().length <= 0
     ) {
       return NextResponse.json(
         { status: "error", message: "Não pode haver campos vazios" },
@@ -84,12 +83,13 @@ export async function POST(req: NextRequest) {
       observacoes,
       id_fornecedor,
     })) as any;
+    FornecedorAgenteReajente.sync();
 
     await Promise.all(
       id_fornecedor.map(async (fornecedorId: number) => {
         await FornecedorAgenteReajente.create({
           id_fornecedor: fornecedorId,
-          id_vidraria: createAgenteReajente.id,
+          id_agente_reajente: createAgenteReajente.id,
         });
       })
     );
