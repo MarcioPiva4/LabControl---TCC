@@ -13,10 +13,9 @@ import { InputBoxSelectLink } from "@/components/InputBoxSelect";
 const AulaForm = ({materias, professor, laboratorio}: {materias: any; professor: any; laboratorio: any}) => {
     const [ids, setIds] = useState<number[]>();
     useEffect(() => {
-        const idsEquipamentos = localStorage.getItem('equipamentos')
+        const idsEquipamentos = localStorage.getItem('equipamentosAula')
         if(idsEquipamentos){
-            const idsEquipamentosFormatted = idsEquipamentos?.replaceAll('"', '').replaceAll('{', '').replaceAll('}', '').split(',');
-            setIds(idsEquipamentosFormatted?.map(e => Number(e.slice(0, 1))));
+            setIds(JSON.parse(idsEquipamentos));
         }
         }
     , []);
@@ -29,6 +28,7 @@ const AulaForm = ({materias, professor, laboratorio}: {materias: any; professor:
         const form = e.currentTarget;
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
+
         try {
             const response = await fetch('/api/aula', {
                 method: 'POST',
@@ -57,7 +57,7 @@ const AulaForm = ({materias, professor, laboratorio}: {materias: any; professor:
             <Select id="id_materia" options={materias} selectLabel="Matérias"></Select>
             <Select id="id_professor" selectLabel="Professor (a)" options={professor}></Select>
             <Select id="id_laboratorio" selectLabel="Laboratório" options={laboratorio}></Select>
-            <InputBoxSelectLink name="Equipamentos" href={ids ? `/cadastro/aula/equipamentos/${ids.map(e => e)}` : "/cadastro/aula/equipamentos"}></InputBoxSelectLink>
+            <InputBoxSelectLink name="Equipamentos" href={ids ? `/cadastro/aula/equipamentos/${ids.map((e: any) => e.id)}` : "/cadastro/aula/equipamentos"}></InputBoxSelectLink>
             <Input type="text" label="Tópico da Aula" idInput="topico_aula"></Input>
             <Input type="time" label="Horário de inicio" idInput="horario_inicio"></Input>
             <Input type="time" label="Horário de finalização" idInput="horario_finalizacao"></Input>

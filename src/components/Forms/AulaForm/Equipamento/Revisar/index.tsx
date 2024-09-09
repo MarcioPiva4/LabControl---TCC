@@ -5,7 +5,7 @@ import Input from "@/components/Input";
 import { InputBoxSelectWithQuntity } from "@/components/InputBoxSelect";
 import Section from "@/components/Section";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 const Adjust = styled.div`
@@ -40,57 +40,60 @@ interface Itens {
 export default function EquipamentoRevisar({ id, equipamentos }: { id: string; equipamentos: any}) {
   const arrayIds = id.replaceAll('%2C', ',').split(',');
   const [data,setData] = useState(equipamentos.data);
-  const itens = data.filter((e: any, i: any) => arrayIds.includes(e.id.toString()));
+  const [itens, setItens] = useState(data.filter((e: any, i: any) => arrayIds.includes(e.id.toString())));
   const router = useRouter();
   const [parsedData, setParsedData] = useState<Itens[]>([]);
-  const [quantities, setQuantities] = useState<{ [key: number]: number | null; }>({});
-  console.log(data)
-  const initialValues: { [key: string]: number | string } = {};
-  itens.forEach((item: any) => {
-    initialValues[item.id.toString()] = item.quantidadeFloat.toString() + item.abr;
-  });
+  const [abr,setAbr] = useState([
+    { id: 1, nome: "Gramas (g)", abr: "g", active: false, value: "g" },
+    { id: 2, nome: "Quilogramas (Kg)", abr: "Kg", active: false, value: "Kg" },
+    { id: 3, nome: "Toneladas (T)", abr: "T", active: false, value: "T" },
+    { id: 4, nome: "Mililitros (ml)", abr: "ml", active: false, value: "ml" },
+    { id: 5, nome: "Litros (L)", abr: "L", active: false, value: "L" },
+    { id: 6, nome: "Unidade (Un)", abr: "Un", active: true, value: "Un" },
+  ]);
 
+  const [teste, setTeste] = useState();
+  const selectRef = useRef(null);
+
+  console.log(selectRef.current);
+  useEffect(() => {
+    setItens((prev: any) => 
+      prev.map((item: any) =>(
+        { ...item, quantidadeAdd: 1, abr }
+       )
+      )
+    );
+  }, [id, abr]);
 
   const handleAddQuantity = (id: number) => {
-    setQuantities((prev) => ({
-      ...prev,
-      [id]: (prev[id] || 0) + 1,
-    }));
-    //formik.setFieldValue(id.toString(), (quantities[id] || 0) + 1);
+    setItens((prev: any) => 
+      prev.map((item: any) =>
+        item.id === id
+          ? { ...item, quantidadeAdd: (item.quantidadeAdd || 0) + 1 }
+          : item
+      )
+    );
   };
-
+  
   const handleSubQuantity = (id: number) => {
-    setQuantities((prev) => ({
-      ...prev,
-      [id]: Math.max((prev[id] || 1) - 1, 0),
-    }));
-    //formik.setFieldValue(id.toString(), Math.max((quantities[id] || 1) - 1, 0));
-  };
-
-  const handleUpdateAbr = (id: number, abrValue: string) => {
-    setData((prevData: any) => {
-      // Encontrar o índice do item com o ID correspondente
-      const index = prevData.findIndex((item: any) => item.id === id);
-  
-      if (index !== -1) {
-        // Criar uma cópia do array de dados
-        const newData = [...prevData];
-  
-        // Atualizar o valor de 'abr' no item específico
-        newData[index] = {
-          ...newData[index],
-          abr: abrValue,
-        };
-  
-        return newData;
-      }
-  
-      // Se o ID não for encontrado, retornar os dados sem modificação
-      return prevData;
-    });
+    setItens((prev: any) => 
+      prev.map((item: any) =>
+        item.id === id
+          ? { ...item, quantidadeAdd: Math.max((item.quantidadeAdd || 0) - 1, 1) }
+          : item
+      )
+    );
   };
   
 
+  const submitForm = () => {
+    //router.push('/cadastro/aula');
+    if(localStorage.getItem('equipamentosAula')){
+      localStorage.removeItem('equipamentosAula')
+    }
+    localStorage.setItem('equipamentosAula', JSON.stringify(itens.map((e: any) =>  ({id: e.id, quantidade: e.quantidadeAdd})  )));
+  }
+  console.log(itens);
   return (
     <>
       {itens.length <= 0 && <h1>Selecione uma opção antes de continuar</h1>}
@@ -101,31 +104,31 @@ export default function EquipamentoRevisar({ id, equipamentos }: { id: string; e
               {itens.map((e: any) => (
                 <div key={e.id}>
                   <InputBoxSelectWithQuntity
-                    name={e.nome}
+                    name={e.equipamento}
                     id={e.id}
                     add
                     sub
                     addQuantity={() => handleAddQuantity(e.id)}
                     subQuantity={() => handleSubQuantity(e.id)}
-                    quantityFloat={e.quantidadeFloat}
+                    quantityFloat={e.quantidadeAdd}
                   ></InputBoxSelectWithQuntity>
                   <Input
                     label="Quantidade"
                     type="number"
                     selectAside
-                    max={e.quantidadeFloat}
-                    min={1}
                     onChange={(event) => {
-                      const value = event.target.value === '' ? null : parseInt(event.target.value);
+                      const newQuantity = parseFloat(event.target.value);
+                      setItens((prev: any) => 
+                        prev.map((item: any) =>
+                          item.id === e.id
+                            ? { ...item, quantidadeAdd: isNaN(newQuantity) ? 1 : newQuantity }
+                            : item
+                        )
+                      );
                     }}
-                    optionsFakeSelect={[
-                      { id: 1, nome: "Gramas (g)", abr: "g", active: false, value: "g" },
-                      { id: 2, nome: "Quilogramas (Kg)", abr: "Kg", active: false, value: "Kg" },
-                      { id: 3, nome: "Toneladas (T)", abr: "T", active: false, value: "T" },
-                      { id: 4, nome: "Mililitros (ml)", abr: "ml", active: false, value: "ml" },
-                      { id: 5, nome: "Litros (L)", abr: "L", active: false, value: "L" },
-                      { id: 6, nome: "Unidade (Un)", abr: "Un", active: true, value: "Un" },
-                    ]}
+                    optionsFakeSelect={e.abr}
+                    value={e.quantidadeAdd ? e.quantidadeAdd : 1}
+                    selectRef={selectRef}
                   />
                 </div>
               ))}
@@ -133,9 +136,9 @@ export default function EquipamentoRevisar({ id, equipamentos }: { id: string; e
                 <ButtonLink type="button" link="link" is="isTransparent" href={`/cadastro/aula/equipamentos/${itens.map((e: any) => e.id)}`}>
                   CANCELAR
                 </ButtonLink>
-                <Button type="submit" is="isNotTransparent">
+                <button onClick={submitForm} type="button">
                   CONFIRMAR
-                </Button>
+                </button>
               </Content>
             </Adjust>
           </DefaultForm>

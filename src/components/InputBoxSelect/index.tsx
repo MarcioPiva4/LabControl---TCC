@@ -103,7 +103,6 @@ interface PropsInputBoxSelectWithQuantity extends PropInputBoxSelect {
 
 export function InputBoxSelectWithQuntity({ name, id, add, sub, addQuantity, subQuantity, quantityFloat }: PropsInputBoxSelectWithQuantity) {
   const [value, setValue] = useState<number>(quantityFloat ?? 1);
-
   const handleAddQuantity = () => {
     setValue(value + 1);
     addQuantity(value + 1);
@@ -167,8 +166,6 @@ export function InputBoxSelectWithQuntity({ name, id, add, sub, addQuantity, sub
     </ThemeProvider>
   );
 }
-
-
 
 interface PropInputBoxSelectLink{
     name: string;

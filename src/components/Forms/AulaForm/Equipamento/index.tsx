@@ -57,7 +57,7 @@ export default function EquipamentosAula({ equipamentos } : any) {
   const selectedIds = selecteds.map((e: any) => e.id).join(',');
 
   return (
-    <Section title="Equipamentos" arrowBefore>
+    <Section title="Equipamentos" arrowBefore href="/cadastro/aula">
       <InputSearch placeholder="pesquise os equipamentos..." id="equipamentosseach"></InputSearch>
       {data.map((e: any, i: any) => ( 
         <InputBoxSelect name={e.equipamento} key={i} id={e.id} activeOption={activeOption} disableOption={disableOption} active={e.active}></InputBoxSelect>
