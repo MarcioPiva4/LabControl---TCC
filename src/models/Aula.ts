@@ -3,6 +3,7 @@ import { DataTypes } from "sequelize";
 import { Materias } from "./Materias";
 import { Professor } from "./Professor";
 import { Laboratorio } from "./Laboratorio";
+import { Equipamento } from "./Equipamento";
 
 const Aula = db.define('aulas', {
     id: {
@@ -127,6 +128,37 @@ Aula.belongsToMany(Laboratorio, {
     foreignKey: 'id_aula',
     otherKey: 'id_laboratorio',
     as: 'laboratorios'
+});
+
+const EquipamentoAula = db.define('EquipamentoAula', {
+    id_equipamento: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: Laboratorio,
+            key: 'id'
+        }
+    },
+    id_aula: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: Aula,
+            key: 'id'
+        }
+    }
+})
+
+Equipamento.belongsToMany(Aula, {
+    through: EquipamentoAula, 
+    foreignKey: 'id_equipamento',
+    otherKey: 'id_aula',
+    as: 'equipamentoAulas',
+});
+
+Aula.belongsToMany(Equipamento, {
+    through: EquipamentoAula,
+    foreignKey: 'id_aula',
+    otherKey: 'id_equipamento',
+    as: 'equipamentos'
 });
 
 Aula.sync();
