@@ -6,7 +6,9 @@ import Section from "@/components/Section";
 import { useState } from "react";
 
 export default function AgenteReajenteAula({ agentesReajentes } : any) {
+  console.log(agentesReajentes)
   const [data,setData] = useState(agentesReajentes.data);
+  console.log(data);
 
   function activeOption(id: number){
     const updatedData = data.map((e: any) => 
@@ -23,8 +25,9 @@ export default function AgenteReajenteAula({ agentesReajentes } : any) {
   }
 
   const selecteds = data.filter((e: any) => e.active);
+  console.log(selecteds);
   const selectedIds = selecteds.map((e: any) => e.id).join(',');
-
+  console.log(selectedIds);
   return (
     <Section title="Agentes/Reajentes" arrowBefore href="/cadastro/aula">
       <InputSearch placeholder="pesquise os agentes/reajentes..." id="agentesreajentesseach"></InputSearch>
