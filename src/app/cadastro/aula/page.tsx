@@ -3,17 +3,17 @@ import Section from "@/components/Section";
 
 
 async function getDataMateria() {
-    const response = await fetch('https://lab-control-4j8ipswkd-marciop457s-projects.vercel.app/api/materia');
+    const response = await fetch('http://localhost:3000/api/materia');
     return await response.json();
 }
 
 async function getDataLaboratorio() {
-    const response = await fetch('https://lab-control-4j8ipswkd-marciop457s-projects.vercel.app/api/laboratorio');
+    const response = await fetch('http://localhost:3000/api/laboratorio');
     return await response.json();
 }
 
 async function getDataProfessor() {
-    const response = await fetch('https://lab-control-4j8ipswkd-marciop457s-projects.vercel.app/api/professor');
+    const response = await fetch('http://localhost:3000/api/professor');
     return await response.json();
 }
 

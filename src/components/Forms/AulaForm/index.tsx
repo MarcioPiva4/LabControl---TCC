@@ -11,13 +11,25 @@ import Select from "@/components/Select";
 import { InputBoxSelectLink } from "@/components/InputBoxSelect";
 
 const AulaForm = ({materias, professor, laboratorio}: {materias: any; professor: any; laboratorio: any}) => {
-    const [ids, setIds] = useState<number[]>();
+    const [idsEquipamentos, setIdsEquipamentos] = useState<number[]>();
+    const [idsVidrarias, setIdsVidrarias] = useState<number[]>();
+    const [idsAgenteReajente, setIdsAgenteReajente] = useState<number[]>();
     useEffect(() => {
-        const idsEquipamentos = localStorage.getItem('equipamentosAula')
-        if(idsEquipamentos){
-            setIds(JSON.parse(idsEquipamentos));
+        const idEquipamentos = localStorage.getItem('equipamentosAula');
+        const idVidrarias = localStorage.getItem('vidrariasAula');
+        const idAgenteReajente = localStorage.getItem('agenteReajenteAula');
+        if(idEquipamentos){
+            setIdsEquipamentos(JSON.parse(idEquipamentos));
         }
+
+        if(idVidrarias){
+            setIdsVidrarias(JSON.parse(idVidrarias));
         }
+
+        if(idAgenteReajente){
+            setIdsAgenteReajente(JSON.parse(idAgenteReajente));
+        }
+    }
     , []);
     const [sucess, setSucess] = useState<null | true>(null);
     const [error, setError] = useState<{error: boolean; message: string}>({ error: false, message: '' });
@@ -27,8 +39,19 @@ const AulaForm = ({materias, professor, laboratorio}: {materias: any; professor:
         setSubmiting(true);
         const form = e.currentTarget;
         const formData = new FormData(form);
-        const data = Object.fromEntries(formData.entries());
-
+        const dataForm = Object.fromEntries(formData.entries());
+        const equipamentos = localStorage.getItem('equipamentosAula');
+        const parsedEquipamentos = equipamentos ? JSON.parse(equipamentos) : null;
+        const vidrarias = localStorage.getItem('vidrariasAula');
+        const parsedVidrarias = vidrarias ? JSON.parse(vidrarias) : null;
+        const agenteReajente = localStorage.getItem('agenteReajenteAula');
+        const parsedAgenteReajente = agenteReajente ? JSON.parse(agenteReajente) : null;
+        const data = {
+            aula: dataForm,
+            equipamentos: parsedEquipamentos,
+            vidrarias: parsedVidrarias,
+            agenteReajente: parsedAgenteReajente
+        }
         try {
             const response = await fetch('/api/aula', {
                 method: 'POST',
@@ -42,6 +65,9 @@ const AulaForm = ({materias, professor, laboratorio}: {materias: any; professor:
             if (response.ok) {
                 setSucess(true);
                 setError({error: false, message: ''});
+                localStorage.removeItem('equipamentosAula')
+                localStorage.removeItem('vidrariasAula')
+                localStorage.removeItem('agenteReajenteAula')
             } else {
                 setError({error: true, message: responseJson.message})
             }
@@ -57,7 +83,9 @@ const AulaForm = ({materias, professor, laboratorio}: {materias: any; professor:
             <Select id="id_materia" options={materias} selectLabel="Matérias"></Select>
             <Select id="id_professor" selectLabel="Professor (a)" options={professor}></Select>
             <Select id="id_laboratorio" selectLabel="Laboratório" options={laboratorio}></Select>
-            <InputBoxSelectLink name="Equipamentos" href={ids ? `/cadastro/aula/equipamentos/${ids.map((e: any) => e.id)}` : "/cadastro/aula/equipamentos"}></InputBoxSelectLink>
+            <InputBoxSelectLink name="Equipamentos" href={idsEquipamentos ? `/cadastro/aula/equipamentos/${idsEquipamentos.map((e: any) => e.id_equipamento)}` : "/cadastro/aula/equipamentos"}></InputBoxSelectLink>
+            <InputBoxSelectLink name="Vidrarias" href={idsVidrarias ? `/cadastro/aula/vidrarias/${idsVidrarias.map((e: any) => e.id_vidrarias)}` : "/cadastro/aula/vidrarias"}></InputBoxSelectLink>
+            <InputBoxSelectLink name="Agente/Reajente" href={idsAgenteReajente ? `/cadastro/aula/agente-reajente/${idsAgenteReajente.map((e: any) => e.id_agenteReajente)}` : "/cadastro/aula/agente-reajente"}></InputBoxSelectLink>
             <Input type="text" label="Tópico da Aula" idInput="topico_aula"></Input>
             <Input type="time" label="Horário de inicio" idInput="horario_inicio"></Input>
             <Input type="time" label="Horário de finalização" idInput="horario_finalizacao"></Input>

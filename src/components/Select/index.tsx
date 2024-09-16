@@ -37,7 +37,7 @@ export default function Select({options, id, selectLabel, value, onChange}: Prop
             <Label>{selectLabel}</Label>
             <SelectWrapper id={id} name={id} value={value} onChange={onChange}>
             {options?.map((e) => (
-              <option key={e.nome} value={e.id}>{e.nome}</option>
+              <option key={e.id} value={e.id}>{e.nome}</option>
             ))}
             </SelectWrapper>
           </ThemeProvider>

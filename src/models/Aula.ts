@@ -4,6 +4,8 @@ import { Materias } from "./Materias";
 import { Professor } from "./Professor";
 import { Laboratorio } from "./Laboratorio";
 import { Equipamento } from "./Equipamento";
+import { Vidrarias } from "./Vidrarias";
+import { AgenteReajente } from "./Agente_reajente";
 
 const Aula = db.define('aulas', {
     id: {
@@ -27,6 +29,11 @@ const Aula = db.define('aulas', {
     data: {
         type: DataTypes.STRING,
         allowNull: false,
+    },
+    status: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: 'in progress'
     },
     observacoes: {
         type: DataTypes.STRING,
@@ -144,6 +151,10 @@ const EquipamentoAula = db.define('EquipamentoAula', {
             model: Aula,
             key: 'id'
         }
+    },
+    quantidade: {
+        type: DataTypes.STRING,
+        allowNull: false,
     }
 })
 
@@ -161,9 +172,82 @@ Aula.belongsToMany(Equipamento, {
     as: 'equipamentos'
 });
 
-Aula.sync();
-MateriaAula.sync();
-ProfessorAula.sync();
-LaboratorioAula.sync();
+const VidrariaAula = db.define('VidrariaAula', {
+    id_vidraria: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: Vidrarias,
+            key: 'id'
+        }
+    },
+    id_aula: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: Aula,
+            key: 'id'
+        }
+    },
+    quantidade: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    }
+})
 
-export { Aula, MateriaAula, ProfessorAula, LaboratorioAula };
+Vidrarias.belongsToMany(Aula, {
+    through: VidrariaAula, 
+    foreignKey: 'id_vidraria',
+    otherKey: 'id_aula',
+    as: 'VidrariaAulas',
+});
+
+Aula.belongsToMany(Vidrarias, {
+    through: VidrariaAula,
+    foreignKey: 'id_aula',
+    otherKey: 'id_vidraria',
+    as: 'vidrarias'
+});
+
+const AgenteReajenteAula = db.define('AgenteReajenteAula', {
+    id_agentereajente: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: AgenteReajente, 
+            key: 'id'
+        }
+    },
+    id_aula: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: Aula,
+            key: 'id'
+        }
+    },
+    quantidade: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    }
+})
+
+AgenteReajente.belongsToMany(Aula, {
+    through: AgenteReajenteAula,  // Ensure this is correct
+    foreignKey: 'id_agentereajente',
+    otherKey: 'id_aula',
+    as: 'agenteReajenteAulas',
+});
+
+Aula.belongsToMany(AgenteReajente, {
+    through: AgenteReajenteAula,
+    foreignKey: 'id_aula',
+    otherKey: 'id_agentereajente',
+    as: 'agentes_reajentes'
+});
+
+Aula.sync({ alter: true });
+MateriaAula.sync({ alter: true });
+ProfessorAula.sync({ alter: true });
+LaboratorioAula.sync({ alter: true });
+EquipamentoAula.sync({alter: true});
+VidrariaAula.sync({alter: true});
+AgenteReajenteAula.sync({alter: true});
+
+export { Aula, MateriaAula, ProfessorAula, LaboratorioAula, EquipamentoAula, VidrariaAula, AgenteReajenteAula };

@@ -54,6 +54,6 @@ const Fornecedor = db.define('fornecedores', {
     },
 });
 
-// Fornecedor.sync();
+Fornecedor.sync();
 
 export { Fornecedor };

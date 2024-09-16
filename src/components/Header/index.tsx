@@ -216,10 +216,10 @@ export function Header( { session }: { session?: any }) {
                   <Icons icon="home" />
                 </Link>
               </Li>
-              <Li $active={activePage === "/baixa-de-aulas"}>
+              <Li $active={activePage === "/baixa-aulas"}>
                 <Link
-                  href={"/baixa-de-aulas"}
-                  onClick={() => handleLinkClick("/baixa-de-aulas")}>
+                  href={"/baixa-aulas"}
+                  onClick={() => handleLinkClick("/baixa-aulas")}>
                   <p>Baixa de aulas</p>
                   <Icons icon="baixaAulas" />
                 </Link>

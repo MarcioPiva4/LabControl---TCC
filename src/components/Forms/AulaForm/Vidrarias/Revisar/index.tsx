@@ -27,6 +27,7 @@ const Adjust = styled.div`
 const Content = styled.div`
   display: flex;
   gap: 20px;
+
   button:last-child{
     width: 100%;
     padding: 5px 15px;
@@ -57,14 +58,14 @@ const Content = styled.div`
 interface Itens {
   id: number | string;
   nome: string;
-  quantidade_equipamento: number;
+  quantidade_vidrarias: number;
 }
 
 
 
-export default function EquipamentoRevisar({ id, equipamentos }: { id: string; equipamentos: any}) {
+export default function VidrariasRevisar({ id, vidrarias }: { id: string; vidrarias: any}) {
   const arrayIds = id.replaceAll('%2C', ',').split(',');
-  const [data,setData] = useState(equipamentos.data);
+  const [data,setData] = useState(vidrarias.data);
   const [itens, setItens] = useState(data.filter((e: any, i: any) => arrayIds.includes(e.id.toString())));
   const router = useRouter();
   const [parsedData, setParsedData] = useState<Itens[]>([]);
@@ -77,24 +78,23 @@ export default function EquipamentoRevisar({ id, equipamentos }: { id: string; e
     { id: 6, nome: "Unidade (Un)", abr: "Un", active: true, value: "Un" },
   ]);
 
-  const [teste, setTeste] = useState();
   const selectRef = useRef(null);
 
   useEffect(() => {
-    setItens((prev: any) => 
-      prev.map((item: any, i: number) =>(
-        { ...item, quantidadeAdd: parsedData[i]?.quantidade_equipamento || 1, abr }
+    setItens((prev: any, i: number) => 
+      prev.map((item: any) =>(
+        { ...item, quantidadeAdd: parsedData[i]?.quantidade_vidrarias || 1, abr }
        )
       )
     );
   }, [id, abr, parsedData]);
 
   useEffect(() => {
-    const localData = localStorage.getItem('equipamentosAula');
+    const localData = localStorage.getItem('vidrariasAula');
     if(localData){
       setParsedData(JSON.parse(localData));
     }
-  }, []);
+  }, [])
 
   const handleAddQuantity = (id: number) => {
     setItens((prev: any) => 
@@ -119,12 +119,11 @@ export default function EquipamentoRevisar({ id, equipamentos }: { id: string; e
 
   const submitForm = () => {
     router.push('/cadastro/aula');
-    if(localStorage.getItem('equipamentosAula')){
-      localStorage.removeItem('equipamentosAula')
+    if(localStorage.getItem('vidrariasAula')){
+      localStorage.removeItem('vidrariasAula')
     }
-    localStorage.setItem('equipamentosAula', JSON.stringify(itens.map((e: any) =>  ({id_equipamento: e.id, quantidade_equipamento: e.quantidadeAdd})  )));
+    localStorage.setItem('vidrariasAula', JSON.stringify(itens.map((e: any) =>  ({id_vidrarias: e.id, quantidade_vidrarias: e.quantidadeAdd})  )));
   }
-  console.log(itens);
   return (
     <>
       {itens.length <= 0 && <h1>Selecione uma opção antes de continuar</h1>}
@@ -135,7 +134,7 @@ export default function EquipamentoRevisar({ id, equipamentos }: { id: string; e
               {itens.map((e: any) => (
                 <div key={e.id}>
                   <InputBoxSelectWithQuntity
-                    name={e.equipamento}
+                    name={e.vidraria}
                     id={e.id}
                     add
                     sub
@@ -164,7 +163,7 @@ export default function EquipamentoRevisar({ id, equipamentos }: { id: string; e
                 </div>
               ))}
               <Content>
-                <ButtonLink type="button" link="link" is="isTransparent" href={`/cadastro/aula/equipamentos/${itens.map((e: any) => e.id)}`}>
+                <ButtonLink type="button" link="link" is="isTransparent" href={`/cadastro/aula/vidrarias/${itens.map((e: any) => e.id)}`}>
                   CANCELAR
                 </ButtonLink>
                 <button onClick={submitForm} type="button">

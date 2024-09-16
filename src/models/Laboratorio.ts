@@ -38,5 +38,5 @@ const Laboratorio = db.define('laboratorios', {
     },
 })
 
-// Laboratorio.sync({alter: true});
+Laboratorio.sync({alter: true});
 export { Laboratorio };

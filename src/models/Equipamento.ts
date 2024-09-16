@@ -75,7 +75,7 @@ Equipamento.belongsToMany(Fornecedor, {
     as: 'fornecedores'
 });
 
-// Equipamento.sync({alter: true});
-// FornecedorEquipamentos.sync();
+Equipamento.sync({alter: true});
+FornecedorEquipamentos.sync();
 
 export { Equipamento, FornecedorEquipamentos };

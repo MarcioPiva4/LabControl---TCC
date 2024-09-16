@@ -57,14 +57,14 @@ const Content = styled.div`
 interface Itens {
   id: number | string;
   nome: string;
-  quantidade_equipamento: number;
+  quantidade_agenteReajente: number;
 }
 
 
 
-export default function EquipamentoRevisar({ id, equipamentos }: { id: string; equipamentos: any}) {
+export default function AgenteReajenteRevisar({ id, agentesReajentes }: { id: string; agentesReajentes: any}) {
   const arrayIds = id.replaceAll('%2C', ',').split(',');
-  const [data,setData] = useState(equipamentos.data);
+  const [data,setData] = useState(agentesReajentes.data);
   const [itens, setItens] = useState(data.filter((e: any, i: any) => arrayIds.includes(e.id.toString())));
   const router = useRouter();
   const [parsedData, setParsedData] = useState<Itens[]>([]);
@@ -83,14 +83,14 @@ export default function EquipamentoRevisar({ id, equipamentos }: { id: string; e
   useEffect(() => {
     setItens((prev: any) => 
       prev.map((item: any, i: number) =>(
-        { ...item, quantidadeAdd: parsedData[i]?.quantidade_equipamento || 1, abr }
+        { ...item, quantidadeAdd: parsedData[i]?.quantidade_agenteReajente || 1, abr }
        )
       )
     );
   }, [id, abr, parsedData]);
 
   useEffect(() => {
-    const localData = localStorage.getItem('equipamentosAula');
+    const localData = localStorage.getItem('agenteReajenteAula');
     if(localData){
       setParsedData(JSON.parse(localData));
     }
@@ -119,10 +119,10 @@ export default function EquipamentoRevisar({ id, equipamentos }: { id: string; e
 
   const submitForm = () => {
     router.push('/cadastro/aula');
-    if(localStorage.getItem('equipamentosAula')){
-      localStorage.removeItem('equipamentosAula')
+    if(localStorage.getItem('agenteReajenteAula')){
+      localStorage.removeItem('agenteReajenteAula')
     }
-    localStorage.setItem('equipamentosAula', JSON.stringify(itens.map((e: any) =>  ({id_equipamento: e.id, quantidade_equipamento: e.quantidadeAdd})  )));
+    localStorage.setItem('agenteReajenteAula', JSON.stringify(itens.map((e: any) =>  ({id_agenteReajente: e.id, quantidade_agenteReajente: e.quantidadeAdd})  )));
   }
   console.log(itens);
   return (
@@ -135,7 +135,7 @@ export default function EquipamentoRevisar({ id, equipamentos }: { id: string; e
               {itens.map((e: any) => (
                 <div key={e.id}>
                   <InputBoxSelectWithQuntity
-                    name={e.equipamento}
+                    name={e.nome}
                     id={e.id}
                     add
                     sub
@@ -164,7 +164,7 @@ export default function EquipamentoRevisar({ id, equipamentos }: { id: string; e
                 </div>
               ))}
               <Content>
-                <ButtonLink type="button" link="link" is="isTransparent" href={`/cadastro/aula/equipamentos/${itens.map((e: any) => e.id)}`}>
+                <ButtonLink type="button" link="link" is="isTransparent" href={`/cadastro/aula/agente-reajente/${itens.map((e: any) => e.id)}`}>
                   CANCELAR
                 </ButtonLink>
                 <button onClick={submitForm} type="button">

@@ -7,7 +7,7 @@ interface PropPageRevisar {
 }
 
 async function getDataEquipamentos() {
-  const response = await fetch('https://lab-control-4j8ipswkd-marciop457s-projects.vercel.app/api/equipamento');
+  const response = await fetch('http://localhost:3000/api/equipamento');
   return await response.json();
 }
 

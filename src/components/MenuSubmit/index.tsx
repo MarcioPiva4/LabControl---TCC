@@ -23,29 +23,31 @@ const MenuWrapper = styled.div`
     position: fixed;
     background-color: #FFFFFF;
     width: 90%;
-    height: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 20px;
+    max-width: 500px;
+    max-height: 400px;
 
     div{
         width: 100%;
         height: 100%;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
-        padding: 50px 25px;
+        padding: 50px 10px;
+        justify-content: center;
+        align-items: center;
         h2{
             color: #041833;
             text-align: center;
             font-size: 24px;
             font-weight: 700;
             line-height: 29.05px;
-            margin-bottom: 20px;
+            margin-bottom: 50px;
         }
         button{
-            width: 100%;
+            width: 90%;
             height: 50px;
             border-radius: 50px;
             cursor: pointer;
@@ -65,6 +67,7 @@ const MenuWrapper = styled.div`
         button:nth-child(2){
             background: ${props => props.theme.color.gradient};
             color: #fff;
+            margin-bottom: 25px;
         }
     }
 `;
