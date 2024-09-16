@@ -35,6 +35,6 @@ const Materias = db.define('materias', {
 //     as: 'professor',
 // });
 
-Materias.sync({ force: true });
+Materias.sync();
 
 export { Materias };
