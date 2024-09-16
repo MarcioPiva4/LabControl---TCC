@@ -8,7 +8,7 @@ interface PropPageEquipamentos {
 }
 
 async function getDataAgenteReajente() {
-    const response = await fetch('http://localhost:3000/api/agente-reajente');
+    const response = await fetch('https://lab-control-h2e7x2ob3-marciop457s-projects.vercel.app/api/agente-reajente');
     return await response.json();
 }
   
