@@ -3,7 +3,7 @@ import Section from "@/components/Section";
 
 
 async function getDataMateria() {
-    const response = await fetch('https://lab-control-h2e7x2ob3-marciop457s-projects.vercel.app/api/materia');
+    const response = await fetch('https://lab-control-gblfdwzu6-marciop457s-projects.vercel.app/api/materia');
     return await response.json();
 }
 
