@@ -45,16 +45,19 @@ export function SelectVariant({
   selectRef,
   icon,
   options,
+  stateOptions
 }: {
   selectRef?: any;
   icon?: boolean;
   options: Array<OptionType>;
+  stateOptions?: any;
 }) {
   const [openSelect, setOpenSelect] = useState<boolean>(false);
   const [values, setValues] = useState<Array<OptionType>>(options);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const selected = values.find((e) => e.active);
+  stateOptions(selected);
 
   function setOption(id: number) {
     const updatedValues = values.map((e) => ({
@@ -78,6 +81,11 @@ export function SelectVariant({
     };
   }, [containerRef, openSelect]);
 
+  useEffect(() => {
+    if (selected) {
+      localStorage.setItem('selectedAbr', JSON.stringify(selected)); // Salva no localStorage
+    }
+  }, [selected]);
   return (
     <div ref={containerRef}>
       <ContentSelect
@@ -170,7 +178,6 @@ function FakeSelect({
       selectRef.current.value = selected.value;
     }
   }, [selectRef, selected]);
-
   return (
     <ContentList
       $icon={icon ?? false}
@@ -179,7 +186,7 @@ function FakeSelect({
         $active={selected && selected.active}
         $number={selected && selected.id}>
         {options.map((e) => (
-          <li key={e.id} onClick={() => setOption(e.id)}>
+          <li key={e.id} onClick={() => setOption(e.id)} id={e.id.toString()}>
             {e.nome}
           </li>
         ))}

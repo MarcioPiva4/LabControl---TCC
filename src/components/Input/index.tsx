@@ -1,6 +1,6 @@
 "use client";
 import { theme } from "@/styles/theme";
-import React from "react";
+import React, { useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import { SelectVariant } from "../FakeSelect";
 
@@ -27,6 +27,7 @@ interface PropInput {
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   readOnly?: boolean;
+  stateOptions?: any;
 }
 
 const ContentInput = styled.div`
@@ -98,6 +99,7 @@ export default function Input({
   value,
   onChange,
   readOnly,
+  stateOptions,
 }: PropInput) {
   return (
     <ThemeProvider theme={theme}>
@@ -119,6 +121,7 @@ export default function Input({
             selectRef={selectRef}
             icon={icon}
             options={optionsFakeSelect}
+            stateOptions={stateOptions}
           />
         )}
       </ContentInput>

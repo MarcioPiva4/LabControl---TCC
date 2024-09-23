@@ -3,6 +3,7 @@ import StyledComponentsRegistry from "./registry";
 import { GlobalStyle } from "@/styles/GlobalStyle";
 import { Inter } from 'next/font/google'
 import { theme } from "@/styles/theme";
+import ButtonBackTop from "@/components/ButtonBackTop";
 
 export const metadata: Metadata = {
   title: "LabControl",
@@ -26,6 +27,7 @@ export default function RootLayout({
       <body>
         <StyledComponentsRegistry>
             <GlobalStyle theme={theme}/>
+            <ButtonBackTop></ButtonBackTop>
             {children}
         </StyledComponentsRegistry>
       </body>

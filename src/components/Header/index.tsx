@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
+import logo from "../../../public/logo.png";
 
 const HeaderWrapper = styled.header`
   width: 100%;
@@ -82,6 +84,23 @@ const SubMenu = styled.aside`
   background-color: ${(props) => props.theme.color.secondary};
   z-index: 1;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  max-width: 300px;
+
+  .logo-content{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    img{
+      width: 150px;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
 
   @keyframes subMenuOpen {
     from {
@@ -243,6 +262,11 @@ export function Header( { session }: { session?: any }) {
         unmountOnExit
         nodeRef={subMenuRef}>
         <SubMenu ref={subMenuRef}>
+          <div className="logo-content">
+            <Link href={'/'}>
+              <Image src={logo} alt="logo da labcontrol"></Image>
+            </Link>
+          </div>
           <ul>
             {session.user.role != "prof" && (
               <li>

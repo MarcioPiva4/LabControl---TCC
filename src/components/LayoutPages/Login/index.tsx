@@ -4,7 +4,7 @@ import Image from "next/image";
 import styled from "styled-components"
 import logo from "../../../../public/logo.png";
 import DefaultForm from "@/components/DefaultForm";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 
 
@@ -19,6 +19,8 @@ const SectionWrappaper = styled.section`
         align-items: center;
         position: relative;
         overflow: hidden;
+        max-width: 800px;
+        margin: 0 auto;
 
         /* &::after{
             content: '';
@@ -122,10 +124,16 @@ const SectionWrappaper = styled.section`
                         font-weight: 400;
                         padding-bottom: 10px;
                         transition: 0.2s all;
-
+                        transition: background-color 5000s ease-in-out 0s;
 
                         &:focus{
                             border-color: #fff;
+                        }
+
+                        &:-internal-autofill-selected{
+                            -webkit-box-shadow: 0 0 0px 1000px white inset; /* Mude 'white' para a cor de fundo desejada */
+                            box-shadow: 0 0 0px 1000px white inset;
+                            -webkit-text-fill-color: black;
                         }
                     }
 
@@ -187,6 +195,15 @@ export default function LoginLayout(){
             callbackUrl: '/'
         });
     } 
+    //remover preenchimento automatico
+    useEffect(() => {
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', () => {
+                input.setAttribute('autocomplete', 'off');
+            });
+        });
+    }, [])
+
     return(
         <SectionWrappaper>
             <div className="login">

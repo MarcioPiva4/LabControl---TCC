@@ -3,6 +3,7 @@ import Button, { ButtonLink } from "@/components/Button";
 import DefaultForm from "@/components/DefaultForm";
 import Input from "@/components/Input";
 import { InputBoxSelectWithQuntity } from "@/components/InputBoxSelect";
+import { Loader } from "@/components/Loader";
 import Section from "@/components/Section";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -62,10 +63,25 @@ interface Itens {
 
 
 
-export default function EquipamentoRevisar({ id, equipamentos }: { id: string; equipamentos: any}) {
-  const arrayIds = id.replaceAll('%2C', ',').split(',');
-  const [data,setData] = useState(equipamentos.data);
-  const [itens, setItens] = useState(data.filter((e: any, i: any) => arrayIds.includes(e.id.toString())));
+export default function EquipamentoRevisarEditar({ idAula, equipamentos, aulas, idEquipamentos }: { idAula: string; idEquipamentos: string; equipamentos: any; aulas: any}) {
+  const arrayIds = idEquipamentos.replaceAll('%2C', ',').split(',');
+
+
+  const [equipamentosData,setEquipamentosData] = useState(equipamentos.data);
+  const [equipamentosDataFiltered, setEquipamentosDataFiltered] = useState(equipamentosData.filter((e: any, i: any) => arrayIds.includes(e.id.toString())));
+
+  const [aulasData, setAulasData] = useState(aulas.data);
+  const [aulasDataFiltered, setAulasDataFiltered] = useState<any>();
+  const [itens, setItens] = useState<any>();
+  useEffect(() => {
+    if (aulasData) {
+      const filtered = aulasData.filter((e: any) => e.id == idAula);
+      setAulasDataFiltered(filtered);
+    }
+
+  }, [aulasData, idAula]);
+
+  console.log(itens)
   const router = useRouter();
   const [parsedData, setParsedData] = useState<Itens[]>([]);
   const [abr,setAbr] = useState([
@@ -77,19 +93,20 @@ export default function EquipamentoRevisar({ id, equipamentos }: { id: string; e
     { id: 6, nome: "Unidade (Un)", abr: "Un", active: true, value: "Un" },
   ]);
 
+  useEffect(() => {
+    if(aulasDataFiltered){
+      const filtered = equipamentosDataFiltered.map((e: any, i: number) => (
+        e.id == aulasDataFiltered[0]?.equipamentos[i]?.EquipamentoAula?.id_equipamento ? {...e, quantidadeAdd: parsedData ? parsedData[i]?.quantidade_equipamento : aulasDataFiltered[0]?.equipamentos[i]?.EquipamentoAula?.quantidade, abr} : {...e, abr}
+      ))
+      setItens(filtered);
+    }
+  }, [aulasDataFiltered, equipamentosDataFiltered, abr, parsedData])
+
+  console.log(aulasDataFiltered)
   const[dataOptions, setDataOptions] = useState<any>();
   const stateOptions = (childdata: any) => { 
     setDataOptions(childdata);
   }
-
-  useEffect(() => {
-    setItens((prev: any) => 
-      prev.map((item: any, i: number) =>(
-        { ...item, quantidadeAdd: parsedData[i]?.quantidade_equipamento || 1, abr }
-       )
-      )
-    );
-  }, [id, abr, parsedData]);
 
   const [values, setValues] = useState(abr);
   useEffect(() => {
@@ -103,11 +120,9 @@ export default function EquipamentoRevisar({ id, equipamentos }: { id: string; e
       );
     }
   }, []);
-
-  console.log(values);
-
+  
   useEffect(() => {
-    const localData = localStorage.getItem('equipamentosAula');
+    const localData = localStorage.getItem('equipamentosAulaEditar');
     if(localData){
       setParsedData(JSON.parse(localData));
     }
@@ -117,7 +132,7 @@ export default function EquipamentoRevisar({ id, equipamentos }: { id: string; e
     setItens((prev: any) => 
       prev.map((item: any) =>
         item.id === id
-          ? { ...item, quantidadeAdd: (item.quantidadeAdd || 0) + 1 }
+          ? { ...item, quantidadeAdd: (Number(item.quantidadeAdd) || 0) + 1 }
           : item
       )
     );
@@ -135,17 +150,16 @@ export default function EquipamentoRevisar({ id, equipamentos }: { id: string; e
   
 
   const submitForm = () => {
-    router.push('/cadastro/aula');
-    if(localStorage.getItem('equipamentosAula')){
-      localStorage.removeItem('equipamentosAula')
+    router.push(`/manutencao/editar/${idAula}`);
+    if(localStorage.getItem('equipamentosAulaEditar')){
+      localStorage.removeItem('equipamentosAulaEditar')
     }
-    localStorage.setItem('equipamentosAula', JSON.stringify(itens.map((e: any) =>  ({id_equipamento: e.id, quantidade_equipamento: e.quantidadeAdd})  )));
+    localStorage.setItem('equipamentosAulaEditar', JSON.stringify(itens.map((e: any) =>  ({id_equipamento: e.id, quantidade_equipamento: e.quantidadeAdd})  )));
   }
-  console.log(itens);
   return (
     <>
-      {itens.length <= 0 && <h1>Selecione uma opção antes de continuar</h1>}
-      {itens.length > 0 && (
+      {itens ? itens.length <= 0 && <h1>Selecione uma opção antes de continuar</h1> : null}
+      {itens ? itens.length > 0 && (
         <Section title={`Revisar Item`} bottom>
           <DefaultForm>
             <Adjust>
@@ -181,7 +195,7 @@ export default function EquipamentoRevisar({ id, equipamentos }: { id: string; e
                 </div>
               ))}
               <Content>
-                <ButtonLink type="button" link="link" is="isTransparent" href={`/cadastro/aula/equipamentos/${itens.map((e: any) => e.id)}`}>
+                <ButtonLink type="button" link="link" is="isTransparent" href={`/manutencao/editar/${idAula}/equipamentos/${itens.map((e: any) => e.id)}`}>
                   CANCELAR
                 </ButtonLink>
                 <button onClick={submitForm} type="button">
@@ -191,7 +205,7 @@ export default function EquipamentoRevisar({ id, equipamentos }: { id: string; e
             </Adjust>
           </DefaultForm>
         </Section>
-      )}
+      ) : <Loader></Loader>}
     </>
   );
   

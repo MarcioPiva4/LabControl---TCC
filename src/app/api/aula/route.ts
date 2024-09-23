@@ -32,7 +32,6 @@ export async function GET(){
                 model: Equipamento,
                 as: 'equipamentos',
                 attributes: ['equipamento'],
-                through: { attributes: ['quantidade'] }
             },
             {
                 model: Vidrarias,
@@ -151,6 +150,14 @@ export async function POST(req: NextRequest){
         return NextResponse.json({ status: 'error', message: `erro ao fazer a solicitação: ${error}`, code: 400 }, {status: 400})
     }
 }
+
+// export async function PATCH(req: NextRequest){
+//     try{
+//         const { materia, professor,  } = req.json() as any;
+//     } catch{
+
+//     }
+// }
 
 
 export async function DELETE(req: NextRequest){
