@@ -14,7 +14,7 @@ async function getDataEquipamentos() {
 }
 
 async function getDataAulas() {
-  const response = await fetch('http://localhost:3000/api/aula');
+  const response = await fetch('https://lab-control-tcc-git-devlopment-marciop457s-projects.vercel.app/api/aula');
   return await response.json();
 }
 
