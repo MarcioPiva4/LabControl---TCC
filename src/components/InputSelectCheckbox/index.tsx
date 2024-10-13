@@ -31,6 +31,7 @@ const OptionsContent = styled.div`
     gap: 10px;
     justify-content: flex-start;
     align-items: center;
+    padding-bottom: 5px;
     label{
         border: 1px solid #fff;
         padding: 7px 15px;
@@ -61,8 +62,9 @@ const OptionsContent = styled.div`
 
 const ContentWrappaper = styled.div`
     width: 100%;
-    padding: 10px 0 20px 0;
+    padding: 5px 0 20px 0;
     position: relative;
+    cursor: pointer;
 
     p{
         width: 100%;

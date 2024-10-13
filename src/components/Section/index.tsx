@@ -15,8 +15,9 @@ interface propsSection {
 
 const SectionWrapper = styled.section`
   width: 100%;
-  max-width: 90%;
   margin: 5vh auto;
+  max-width: 800px;
+  padding: 0 20px;
 
   .svg{
     margin-bottom: 20px;

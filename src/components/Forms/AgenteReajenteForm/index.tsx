@@ -67,7 +67,7 @@ const AgenteReajenteForm = ({data}: {data: unknown}) => {
     return (
         <>
             <DefaultForm onSubmit={handleSubmit}>
-                {error.error && <ErrorMessage text={error.message}></ErrorMessage>}
+                {error.error && <ErrorMessage text={error.message} error={error}></ErrorMessage>}
                 <Input type="text" label="Nome do agente/reagente" idInput={'nome'}></Input>
                 <Input type="text" label="Fórmula química" idInput={'formula'}></Input>
                 <Input type="text" label="Material" idInput={'material'}></Input>

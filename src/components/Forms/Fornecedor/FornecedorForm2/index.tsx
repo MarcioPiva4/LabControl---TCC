@@ -122,7 +122,7 @@ export default function FornecedorForm2(){
     return(
         <>
         <FormCepWrapper>
-            {error.error && <ErrorMessage text={error.message}></ErrorMessage>}
+            {error.error && <ErrorMessage text={error.message} error={error}></ErrorMessage>}
             {submiting ? <Loader></Loader> : null}
             <DefaultForm onSubmit={handlerSubmitCep}>
                 <Input type="text" label="CEP" idInput="cep"  />

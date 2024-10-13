@@ -64,7 +64,7 @@ export default function EditarAulaForm( { aulas, id, materias, professor, labora
     // };
     return(
         <DefaultForm>
-            {error.error && <ErrorMessage text={error.message}></ErrorMessage>}
+            {error.error && <ErrorMessage text={error.message} error={error}></ErrorMessage>}
             <Input type="text" label="Matéria" value={dataAulasFilted ? dataAulasFilted[0]?.materias[0]?.nome : ''} onChange={(e) => setdataAulasFilted((prev: any) => prev ? [{ ...prev[0], materias: [{ ...prev[0].materias[0], nome: e.target.value }] }] : prev)}  idInput="materia_aula"></Input>
             <Input type="text" label="Professor" value={dataAulasFilted ? dataAulasFilted[0]?.professores[0]?.nome : ''} onChange={(e) => setdataAulasFilted((prev: any) => prev ? [{ ...prev[0], professores: [{ ...prev[0].professores[0], nome: e.target.value }] }] : prev)} idInput="professor_aula"></Input>
             <Input type="text" label="Laboratório" value={dataAulasFilted ? dataAulasFilted[0]?.laboratorios[0]?.nome : ''} onChange={(e) => setdataAulasFilted((prev: any) => prev ? [{ ...prev[0], laboratorios: [{ ...prev[0].laboratorios[0], nome: e.target.value }] }] : prev)} idInput="laboratorio_aula"></Input>

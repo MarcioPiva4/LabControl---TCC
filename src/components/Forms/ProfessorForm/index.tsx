@@ -43,7 +43,7 @@ const ProfessorForm = () => {
     return (
         <>
             <DefaultForm onSubmit={handleSubmit}>
-                {error.error && <ErrorMessage text={error.message}></ErrorMessage>}
+                {error.error && <ErrorMessage text={error.message} error={error}></ErrorMessage>}
                 <Input type="text" label="Nome" idInput="nome" />
                 <Input type="text" label="CPF" idInput="cpf" max={11} min={11} />
                 <Input type="text" label="Telefone" idInput="telefone" />

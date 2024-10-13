@@ -63,7 +63,7 @@ const VidrariasForm = ({data}: {data: unknown}) => {
     return (
         <>
             <DefaultForm onSubmit={handleSubmit}>
-                {error.error && <ErrorMessage text={error.message}></ErrorMessage>}
+                {error.error && <ErrorMessage text={error.message} error={error}></ErrorMessage>}
                 <Input type="text" label="Vidraria" idInput="vidraria"></Input>
                 <Input type="text" label="Tipo de Vidraria" idInput="tipo"></Input>
                 <Input type="number" selectRef={selectQuantidade} label="Capacidade" idInput="capacidade" selectAside

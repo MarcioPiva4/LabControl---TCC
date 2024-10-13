@@ -5,6 +5,7 @@ import { isValidEmail } from "@/utils/emailValitador";
 import { isValidName } from "@/utils/nameValitador";
 import { isValidateHouseNumber } from "@/utils/numHouseValidator";
 import { isValidPhoneNumber } from "@/utils/phoneValitador";
+import { sendEmail } from "@/utils/sendEmail";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(){
@@ -18,7 +19,7 @@ export async function GET(){
 
 export async function POST(req: NextRequest){
     try{
-        const { nome, email, telefone, data_contratacao, cep, estado, cidade, rua, numero, senha } = await req.json() as any;
+        const { nome, email, telefone, data_contratacao, cep, estado, cidade, rua, numero } = await req.json() as any;
 
         if(nome.toString().length <= 0 || 
         data_contratacao.toString().length <= 0 || 
@@ -57,6 +58,8 @@ export async function POST(req: NextRequest){
             return NextResponse.json({ status: 'error', message: `Número inválido`, code: 400 }, {status: 400});
         }
 
+        const randomPassword = Math.random();
+
         const createAdministrador = await Administrador.create({
             nome,
             email,
@@ -67,9 +70,9 @@ export async function POST(req: NextRequest){
             cidade,
             rua,
             numero,
-            senha
+            senha: randomPassword,
         });
-
+        sendEmail();
         return NextResponse.json({status: 'sucess', message: 'Administrador criado com sucesso', createAdministrador}, {status: 201})
         
     } catch (error) {

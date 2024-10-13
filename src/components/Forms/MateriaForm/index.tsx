@@ -44,7 +44,7 @@ const MateriaForm = () => {
     return (
         <>
             <DefaultForm onSubmit={handleSubmit}>
-                {error.error && <ErrorMessage text={error.message}></ErrorMessage>}
+                {error.error && <ErrorMessage text={error.message} error={error}></ErrorMessage>}
                 <Input type="text" label="Nome da matéria" idInput="nome"></Input>
                 <TextArea labelText="Emenda" id="emenda" length></TextArea>
                 {submiting ? <Loader></Loader> : null}

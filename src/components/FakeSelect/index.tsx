@@ -57,7 +57,6 @@ export function SelectVariant({
   const containerRef = useRef<HTMLDivElement>(null);
 
   const selected = values.find((e) => e.active);
-  stateOptions(selected);
 
   function setOption(id: number) {
     const updatedValues = values.map((e) => ({

@@ -47,7 +47,19 @@ export async function GET(){
             }
           ],
         });
-        return NextResponse.json({ status: 'success', data: aulas}, {status: 200});
+        const response = NextResponse.json(
+          { status: "success", data: aulas },
+          { status: 200 }
+        );
+
+        response.headers.set(
+          "Cache-Control",
+          "no-store, no-cache, must-revalidate, proxy-revalidate"
+        );
+        response.headers.set("Pragma", "no-cache");
+        response.headers.set("Expires", "0");
+
+        return response;
     } catch (error) {
         return NextResponse.json({ status: 'error', message: `erro ao fazer a solicitação: ${error}`, code: 400}, {status: 400})
     }
@@ -154,10 +166,25 @@ export async function POST(req: NextRequest){
 // export async function PATCH(req: NextRequest){
 //     try{
 //         const { materia, professor,  } = req.json() as any;
-//     } catch{
-
+//     } catch(error){
+//        return NextResponse.json({ status: 'error', message: `erro ao fazer a solicitação: ${error}`, code: 400}, {status: 400})
 //     }
 // }
+
+export async function PATCH(req: NextRequest){
+    try{
+        //const {id} = req.json() as any;
+
+        const aula = await Aula.findByPk(1);
+        if(aula){
+            aula.update({ status: 'finish' });
+            return NextResponse.json({ status: 'sucess', message: `Aula finalizada com sucesso`, code: 200}, {status: 200})
+        }
+        return NextResponse.json({ status: 'error', message: `Aula não encontrada, tente outra aula`, code: 404}, {status: 404});
+    } catch(error){
+        return NextResponse.json({ status: 'error', message: `erro ao fazer a solicitação: ${error}`, code: 400}, {status: 400});
+    }
+}
 
 
 export async function DELETE(req: NextRequest){

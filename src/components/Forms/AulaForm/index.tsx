@@ -79,7 +79,7 @@ const AulaForm = ({materias, professor, laboratorio}: {materias: any; professor:
     };
     return (
         <DefaultForm onSubmit={handleSubmit}>
-            {error.error && <ErrorMessage text={error.message}></ErrorMessage>}
+            {error.error && <ErrorMessage text={error.message} error={error}></ErrorMessage>}
             <Select id="id_materia" options={materias} selectLabel="Matérias"></Select>
             <Select id="id_professor" selectLabel="Professor (a)" options={professor}></Select>
             <Select id="id_laboratorio" selectLabel="Laboratório" options={laboratorio}></Select>

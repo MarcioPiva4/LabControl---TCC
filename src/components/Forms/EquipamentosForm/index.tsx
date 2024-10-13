@@ -59,7 +59,7 @@ const EquipamentosForm = ({data}: {data: unknown}) => {
     return (
         <>
             <DefaultForm onSubmit={handleSubmit}>
-                {error.error && <ErrorMessage text={error.message}></ErrorMessage>}
+                {error.error && <ErrorMessage text={error.message} error={error}></ErrorMessage>}
                 <Input type="text" label="Equipamento" idInput="equipamento"></Input>
                 <Input type="text" label="Tipo de Equipamento" idInput="tipo"></Input>
                 <Input type="text" label="Número de Série" idInput="numero_serie"></Input>

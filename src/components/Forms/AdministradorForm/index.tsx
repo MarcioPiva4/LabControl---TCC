@@ -109,7 +109,7 @@ const AdministradorForm = () => {
     return (
         <>
             <DefaultForm onSubmit={handleSubmit}>
-                {error.error && <ErrorMessage text={error.message} />}
+                {error.error && <ErrorMessage text={error.message} error={error} />}
                 <Input type="text" label="Nome" idInput="nome" />
                 <Input type="text" label="Telefone" idInput="telefone" />
                 <Input type="email" label="E-mail" idInput="email" />

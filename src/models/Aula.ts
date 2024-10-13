@@ -242,12 +242,12 @@ Aula.belongsToMany(AgenteReajente, {
     as: 'agentes_reajentes'
 });
 
-Aula.sync({ alter: true });
-MateriaAula.sync({ alter: true });
-ProfessorAula.sync({ alter: true });
-LaboratorioAula.sync({ alter: true });
-EquipamentoAula.sync({alter: true});
-VidrariaAula.sync({alter: true});
-AgenteReajenteAula.sync({alter: true});
+// Aula.sync({ alter: true });
+// MateriaAula.sync({ alter: true });
+// ProfessorAula.sync({ alter: true });
+// LaboratorioAula.sync({ alter: true });
+// EquipamentoAula.sync({alter: true});
+// VidrariaAula.sync({alter: true});
+// AgenteReajenteAula.sync({alter: true});
 
 export { Aula, MateriaAula, ProfessorAula, LaboratorioAula, EquipamentoAula, VidrariaAula, AgenteReajenteAula };

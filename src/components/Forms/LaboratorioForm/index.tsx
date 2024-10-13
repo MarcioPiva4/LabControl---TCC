@@ -44,7 +44,7 @@ const LaboratorioForm = () => {
     return (
         <>
             <DefaultForm onSubmit={handleSubmit}>
-                {error.error && <ErrorMessage text={error.message}></ErrorMessage>}
+                {error.error && <ErrorMessage text={error.message} error={error}></ErrorMessage>}
                 <Input type="text" label="Nome do Laboratório" idInput="nome"></Input>
                 <Input type="text" label="Prédio" idInput="predio"></Input>
                 <Input type="text" label="Andar" idInput="andar"></Input>
