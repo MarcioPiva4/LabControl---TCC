@@ -2,7 +2,9 @@ import BaixaAulas from "@/components/LayoutPages/BaixaAulas";
 import Section from "@/components/Section";
 
 async function getDataAulas(){
-    const response = await fetch('https://lab-control-m70ux48w6-marciop457s-projects.vercel.app//api/aula');
+    const response = await fetch('https://lab-control-m70ux48w6-marciop457s-projects.vercel.app//api/aula',     {
+        cache: 'no-store'  // Desabilitar cache
+      });
     return await response.json();
 }
 
