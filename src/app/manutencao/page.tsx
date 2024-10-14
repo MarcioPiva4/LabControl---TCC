@@ -3,12 +3,16 @@ import Manutencao from "@/components/LayoutPages/Manutencao";
 import Section from "@/components/Section";
 
 async function getDataAulas(){
-    const response = await fetch('https://lab-control-tcc-git-devlopment-marciop457s-projects.vercel.app/api/aula');
+    const response = await fetch('https://lab-control-tcc-git-devlopment-marciop457s-projects.vercel.app/api/aula', {
+        cache: 'no-cache',
+    });
     return await response.json();
 }
 
 async function getDataProfessores(){
-    const response = await fetch('https://lab-control-tcc-git-devlopment-marciop457s-projects.vercel.app/api/professor');
+    const response = await fetch('https://lab-control-tcc-git-devlopment-marciop457s-projects.vercel.app/api/professor', {
+        cache: 'no-cache',
+    });
     return await response.json();
 }
 

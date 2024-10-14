@@ -1,6 +1,6 @@
 "use client";
 import { theme } from "@/styles/theme";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ThemeProvider } from "styled-components";
 import styled from "styled-components";
 
@@ -8,6 +8,7 @@ interface propTextArea {
   labelText?: string;
   id: string;
   length?: boolean;
+  value?: string;
 }
 
 const Label = styled.label`
@@ -43,12 +44,19 @@ const MaxLengthWrapper = styled.div`
   }
 `;
 
-export default function TextArea({ labelText, id, length }: propTextArea) {
+export default function TextArea({ labelText, id, length, value }: propTextArea) {
   const [caracteres, setCaracteres] = useState<number>(0);
+  const [valueTextBox, setValueTextBox] = useState<string>();
+
+  useEffect(() => {
+    setValueTextBox(value);
+  }, [value])
+
   function textAreaLength(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    const value = e.target.value.slice(0, 255);
-    setCaracteres(value.length);
-    e.target.value = value;
+    const valueLength = e.target.value.slice(0, 255);
+    setCaracteres(valueLength.length);
+    e.target.value = valueLength;
+    setValueTextBox(e.target.value);
   }
   return (
     <>
@@ -59,7 +67,9 @@ export default function TextArea({ labelText, id, length }: propTextArea) {
             <TextAreaWrapper
               id={id}
               name={id}
-              onChange={(e) => textAreaLength(e)}></TextAreaWrapper>
+              onChange={(e) => {textAreaLength(e)}}
+              value={valueTextBox}
+              ></TextAreaWrapper>
             <span>{caracteres} / 255</span>
           </MaxLengthWrapper>
         ) : (

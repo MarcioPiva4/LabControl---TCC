@@ -82,7 +82,7 @@ const SubMenu = styled.aside`
   width: 60vw;
   height: 91vh;
   background-color: ${(props) => props.theme.color.secondary};
-  z-index: 1;
+  z-index: 100;
   overflow: hidden;
   display: flex;
   flex-direction: column;

@@ -82,7 +82,7 @@ export function SelectVariant({
 
   useEffect(() => {
     if (selected) {
-      localStorage.setItem('selectedAbr', JSON.stringify(selected)); // Salva no localStorage
+      localStorage.setItem('selectedAbr', JSON.stringify(selected)); 
     }
   }, [selected]);
   return (

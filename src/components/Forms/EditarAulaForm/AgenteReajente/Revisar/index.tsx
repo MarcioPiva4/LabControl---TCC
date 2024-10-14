@@ -58,17 +58,16 @@ const Content = styled.div`
 interface Itens {
   id: number | string;
   nome: string;
-  quantidade_equipamento: number;
+  quantidade_agenteReajente: number;
 }
 
 
 
-export default function EquipamentoRevisarEditar({ idAula, equipamentos, aulas, idEquipamentos }: { idAula: string; idEquipamentos: string; equipamentos: any; aulas: any}) {
-  const arrayIds = idEquipamentos.replaceAll('%2C', ',').split(',');
+export default function AgenteReajenteRevisarEditar({ idAula, agentesReajentes, aulas, idAgenteReajente }: { idAula: string; idAgenteReajente: string; agentesReajentes: any; aulas: any}) {
+  const arrayIds = idAgenteReajente.replaceAll('%2C', ',').split(',');
 
-
-  const [equipamentosData,setEquipamentosData] = useState(equipamentos.data);
-  const [equipamentosDataFiltered, setEquipamentosDataFiltered] = useState(equipamentosData.filter((e: any, i: any) => arrayIds.includes(e.id.toString())));
+  const [agentesReajentesData,setAgentesReajentesData] = useState(agentesReajentes.data);
+  const [agenteReajenteDataFiltered, setAgenteReajenteDataFiltered] = useState(agentesReajentesData.filter((e: any, i: any) => arrayIds.includes(e.id.toString())));
 
   const [aulasData, setAulasData] = useState(aulas.data);
   const [aulasDataFiltered, setAulasDataFiltered] = useState<any>();
@@ -94,22 +93,20 @@ export default function EquipamentoRevisarEditar({ idAula, equipamentos, aulas, 
 
   useEffect(() => {
     if (aulasDataFiltered) {
-      const filtered = equipamentosDataFiltered.map((e: any, i: number) => {
+      const filtered = agenteReajenteDataFiltered.map((e: any, i: number) => {
         const quantidadeInicial = aulasDataFiltered[0]?.equipamentos[i]?.EquipamentoAula?.quantidade || 1;
         return {
           ...e,
-          quantidadeAdd: parsedData && parsedData[i]?.quantidade_equipamento !== undefined
-            ? parsedData[i].quantidade_equipamento
+          quantidadeAdd: parsedData && parsedData[i]?.quantidade_agenteReajente !== undefined
+            ? parsedData[i].quantidade_agenteReajente
             : quantidadeInicial,
           abr,
         };
       });
       setItens(filtered);
     }
-  }, [aulasDataFiltered, equipamentosDataFiltered, abr, parsedData]);
-  
-
-  console.log(itens)
+  }, [aulasDataFiltered, agenteReajenteDataFiltered, abr, parsedData]);
+  console.log(aulasDataFiltered)
   const[dataOptions, setDataOptions] = useState<any>();
   const stateOptions = (childdata: any) => { 
     setDataOptions(childdata);
@@ -129,7 +126,7 @@ export default function EquipamentoRevisarEditar({ idAula, equipamentos, aulas, 
   }, []);
   
   useEffect(() => {
-    const localData = localStorage.getItem('equipamentosAulaEditar');
+    const localData = localStorage.getItem('agentesReajentesAulaEditar');
     if(localData){
       setParsedData(JSON.parse(localData));
     }
@@ -158,10 +155,10 @@ export default function EquipamentoRevisarEditar({ idAula, equipamentos, aulas, 
 
   const submitForm = () => {
     router.push(`/manutencao/editar/${idAula}`);
-    if(localStorage.getItem('equipamentosAulaEditar')){
-      localStorage.removeItem('equipamentosAulaEditar')
+    if(localStorage.getItem('agentesReajentesAulaEditar')){
+      localStorage.removeItem('agentesReajentesAulaEditar')
     }
-    localStorage.setItem('equipamentosAulaEditar', JSON.stringify(itens.map((e: any) =>  ({id_equipamento: e.id, quantidade_equipamento: e.quantidadeAdd})  )));
+    localStorage.setItem('agentesReajentesAulaEditar', JSON.stringify(itens.map((e: any) =>  ({id_agenteReajente: e.id, quantidade_agenteReajente: e.quantidadeAdd})  )));
   }
   return (
     <>
@@ -173,7 +170,7 @@ export default function EquipamentoRevisarEditar({ idAula, equipamentos, aulas, 
               {itens.map((e: any) => (
                 <div key={e.id}>
                   <InputBoxSelectWithQuntity
-                    name={e.equipamento}
+                    name={e.nome}
                     id={e.id}
                     add
                     sub
@@ -202,7 +199,7 @@ export default function EquipamentoRevisarEditar({ idAula, equipamentos, aulas, 
                 </div>
               ))}
               <Content>
-                <ButtonLink type="button" link="link" is="isTransparent" href={`/manutencao/editar/${idAula}}`}>
+                <ButtonLink type="button" link="link" is="isTransparent" href={`/manutencao/editar/${idAula}`}>
                   CANCELAR
                 </ButtonLink>
                 <button onClick={submitForm} type="button">

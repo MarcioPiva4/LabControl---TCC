@@ -72,7 +72,7 @@ const MenuWrapper = styled.div`
     }
 `;
 
-export default function MenuSubmit({ setSucess, href, link }: {setSucess?: any; href?: string; link?: boolean;}){
+export default function MenuSubmit({ setSucess, href, link, message }: {setSucess?: any; href?: string; link?: boolean; message?: string}){
   const router = useRouter();
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -85,7 +85,7 @@ export default function MenuSubmit({ setSucess, href, link }: {setSucess?: any; 
         <Overlay>
           <MenuWrapper>
             <div>
-              <h2>Cadastrar novamente?</h2>
+              <h2>{message ? message : 'Cadastrar novamente?'}</h2>
               <button
                 type="reset"
                 onClick={() =>

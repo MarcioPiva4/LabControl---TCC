@@ -3,7 +3,7 @@ import FinalizarAulaForm from "@/components/Forms/FinalizarAulaForm";
 import Section from "@/components/Section";
 
 async function getDataAulas(){
-    const response = await fetch('https://lab-control-tcc-git-devlopment-marciop457s-projects.vercel.app/api/aula');
+    const response = await fetch('https://lab-control-tcc-git-devlopment-marciop457s-projects.vercel.app//api/aula', { cache: 'no-cache'});
     return response.json();
 }
 
