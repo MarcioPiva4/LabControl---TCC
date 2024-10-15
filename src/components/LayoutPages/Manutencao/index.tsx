@@ -253,7 +253,7 @@ export default function Manutencao({ aulas, professores }: {aulas: any; professo
                   </div>
 
                   <div className="status_content">
-                    <span className="status"></span>
+                  <span className="status" style={e.status == 'in progress' ? {backgroundColor: '#FF04D7'} : {background: '#8aff99'}}></span>
                   </div>
                 </Link>
               </li>

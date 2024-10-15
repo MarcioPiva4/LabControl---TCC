@@ -49,7 +49,10 @@ export default function TextArea({ labelText, id, length, value }: propTextArea)
   const [valueTextBox, setValueTextBox] = useState<string>();
 
   useEffect(() => {
-    setValueTextBox(value);
+    if(value){
+      setValueTextBox(value);
+      setCaracteres(value.length);
+    }
   }, [value])
 
   function textAreaLength(e: React.ChangeEvent<HTMLTextAreaElement>) {

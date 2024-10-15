@@ -36,12 +36,12 @@ const SelectedOption = styled.div`
   cursor: pointer;
 `;
 
-const OptionsList = styled.div.attrs<{ isOpen: boolean }>(({ isOpen }) => ({
+const OptionsList = styled.div.attrs<{ $isOpen: boolean }>(({ $isOpen }) => ({
   style: {
-    maxHeight: isOpen ? '195px' : '0',
-    border: isOpen ? '1px solid #0c3b78' : 'none',
+    maxHeight: $isOpen ? '195px' : '0',
+    border: $isOpen ? '1px solid #0c3b78' : 'none',
   },
-}))<{ isOpen: boolean }>`
+}))<{ $isOpen: boolean }>`
   position: absolute;
   width: 100%;
   border-radius: 8px;
@@ -108,7 +108,7 @@ export default function FakeSelect({
           {options.find((opt) => opt.id === selectedOption)?.nome || "Selecione uma opção"}
         </SelectedOption>
 
-        <OptionsList isOpen={isOpen} ref={containerRef}>
+        <OptionsList $isOpen={isOpen} ref={containerRef}>
           {options.map((e) => (
             <Option
               key={e.id}
