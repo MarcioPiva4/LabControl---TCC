@@ -46,9 +46,9 @@ export async function POST(req: NextRequest){
             return NextResponse.json({ status: 'error', message: `Email inválido`, code: 400 }, {status: 400});
         }
         
-        if(!isValidateDate(data_contratacao)){
-            return NextResponse.json({ status: 'error', message: `Data de contratação inválido`, code: 400 }, {status: 400});
-        }
+        // if(!isValidateDate(data_contratacao)){
+        //     return NextResponse.json({ status: 'error', message: `Data de contratação inválido`, code: 400 }, {status: 400});
+        // }
 
         if(!isValidateCEP(cep)){
             return NextResponse.json({ status: 'error', message: `CEP inválido`, code: 400 }, {status: 400});
@@ -72,7 +72,7 @@ export async function POST(req: NextRequest){
             numero,
             senha: randomPassword,
         });
-        sendEmail();
+        sendEmail(randomPassword.toString(), email, nome);
         return NextResponse.json({status: 'sucess', message: 'Administrador criado com sucesso', createAdministrador}, {status: 201})
         
     } catch (error) {
@@ -95,7 +95,7 @@ export async function DELETE(req: NextRequest){
     }
 }
 
-export async function PATCH(req: NextRequest){
+export async function PUT(req: NextRequest){
     try{
         const { nome, email, celular, id } = await req.json() as any;
         const editAdministrador = await Administrador.findByPk(id);
@@ -117,6 +117,30 @@ export async function PATCH(req: NextRequest){
         }
 
         return NextResponse.json({ status: 'error', message: 'Administrador não encontrado, tente novamente'}, {status: 404}); 
+    } catch (error){
+        return NextResponse.json({ status: 'error', message: `erro ao fazer a solicitação: ${error}`, code: 400 }, {status: 400})
+    }
+}
+
+export async function PATCH(req: NextRequest){
+    try{
+        const { id, password, passwordRepeat } = await req.json() as any;
+
+        if(!password && !passwordRepeat){
+            return NextResponse.json({ status: 'error', message: 'Não deixe nenhum campo vazio'}, {status: 400}); 
+        }
+
+        if(password !== passwordRepeat){
+            return NextResponse.json({ status: 'error', message: 'Adicione duas senha iguais, tente novamente'}, {status: 400}); 
+        }
+
+        const update = await Administrador.update({
+            senha: password
+        },{
+            where: { id: id }
+        });
+        
+        return NextResponse.json({ status: 'sucess', message: 'Senha alterada com sucesso'}, {status: 200}); 
     } catch (error){
         return NextResponse.json({ status: 'error', message: `erro ao fazer a solicitação: ${error}`, code: 400 }, {status: 400})
     }

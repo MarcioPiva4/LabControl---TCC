@@ -1,19 +1,20 @@
 import nodemailer from 'nodemailer';
 
-export function sendEmail() {
+export function sendEmail(senha: string, email: string, name: string) {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "marciopivajunior457@gmail.com",
-      pass: "kikokiko987",
+      user: "labcontrolgerenciador@gmail.com", 
+      pass: "rfeqbdjxzupleeid", 
     },
   });
 
   const mailOptions = {
-    from: "teste",
-    to: "marciogamesjoao@gmail.com",
-    subject: "Teste",
-    text: "Senha: 1111",
+    from: "labcontrolgerenciador@gmail.com",
+    to: email,
+    subject: "LABCONTROL - CADASTRO",
+    html: `<p>Olá ${name},você foi cadastrado na labcontrol como um administrador, para o primeiro acesso digite a seguinte senha: <b>${senha}</b>, após isto crie uma nova senha.</p>`,
+    text: `Olá ${name},você foi cadastrado na labcontrol como um administrador, para o primeiro acesso digite a seguinte senha: ${senha}, após isto crie uma nova senha.`,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {

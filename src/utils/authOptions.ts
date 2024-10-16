@@ -15,16 +15,24 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+
         const userEmailAdministrador = await Administrador.findOne({
           where: { email: credentials?.email },
         }) as any;
 
         if (userEmailAdministrador && userEmailAdministrador.senha === credentials?.password) {
+          const isFirstLogin = userEmailAdministrador.loginCount === 0;
+
+          // Incrementa o loginCount
+          await Administrador.increment('loginCount', { by: 1, where: { id: userEmailAdministrador.id } });
+
+          console.log("isFirstLogin (admin):", isFirstLogin); 
           return {
             id: userEmailAdministrador.id,
             name: userEmailAdministrador.nome,
             email: userEmailAdministrador.email,
             role: 'adm',
+            isFirstLogin: isFirstLogin, 
           };
         }
 
@@ -33,11 +41,16 @@ export const authOptions: NextAuthOptions = {
         }) as any;
 
         if (userEmailProfessor && userEmailProfessor.senha === credentials?.password) {
+          const isFirstLogin = userEmailProfessor.loginCount === 0;
+
+          await Professor.increment('loginCount', { by: 1, where: { id: userEmailProfessor.id } });
+
           return {
             id: userEmailProfessor.id,
             name: userEmailProfessor.nome,
             email: userEmailProfessor.email,
             role: 'prof',
+            isFirstLogin: isFirstLogin,
           };
         }
 
@@ -50,6 +63,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.role = user.role;
+        token.isFirstLogin = user.isFirstLogin; 
       }
       return token;
     },
@@ -57,6 +71,7 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
+        session.user.isFirstLogin = token.isFirstLogin as boolean;
       }
       return session;
     },

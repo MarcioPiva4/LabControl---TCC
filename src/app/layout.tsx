@@ -4,6 +4,11 @@ import { GlobalStyle } from "@/styles/GlobalStyle";
 import { Inter } from 'next/font/google'
 import { theme } from "@/styles/theme";
 import ButtonBackTop from "@/components/ButtonBackTop";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/utils/authOptions";
+import { Session } from "@/types/session";
+import { Loader } from "@/components/Loader";
+import ResetPassword from "@/components/ResetPassword";
 
 export const metadata: Metadata = {
   title: "LabControl",
@@ -17,15 +22,17 @@ const fontFamily = Inter({
 })
 
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getServerSession(authOptions) as Session;
   return (
     <html lang="pt-br" className={fontFamily.className}>
       <body>
         <StyledComponentsRegistry>
+            {session?.user?.isFirstLogin && <ResetPassword id={session.user.id}></ResetPassword>}
             <GlobalStyle theme={theme}/>
             <ButtonBackTop></ButtonBackTop>
             {children}
