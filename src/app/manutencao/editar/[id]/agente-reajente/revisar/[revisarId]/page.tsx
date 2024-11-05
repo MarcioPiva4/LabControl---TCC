@@ -1,4 +1,3 @@
-import EquipamentoRevisar from "@/components/Forms/AulaForm/Equipamento/Revisar";
 import AgenteReajenteRevisarEditar from "@/components/Forms/EditarAulaForm/AgenteReajente/Revisar";
 import EquipamentoRevisarEditar from "@/components/Forms/EditarAulaForm/Equipamentos/Revisar";
 
@@ -10,12 +9,12 @@ interface PropPageRevisar {
 }
 
 async function getDataAgenteReajente() {
-    const response = await fetch('https://lab-control-tcc-git-devlopment-marciop457s-projects.vercel.app///api/agente-reajente');
+    const response = await fetch('http://localhost:3000/api/agente-reajente');
     return await response.json();
 }
   
 async function getDataAulas() {
-    const response = await fetch('https://lab-control-tcc-git-devlopment-marciop457s-projects.vercel.app///api/aula');
+    const response = await fetch('http://localhost:3000/api/aula');
     return await response.json();
 }
 

@@ -36,11 +36,11 @@ export async function POST(req: NextRequest) {
       data_validade,
       concentracao,
       quantidade,
+      medida_quantidade,
       armazenamento_recomendado,
       observacoes,
       id_fornecedor,
     } = (await req.json()) as any;
-
     if (
       nome.toString().length <= 0 ||
       formula.toString().length <= 0 ||
@@ -50,8 +50,7 @@ export async function POST(req: NextRequest) {
       data_compra.toString().length <= 0 ||
       data_validade.toString().length <= 0 ||
       concentracao.toString().length <= 0 ||
-      quantidade.toString().length <= 0 ||
-      armazenamento_recomendado.toString().length <= 0
+      quantidade.toString().length <= 0 
     ) {
       return NextResponse.json(
         { status: "error", message: "Não pode haver campos vazios" },
@@ -69,6 +68,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const quantidade_float = quantidade;
     const createAgenteReajente = (await AgenteReajente.create({
       nome,
       formula,
@@ -79,11 +79,11 @@ export async function POST(req: NextRequest) {
       data_validade,
       concentracao,
       quantidade,
+      medida_quantidade,
+      quantidade_float,
       armazenamento_recomendado,
       observacoes,
-      id_fornecedor,
     })) as any;
-    FornecedorAgenteReajente.sync();
 
     await Promise.all(
       id_fornecedor.map(async (fornecedorId: number) => {
@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         status: "sucess",
-        message: "Agente e reajente criado com sucesso",
+        message: "Agente/reajente criado com sucesso",
         createAgenteReajente,
       },
       { status: 201 }

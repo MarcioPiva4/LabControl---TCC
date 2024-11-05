@@ -1,17 +1,11 @@
-import BaixaAulas from "@/components/LayoutPages/BaixaAulas";
+import { LoaderAulas } from "@/components/LoaderForm";
 import Section from "@/components/Section";
+import dynamic from "next/dynamic";
 
-async function getDataAulas(){
-    const response = await fetch('https://lab-control-m70ux48w6-marciop457s-projects.vercel.app//api/aula',     {
-        cache: 'no-store'  // Desabilitar cache
-      });
-    return await response.json();
-}
-
-async function getDataProfessores(){
-    const response = await fetch('https://lab-control-tcc-git-devlopment-marciop457s-projects.vercel.app/api/professor');
-    return await response.json();
-}
+const BaixaAulas = dynamic(() => import("@/components/LayoutPages/BaixaAulas"), {
+    ssr: false,
+    loading: () => <LoaderAulas quantity={4}></LoaderAulas>
+})
 
 export default async function Page(){
     const dataAulas = await getDataAulas();
@@ -21,4 +15,18 @@ export default async function Page(){
             <BaixaAulas aulas={dataAulas} professores={dataProfessores}></BaixaAulas>
         </Section>
     )
+}
+
+async function getDataAulas(){
+    const response = await fetch('http://localhost:3000/api/aula',     {
+        cache: 'no-cache' 
+      });
+    return await response.json();
+}
+
+async function getDataProfessores(){
+    const response = await fetch('http://localhost:3000/api/professor', {
+        cache: 'no-cache' 
+    });
+    return await response.json();
 }

@@ -225,11 +225,15 @@ const AgenteReajenteAula = db.define('AgenteReajenteAula', {
     quantidade: {
         type: DataTypes.STRING,
         allowNull: false,
-    }
+    },
+    medida_quantidade: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
 })
 
 AgenteReajente.belongsToMany(Aula, {
-    through: AgenteReajenteAula,  // Ensure this is correct
+    through: AgenteReajenteAula, 
     foreignKey: 'id_agentereajente',
     otherKey: 'id_aula',
     as: 'agenteReajenteAulas',
@@ -242,12 +246,12 @@ Aula.belongsToMany(AgenteReajente, {
     as: 'agentes_reajentes'
 });
 
-// Aula.sync({ alter: true });
-// MateriaAula.sync({ alter: true });
-// ProfessorAula.sync({ alter: true });
-// LaboratorioAula.sync({ alter: true });
-// EquipamentoAula.sync({alter: true});
-// VidrariaAula.sync({alter: true});
-// AgenteReajenteAula.sync({alter: true});
+Aula.sync({ alter: true });
+MateriaAula.sync({ alter: true });
+ProfessorAula.sync({ alter: true });
+LaboratorioAula.sync({ alter: true });
+EquipamentoAula.sync({alter: true});
+VidrariaAula.sync({alter: true});
+AgenteReajenteAula.sync({alter: true});
 
 export { Aula, MateriaAula, ProfessorAula, LaboratorioAula, EquipamentoAula, VidrariaAula, AgenteReajenteAula };

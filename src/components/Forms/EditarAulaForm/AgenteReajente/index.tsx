@@ -19,8 +19,6 @@ export default function AgenteReajenteAulaEditar({ agenteReajente, aulas, id } :
     }
 
   }, [aulasData, id]);
-  
-  console.log(aulasDataFiltered);
 
   useEffect(() => {
     if(aulasDataFiltered){

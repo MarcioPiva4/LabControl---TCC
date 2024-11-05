@@ -26,7 +26,11 @@ const Vidrarias = db.define('vidrarias', {
         allowNull: false,
     },
     quantidade: {
-        type: DataTypes.DECIMAL,
+        type: DataTypes.FLOAT,
+        allowNull: false,
+    },
+    quantidade_float: {
+        type: DataTypes.FLOAT,
         allowNull: false,
     },
     preco_compra: {
@@ -56,7 +60,6 @@ const FornecedorVidrarias = db.define('FornecedorVidrarias', {
     }
 });
 
-// Relacionamento Muitos-para-Muitos
 Fornecedor.belongsToMany(Vidrarias, {
     through: FornecedorVidrarias,
     foreignKey: 'id_fornecedor',
@@ -71,7 +74,7 @@ Vidrarias.belongsToMany(Fornecedor, {
     as: 'fornecedores'
 });
 
-Vidrarias.sync();
-FornecedorVidrarias.sync();
+Vidrarias.sync({alter: true});
+FornecedorVidrarias.sync({alter: true});
 
 export { Vidrarias, FornecedorVidrarias };

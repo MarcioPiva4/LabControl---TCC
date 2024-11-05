@@ -1,17 +1,18 @@
+import { LoaderFormSearch } from "@/components/LoaderForm";
+import dynamic from "next/dynamic";
 
-import VidrariasID from "@/components/Forms/AulaForm/Vidrarias/ID";
+const VidrariasID  = dynamic(() => import("@/components/AulaVidraria/ID"), 
+    { 
+        ssr: false, 
+        loading: () => <LoaderFormSearch quantity={3}></LoaderFormSearch>,
+    }
+);
 
 interface PropPageEquipamentos {
     params: {
         id: string;
     }
 }
-
-async function getDataVidrarias() {
-    const response = await fetch('https://lab-control-h2e7x2ob3-marciop457s-projects.vercel.app/api/vidrarias');
-    return await response.json();
-  }
-  
 
 export default async function Page({params}: PropPageEquipamentos ) {
     const { id } = params;
@@ -20,3 +21,10 @@ export default async function Page({params}: PropPageEquipamentos ) {
         <VidrariasID id={id} vidrarias={dataVidrarias}></VidrariasID>
     )
 }
+
+async function getDataVidrarias() {
+    const response = await fetch('http://localhost:3000//api/vidrarias', {
+        'cache': 'no-cache'
+      });
+    return await response.json();
+  }

@@ -1,11 +1,11 @@
-"use client";
-import Button, { ButtonLink } from "@/components/Button";
+'use client'
+import { ButtonLink } from "@/components/Button";
 import DefaultForm from "@/components/DefaultForm";
 import Input from "@/components/Input";
 import { InputBoxSelectWithQuntity } from "@/components/InputBoxSelect";
 import Section from "@/components/Section";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const Adjust = styled.div`
@@ -60,9 +60,7 @@ interface Itens {
   quantidade_equipamento: number;
 }
 
-
-
-export default function EquipamentoRevisar({ id, equipamentos }: { id: string; equipamentos: any}) {
+export default function EquipamentoRevisar({ id, equipamentos, baixa, idAula }: { id: string; equipamentos: any; baixa?: boolean; idAula?: string}) {
   const arrayIds = id.replaceAll('%2C', ',').split(',');
   const [data,setData] = useState(equipamentos.data);
   const [itens, setItens] = useState(data.filter((e: any, i: any) => arrayIds.includes(e.id.toString())));
@@ -104,8 +102,6 @@ export default function EquipamentoRevisar({ id, equipamentos }: { id: string; e
     }
   }, []);
 
-  console.log(values);
-
   useEffect(() => {
     const localData = localStorage.getItem('equipamentosAula');
     if(localData){
@@ -135,13 +131,17 @@ export default function EquipamentoRevisar({ id, equipamentos }: { id: string; e
   
 
   const submitForm = () => {
-    router.push('/cadastro/aula');
-    if(localStorage.getItem('equipamentosAula')){
-      localStorage.removeItem('equipamentosAula')
+    if(!baixa){
+      router.push('/cadastro/aula');
+      if(localStorage.getItem('equipamentosAula')){
+        localStorage.removeItem('equipamentosAula')
+      }
+      localStorage.setItem('equipamentosAula', JSON.stringify(itens.map((e: any) =>  ({id_equipamento: e.id, quantidade_equipamento: e.quantidadeAdd})  )));
+    } else {
+      router.push(`/baixa-aulas/finalizar/${idAula}`);
     }
-    localStorage.setItem('equipamentosAula', JSON.stringify(itens.map((e: any) =>  ({id_equipamento: e.id, quantidade_equipamento: e.quantidadeAdd})  )));
   }
-  console.log(itens);
+
   return (
     <>
       {itens.length <= 0 && <h1>Selecione uma opção antes de continuar</h1>}
@@ -159,6 +159,7 @@ export default function EquipamentoRevisar({ id, equipamentos }: { id: string; e
                     addQuantity={() => handleAddQuantity(e.id)}
                     subQuantity={() => handleSubQuantity(e.id)}
                     quantityFloat={e.quantidadeAdd}
+                    {...(baixa ? { disable: true } : {})}
                   ></InputBoxSelectWithQuntity>
                   <Input
                     label="Quantidade"
@@ -177,11 +178,12 @@ export default function EquipamentoRevisar({ id, equipamentos }: { id: string; e
                     optionsFakeSelect={e.abr}
                     value={e.quantidadeAdd ? e.quantidadeAdd : 1}
                     stateOptions={stateOptions}
+                    {...(baixa ? { readOnly: true } : {})}
                   />
                 </div>
               ))}
               <Content>
-                <ButtonLink type="button" link="link" is="isTransparent" href={`/cadastro/aula/equipamentos/${itens.map((e: any) => e.id)}`}>
+                <ButtonLink type="button" link="link" is="isTransparent" href={baixa ? `/baixa-aulas/finalizar/${idAula}/vidrarias/${itens.map((e: any) => e.id)}` : `/cadastro/aula/vidrarias/${itens.map((e: any) => e.id)}`}>
                   CANCELAR
                 </ButtonLink>
                 <button onClick={submitForm} type="button">

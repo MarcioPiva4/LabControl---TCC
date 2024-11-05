@@ -1,5 +1,5 @@
 'use client'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 interface Fornecedor {
@@ -16,6 +16,7 @@ interface PropsInputSelectCheckbox {
     id: string;
     values: Fornecedores;
     title?: string;
+    reset?: boolean;
 }
 
 const Title = styled.h2`
@@ -113,7 +114,7 @@ const ContentWrappaper = styled.div`
     }
 `;
 
-export default function InputSelectCheckbox({id, values, title}: PropsInputSelectCheckbox){
+export default function InputSelectCheckbox({id, values, title, reset}: PropsInputSelectCheckbox){
     const [open, setOpen] = useState<boolean | null>(null);
     const [list, setList] = useState(values.map(e => ({
         ...e,
@@ -129,6 +130,17 @@ export default function InputSelectCheckbox({id, values, title}: PropsInputSelec
         const updatedList = list.map((e) => e.id == id ? { ...e, isSelected: false } : { ...e });
         setList(updatedList);
     }
+
+    useEffect(() => {
+        if(reset){
+          setList(
+            values.map((e) => ({
+              ...e,
+              isSelected: false,
+            }))
+          );
+        }
+    }, [reset])
     return(
         <div>
             <Title>{title}</Title>

@@ -20,13 +20,11 @@ export const authOptions: NextAuthOptions = {
           where: { email: credentials?.email },
         }) as any;
 
-        if (userEmailAdministrador && userEmailAdministrador.senha === credentials?.password) {
+        if (userEmailAdministrador && userEmailAdministrador.senha == credentials?.password) {
           const isFirstLogin = userEmailAdministrador.loginCount === 0;
 
-          // Incrementa o loginCount
           await Administrador.increment('loginCount', { by: 1, where: { id: userEmailAdministrador.id } });
 
-          console.log("isFirstLogin (admin):", isFirstLogin); 
           return {
             id: userEmailAdministrador.id,
             name: userEmailAdministrador.nome,
@@ -40,7 +38,7 @@ export const authOptions: NextAuthOptions = {
           where: { email: credentials?.email },
         }) as any;
 
-        if (userEmailProfessor && userEmailProfessor.senha === credentials?.password) {
+        if (userEmailProfessor && userEmailProfessor.senha == credentials?.password) {
           const isFirstLogin = userEmailProfessor.loginCount === 0;
 
           await Professor.increment('loginCount', { by: 1, where: { id: userEmailProfessor.id } });

@@ -6,13 +6,20 @@ import Section from "@/components/Section";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function VidrariasID({ id, vidrarias }: {id: any, vidrarias: any}){
+export default function AgenteReajenteID({ id, agenteReajente, baixa, idAula }: {id: any, agenteReajente: any; baixa?: boolean; idAula?: string}){
     const arrayIds = id.replaceAll('%2C', ',').split(',');
-    const [data,setData] = useState(vidrarias.data);
+    const [data,setData] = useState(agenteReajente.data);
 
     useEffect(() => {
+      if(baixa){
+        const activeForId = data
+        .filter((e: any, index: number) => arrayIds.includes(e.id.toString()))
+        .map((e: any) => ({ ...e, active: true }));
+        setData(activeForId);
+      } else {
         const activeForId = data.map((e: any) => arrayIds.includes(e.id.toString()) ? {...e, active: true} : {...e, active: false});
         setData(activeForId);
+      }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -36,10 +43,10 @@ export default function VidrariasID({ id, vidrarias }: {id: any, vidrarias: any}
   const selecteds = data.filter((e: any) => e.active);
   const selectedIds = selecteds.map((e: any) => e.id).join(',');
   return (
-    <Section title="Vidrarias" arrowBefore href="/cadastro/aula">
-      <InputSearch placeholder="pesquise as vidrarias..." id="vidrariasseach"></InputSearch>
+    <Section title="Agentes/Reajentes" arrowBefore href={baixa ? `/baixa-aulas/finalizar/${idAula}` :`/cadastro/aula`} bottom>
+      <InputSearch placeholder="pesquise os agentes/reajentes..." id="agentesreajentessseach"></InputSearch>
         {data.map((e: any, i: number) => ( 
-          <InputBoxSelect name={e.vidraria} key={i} id={e.id} activeOption={activeOption} disableOption={disableOption} active={e.active}></InputBoxSelect>
+          <InputBoxSelect name={e.nome} key={i} id={e.id} activeOption={activeOption} disableOption={disableOption} active={e.active}></InputBoxSelect>
         ))}
         <ButtonLink is="isNotTransparent" type="button" link="link" href={`revisar/${selectedIds}`}>Revisar</ButtonLink>
     </Section>

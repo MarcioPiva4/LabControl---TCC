@@ -45,7 +45,7 @@ const ProfessorForm = () => {
             <DefaultForm onSubmit={handleSubmit}>
                 {error.error && <ErrorMessage text={error.message} error={error}></ErrorMessage>}
                 <Input type="text" label="Nome" idInput="nome" />
-                <Input type="text" label="CPF" idInput="cpf" max={11} min={11} />
+                <Input type="text" label="CPF" idInput="cpf" />
                 <Input type="text" label="Telefone" idInput="telefone" />
                 <Input type="email" label="E-mail" idInput="email" />
                 {submiting ? <Loader></Loader> : null}

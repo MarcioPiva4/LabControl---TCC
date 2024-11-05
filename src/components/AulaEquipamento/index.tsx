@@ -5,8 +5,9 @@ import InputSearch from "@/components/InputSeach";
 import Section from "@/components/Section";
 import { useState } from "react";
 
-export default function VidrariasAula({ vidrarias } : any) {
-  const [data,setData] = useState(vidrarias.data);
+
+export default function EquipamentosAula({ equipamentos } : any) {
+  const [data,setData] = useState(equipamentos.data);
 
   function activeOption(id: number){
     const updatedData = data.map((e: any) => 
@@ -26,12 +27,12 @@ export default function VidrariasAula({ vidrarias } : any) {
   const selectedIds = selecteds.map((e: any) => e.id).join(',');
 
   return (
-    <Section title="Vidrarias" arrowBefore href="/cadastro/aula">
-      <InputSearch placeholder="pesquise as vidrarias..." id="vidrariasseach"></InputSearch>
+    <Section title="Equipamentos" arrowBefore href="/cadastro/aula" bottom>
+      <InputSearch placeholder="pesquise os equipamentos..." id="equipamentosseach"></InputSearch>
       {data.map((e: any, i: any) => ( 
-        <InputBoxSelect name={e.vidraria} key={i} id={e.id} activeOption={activeOption} disableOption={disableOption} active={e.active}></InputBoxSelect>
+        <InputBoxSelect name={e.equipamento} key={i} id={e.id} activeOption={activeOption} disableOption={disableOption} active={e.active}></InputBoxSelect>
       ))}
-        <ButtonLink is="isNotTransparent" type="button" link="link" href={`vidrarias/revisar/${selectedIds}`}>Revisar</ButtonLink>
+        <ButtonLink is="isNotTransparent" type="button" link="link" href={`equipamentos/revisar/${selectedIds}`}>Revisar</ButtonLink>
     </Section>
   );
 }

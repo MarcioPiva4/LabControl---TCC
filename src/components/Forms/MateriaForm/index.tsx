@@ -41,12 +41,18 @@ const MateriaForm = () => {
             setSubmiting(null);
         }
     };
+
+    const [onResetTriggered, setOnResetTriggered] = useState(false);
+    const handleReset = () => {
+        setOnResetTriggered(true);
+        setTimeout(() => setOnResetTriggered(false), 1000);
+    }
     return (
         <>
-            <DefaultForm onSubmit={handleSubmit}>
+            <DefaultForm onSubmit={handleSubmit} onReset={handleReset}>
                 {error.error && <ErrorMessage text={error.message} error={error}></ErrorMessage>}
                 <Input type="text" label="Nome da matéria" idInput="nome"></Input>
-                <TextArea labelText="Emenda" id="emenda" length></TextArea>
+                <TextArea labelText="Emenda" id="emenda" length reset={onResetTriggered} ></TextArea>
                 {submiting ? <Loader></Loader> : null}
                 <Button type="submit" is="isNotTransparent">CADASTRAR</Button>
                 {sucess && <MenuSubmit setSucess={setSucess}></MenuSubmit>}

@@ -1,16 +1,18 @@
-import VidrariasRevisar from "@/components/Forms/AulaForm/Vidrarias/Revisar";
+import { LoaderFormReview } from "@/components/LoaderForm";
+import dynamic from "next/dynamic";
 
+
+const VidrariasRevisar  = dynamic(() => import("@/components/AulaVidraria/Revisar"), 
+    { 
+        ssr: false, 
+        loading: () => <LoaderFormReview quantity={1}></LoaderFormReview>
+    }
+);
 interface PropPageRevisar {
   params: {
     id: string;
   }
 }
-
-async function getDataVidrarias() {
-  const response = await fetch('https://lab-control-h2e7x2ob3-marciop457s-projects.vercel.app/api/vidrarias');
-  return await response.json();
-}
-
 
 export default async function Page({ params }: PropPageRevisar){
   const { id } = params;
@@ -18,4 +20,11 @@ export default async function Page({ params }: PropPageRevisar){
   return(
     <VidrariasRevisar id={id} vidrarias={dataVidrarias}></VidrariasRevisar>
   )
+}
+
+async function getDataVidrarias() {
+  const response = await fetch('http://localhost:3000//api/vidrarias', {
+    'cache': 'no-cache'
+  });
+  return await response.json();
 }

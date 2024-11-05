@@ -56,19 +56,25 @@ const EquipamentosForm = ({data}: {data: unknown}) => {
             setSubmiting(null);
         }
     };
+
+    const [onResetTriggered, setOnResetTriggered] = useState(false);
+    const handleReset = () => {
+        setOnResetTriggered(true);
+        setTimeout(() => setOnResetTriggered(false), 1000);
+    }
     return (
         <>
-            <DefaultForm onSubmit={handleSubmit}>
+            <DefaultForm onSubmit={handleSubmit} onReset={handleReset}>
                 {error.error && <ErrorMessage text={error.message} error={error}></ErrorMessage>}
                 <Input type="text" label="Equipamento" idInput="equipamento"></Input>
                 <Input type="text" label="Tipo de Equipamento" idInput="tipo"></Input>
                 <Input type="text" label="Número de Série" idInput="numero_serie"></Input>
                 <Input type="text" label="Marca/Modelo" idInput="marca_modelo"></Input>
                 <Input type="text" label="Quantidade" idInput="quantidade"></Input>
-                {fornecedores && <InputSelectCheckbox id={'id_fornecedor'} values={fornecedores.data} title="Fornecedores"></InputSelectCheckbox>}
+                {fornecedores && <InputSelectCheckbox id={'id_fornecedor'} values={fornecedores.data} title="Fornecedores" reset={onResetTriggered}></InputSelectCheckbox>}
                 <Input type="text" label="Preço de Compra" idInput="preco_compra"></Input>
                 <Input type="text" label="Localização" idInput="localizacao"></Input>
-                <TextArea labelText="Observações adicionais" id="observacoes" length></TextArea>
+                <TextArea labelText="Observações adicionais" id="observacoes" length reset={onResetTriggered}></TextArea>
                 {submiting ? <Loader></Loader> : null}
                 <Button type="submit" is="isNotTransparent">CADASTRAR</Button>
                 {sucess && <MenuSubmit setSucess={setSucess}></MenuSubmit>}

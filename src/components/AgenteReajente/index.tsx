@@ -5,10 +5,8 @@ import InputSearch from "@/components/InputSeach";
 import Section from "@/components/Section";
 import { useState } from "react";
 
-export default function AgenteReajenteAula({ agentesReajentes } : any) {
-  console.log(agentesReajentes)
+export default function AgenteReajente({ agentesReajentes } : any) {
   const [data,setData] = useState(agentesReajentes.data);
-  console.log(data);
 
   function activeOption(id: number){
     const updatedData = data.map((e: any) => 
@@ -25,11 +23,9 @@ export default function AgenteReajenteAula({ agentesReajentes } : any) {
   }
 
   const selecteds = data.filter((e: any) => e.active);
-  console.log(selecteds);
   const selectedIds = selecteds.map((e: any) => e.id).join(',');
-  console.log(selectedIds);
   return (
-    <Section title="Agentes/Reajentes" arrowBefore href="/cadastro/aula">
+    <Section title="Agentes/Reajentes" arrowBefore href="/cadastro/aula" bottom>
       <InputSearch placeholder="pesquise os agentes/reajentes..." id="agentesreajentesseach"></InputSearch>
       {data.map((e: any, i: any) => ( 
         <InputBoxSelect name={e.nome} key={i} id={e.id} activeOption={activeOption} disableOption={disableOption} active={e.active}></InputBoxSelect>

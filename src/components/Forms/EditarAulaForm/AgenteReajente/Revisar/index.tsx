@@ -106,7 +106,7 @@ export default function AgenteReajenteRevisarEditar({ idAula, agentesReajentes, 
       setItens(filtered);
     }
   }, [aulasDataFiltered, agenteReajenteDataFiltered, abr, parsedData]);
-  console.log(aulasDataFiltered)
+
   const[dataOptions, setDataOptions] = useState<any>();
   const stateOptions = (childdata: any) => { 
     setDataOptions(childdata);

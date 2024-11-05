@@ -41,9 +41,14 @@ const LaboratorioForm = () => {
             setSubmiting(null);
         }
     };
+    const [onResetTriggered, setOnResetTriggered] = useState(false);
+    const handleReset = () => {
+        setOnResetTriggered(true);
+        setTimeout(() => setOnResetTriggered(false), 1000);
+    }
     return (
         <>
-            <DefaultForm onSubmit={handleSubmit}>
+            <DefaultForm onSubmit={handleSubmit} onReset={handleReset}>
                 {error.error && <ErrorMessage text={error.message} error={error}></ErrorMessage>}
                 <Input type="text" label="Nome do Laboratório" idInput="nome"></Input>
                 <Input type="text" label="Prédio" idInput="predio"></Input>
@@ -51,7 +56,7 @@ const LaboratorioForm = () => {
                 <Input type="text" label="Bloco" idInput="bloco"></Input>
                 <Input type="text" label="Sala"  idInput="sala"></Input>
                 <Input type="text" label="Responsável" idInput="responsavel"></Input>
-                <TextArea labelText="Descrição" id="descricao" length></TextArea>
+                <TextArea labelText="Descrição" id="descricao" length reset={onResetTriggered}></TextArea>
                 {submiting ? <Loader></Loader> : null}
                 <Button type="submit" is="isNotTransparent">CADASTRAR</Button>
                 {sucess && <MenuSubmit setSucess={setSucess}></MenuSubmit>}

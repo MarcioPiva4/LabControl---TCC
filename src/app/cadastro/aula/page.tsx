@@ -1,27 +1,13 @@
-import AulaForm from "@/components/Forms/AulaForm";
+import dynamic from "next/dynamic";
 import Section from "@/components/Section";
+import { LoaderForm } from "@/components/LoaderForm";
 
-
-async function getDataMateria() {
-    const response = await fetch('https://lab-control-gblfdwzu6-marciop457s-projects.vercel.app/api/materia', {
-        cache: 'no-cache',
-    });
-    return await response.json();
-}
-
-async function getDataLaboratorio() {
-    const response = await fetch('https://lab-control-gblfdwzu6-marciop457s-projects.vercel.app//api/laboratorio', {
-        cache: 'no-cache',
-    });
-    return await response.json();
-}
-
-async function getDataProfessor() {
-    const response = await fetch('https://lab-control-gblfdwzu6-marciop457s-projects.vercel.app//api/professor', {
-        cache: 'no-cache',
-    });
-    return await response.json();
-}
+const AulaForm  = dynamic(() => import("@/components/Forms/AulaForm"), 
+    { 
+        ssr: false, 
+        loading: () => <LoaderForm quantity={10} textArea></LoaderForm>
+    }
+);
 
 export default async function Aula(){
     const dataMateria = await getDataMateria();
@@ -32,4 +18,25 @@ export default async function Aula(){
             <AulaForm materias={dataMateria.data} laboratorio={dataLaboratorio.data} professor={dataProfessor.data}></AulaForm>
         </Section>
     )
+}
+
+async function getDataMateria() {
+    const response = await fetch('http://localhost:3000/api/materia', {
+        cache: 'no-cache',
+    });
+    return await response.json();
+}
+
+async function getDataLaboratorio() {
+    const response = await fetch('http://localhost:3000/api/laboratorio', {
+        cache: 'no-cache',
+    });
+    return await response.json();
+}
+
+async function getDataProfessor() {
+    const response = await fetch('http://localhost:3000//api/professor', {
+        cache: 'no-cache',
+    });
+    return await response.json();
 }

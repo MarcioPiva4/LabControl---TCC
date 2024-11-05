@@ -1,10 +1,11 @@
-"use client";
-import Button, { ButtonLink } from "@/components/Button";
+'use client'
+import { ButtonLink } from "@/components/Button";
 import DefaultForm from "@/components/DefaultForm";
+import { SelectVariant } from "@/components/FakeSelect";
 import Input from "@/components/Input";
 import { InputBoxSelectWithQuntity } from "@/components/InputBoxSelect";
 import Section from "@/components/Section";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
@@ -60,24 +61,21 @@ interface Itens {
   quantidade_agenteReajente: number;
 }
 
-
-
-export default function AgenteReajenteRevisar({ id, agentesReajentes }: { id: string; agentesReajentes: any}) {
+export default function AgenteReajenteRevisar({ id, agentesReajentes, baixa, idAula }: { id: string; agentesReajentes: any; baixa?: boolean; idAula?: string}) {
   const arrayIds = id.replaceAll('%2C', ',').split(',');
   const [data,setData] = useState(agentesReajentes.data);
   const [itens, setItens] = useState(data.filter((e: any, i: any) => arrayIds.includes(e.id.toString())));
   const router = useRouter();
   const [parsedData, setParsedData] = useState<Itens[]>([]);
   const [abr,setAbr] = useState([
-    { id: 1, nome: "Gramas (g)", abr: "g", active: false, value: "g" },
-    { id: 2, nome: "Quilogramas (Kg)", abr: "Kg", active: false, value: "Kg" },
+    { id: 1, nome: "Gramas (g)", abr: "G", active: false, value: "G" },
+    { id: 2, nome: "Quilogramas (Kg)", abr: "Kg", active: false, value: "KG" },
     { id: 3, nome: "Toneladas (T)", abr: "T", active: false, value: "T" },
-    { id: 4, nome: "Mililitros (ml)", abr: "ml", active: false, value: "ml" },
+    { id: 4, nome: "Mililitros (ml)", abr: "Ml", active: false, value: "ML" },
     { id: 5, nome: "Litros (L)", abr: "L", active: false, value: "L" },
-    { id: 6, nome: "Unidade (Un)", abr: "Un", active: true, value: "Un" },
+    { id: 6, nome: "Unidade (Un)", abr: "Un", active: true, value: "UN" },
   ]);
 
-  const [teste, setTeste] = useState();
   const selectRef = useRef(null);
 
   useEffect(() => {
@@ -90,9 +88,28 @@ export default function AgenteReajenteRevisar({ id, agentesReajentes }: { id: st
   }, [id, abr, parsedData]);
 
   useEffect(() => {
+    // Carregar dados do localStorage ao montar o componente
     const localData = localStorage.getItem('agenteReajenteAula');
-    if(localData){
-      setParsedData(JSON.parse(localData));
+    if (localData) {
+      const savedData = JSON.parse(localData);
+
+      // Atualiza o estado de itens
+      setItens((prev: any) => 
+        prev.map((item: any) => {
+          const savedItem = savedData.find((saved: any) => saved.id_agenteReajente === item.id);
+          return {
+            ...item,
+            quantidadeAdd: savedItem ? savedItem.quantidade_agenteReajente : item.quantidadeAdd,
+          };
+        })
+      );
+
+      // Atualiza o estado das unidades selecionadas
+      const unitMap = savedData.reduce((acc: any, saved: any) => {
+        acc[saved.id_agenteReajente] = saved.unidade;
+        return acc;
+      }, {});
+      setSelectedUnits(unitMap);
     }
   }, []);
 
@@ -116,15 +133,27 @@ export default function AgenteReajenteRevisar({ id, agentesReajentes }: { id: st
     );
   };
   
-
   const submitForm = () => {
-    router.push('/cadastro/aula');
-    if(localStorage.getItem('agenteReajenteAula')){
-      localStorage.removeItem('agenteReajenteAula')
+    if(!baixa){
+      if (localStorage.getItem('agenteReajenteAula')) {
+        localStorage.removeItem('agenteReajenteAula');
+      }
+      
+      const dadosParaSalvar = itens.map((e: any) => ({
+        id_agenteReajente: e.id,
+        quantidade_agenteReajente: e.quantidadeAdd,
+        unidade: selectedUnits[e.id] || 'G',
+      }));
+    
+      localStorage.setItem('agenteReajenteAula', JSON.stringify(dadosParaSalvar));
+    } else {
+      router.push(`/baixa-aulas/finalizar/${idAula}`);
     }
-    localStorage.setItem('agenteReajenteAula', JSON.stringify(itens.map((e: any) =>  ({id_agenteReajente: e.id, quantidade_agenteReajente: e.quantidadeAdd})  )));
+
   }
-  console.log(itens);
+  
+  
+  const [selectedUnits, setSelectedUnits] = useState<{ [key: number]: string }>({});
   return (
     <>
       {itens.length <= 0 && <h1>Selecione uma opção antes de continuar</h1>}
@@ -142,14 +171,14 @@ export default function AgenteReajenteRevisar({ id, agentesReajentes }: { id: st
                     addQuantity={() => handleAddQuantity(e.id)}
                     subQuantity={() => handleSubQuantity(e.id)}
                     quantityFloat={e.quantidadeAdd}
+                    {...(baixa ? { disable: true } : {})}
                   ></InputBoxSelectWithQuntity>
                   <Input
                     label="Quantidade"
                     type="number"
-                    selectAside
                     onChange={(event) => {
                       const newQuantity = parseFloat(event.target.value);
-                      setItens((prev: any) => 
+                      setItens((prev: any) =>
                         prev.map((item: any) =>
                           item.id === e.id
                             ? { ...item, quantidadeAdd: isNaN(newQuantity) ? 1 : newQuantity }
@@ -157,14 +186,22 @@ export default function AgenteReajenteRevisar({ id, agentesReajentes }: { id: st
                         )
                       );
                     }}
-                    optionsFakeSelect={e.abr}
                     value={e.quantidadeAdd ? e.quantidadeAdd : 1}
-                    selectRef={selectRef}
-                  />
+                    {...(baixa ? { readOnly: true } : {})}
+                  >
+                    <SelectVariant
+                      selectRef={selectRef}
+                      options={abr}
+                      onChange={(selectedValue) => {
+                        setSelectedUnits((prev) => ({ ...prev, [e.id]: selectedValue }));
+                      }}
+                      value={selectedUnits[e.id] || 'Un'}
+                    />
+                  </Input>
                 </div>
               ))}
               <Content>
-                <ButtonLink type="button" link="link" is="isTransparent" href={`/cadastro/aula/agente-reajente/${itens.map((e: any) => e.id)}`}>
+                <ButtonLink type="button" link="link" is="isTransparent" href={baixa ? `/baixa-aulas/finalizar/${idAula}/vidrarias/${itens.map((e: any) => e.id)}` : `/cadastro/aula/vidrarias/${itens.map((e: any) => e.id)}`}>
                   CANCELAR
                 </ButtonLink>
                 <button onClick={submitForm} type="button">

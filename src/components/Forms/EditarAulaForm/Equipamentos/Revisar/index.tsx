@@ -108,8 +108,6 @@ export default function EquipamentoRevisarEditar({ idAula, equipamentos, aulas, 
     }
   }, [aulasDataFiltered, equipamentosDataFiltered, abr, parsedData]);
   
-
-  console.log(itens)
   const[dataOptions, setDataOptions] = useState<any>();
   const stateOptions = (childdata: any) => { 
     setDataOptions(childdata);

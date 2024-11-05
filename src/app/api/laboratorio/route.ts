@@ -15,14 +15,9 @@ export async function POST(req: NextRequest){
     try{
         const { nome, predio, andar, bloco, sala, descricao, responsavel } = await req.json() as any;
 
-        if(nome.toString().length <= 0 ||
-            predio.toString().length <= 0 ||
-            andar.toString().length <= 0 ||
-            bloco.toString().length <= 0 ||
-            sala.toString().length <= 0 ||
-            responsavel.toString().length <= 0
+        if(nome.toString().length <= 0 || responsavel.toString().length <= 0
         ){
-            return NextResponse.json({status: 'error', message: 'Não pode haver campos vazios'}, {status: 400})
+            return NextResponse.json({status: 'error', message: 'Não pode haver campos obrigatórios vazios'}, {status: 400})
         }
 
         if(isDescriptionLengthMore(descricao)){

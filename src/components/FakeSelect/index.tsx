@@ -45,16 +45,26 @@ export function SelectVariant({
   selectRef,
   icon,
   options,
-  stateOptions
+  onChange,
+  value, 
 }: {
   selectRef?: any;
   icon?: boolean;
   options: Array<OptionType>;
-  stateOptions?: any;
+  onChange: (value: string) => void;
+  value?: string; 
 }) {
   const [openSelect, setOpenSelect] = useState<boolean>(false);
-  const [values, setValues] = useState<Array<OptionType>>(options);
+  const [values, setValues] = useState<Array<OptionType>>(Array.isArray(options) ? options : []);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const updatedValues = values.map((e) => ({
+      ...e,
+      active: e.value === value,
+    }));
+    setValues(updatedValues);
+  }, [value, options]);
 
   const selected = values.find((e) => e.active);
 
@@ -65,6 +75,14 @@ export function SelectVariant({
     }));
     setValues(updatedValues);
     setOpenSelect(false);
+
+    const selectedOption = updatedValues.find((e) => e.active);
+    if (selectedOption) {
+      onChange(selectedOption.value);
+      if (selectRef?.current) {
+        selectRef.current.value = selectedOption.value;
+      }
+    }
   }
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -80,11 +98,6 @@ export function SelectVariant({
     };
   }, [containerRef, openSelect]);
 
-  useEffect(() => {
-    if (selected) {
-      localStorage.setItem('selectedAbr', JSON.stringify(selected)); 
-    }
-  }, [selected]);
   return (
     <div ref={containerRef}>
       <ContentSelect
@@ -177,6 +190,7 @@ function FakeSelect({
       selectRef.current.value = selected.value;
     }
   }, [selectRef, selected]);
+
   return (
     <ContentList
       $icon={icon ?? false}

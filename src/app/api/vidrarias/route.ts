@@ -38,13 +38,15 @@ export async function POST(req: NextRequest){
         if(isDescriptionLengthMore(observacoes)){
             return NextResponse.json({status: 'error', message: 'Não ultrapasse os 255 caracteres nas observações'}, {status: 400});
         }
-
+        
+        const quantidade_float = quantidade;
         const createVidraria = await Vidrarias.create({
             vidraria,
             tipo,
             capacidade,
             material,
             quantidade,
+            quantidade_float,
             preco_compra,
             observacoes,
         }) as any;

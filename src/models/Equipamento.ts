@@ -26,7 +26,11 @@ const Equipamento = db.define('equipamentos', {
         allowNull: false,
     },
     quantidade: {
-        type: DataTypes.DECIMAL,
+        type: DataTypes.FLOAT,
+        allowNull: false,
+    },
+    quantidade_float: {
+        type: DataTypes.FLOAT,
         allowNull: false,
     },
     preco_compra: {

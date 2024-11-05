@@ -31,9 +31,11 @@ export async function POST(req: NextRequest){
             return NextResponse.json({status: 'error', message: 'Não ultrapasse os 255 caracteres nas observações'}, {status: 400});
         }
 
+        const quantidade_float = quantidade;
         const createEquipamento = await Equipamento.create({
             equipamento,
             quantidade,
+            quantidade_float,
             tipo,
             numero_serie,
             marca_modelo,

@@ -1,16 +1,19 @@
-import AgenteReajenteRevisar from "@/components/Forms/AulaForm/AgenteReajente/Revisar";
+import { LoaderFormReview } from "@/components/LoaderForm";
+import dynamic from "next/dynamic";
 
+
+const AgenteReajenteRevisar = dynamic(
+  () => import("@/components/AgenteReajente/Revisar"),
+  { 
+    ssr: false, 
+    loading: () => <LoaderFormReview quantity={1} />
+  }
+);
 interface PropPageRevisar {
   params: {
     id: string;
   }
 }
-
-async function getDataAgenteReajente() {
-  const response = await fetch('https://lab-control-h2e7x2ob3-marciop457s-projects.vercel.app/api/agente-reajente');
-  return await response.json();
-}
-
 
 export default async function Page({ params }: PropPageRevisar){
   const { id } = params;
@@ -18,4 +21,11 @@ export default async function Page({ params }: PropPageRevisar){
   return(
     <AgenteReajenteRevisar id={id} agentesReajentes={dataAgentesReajentes}></AgenteReajenteRevisar>
   )
+}
+
+async function getDataAgenteReajente() {
+  const response = await fetch('http://localhost:3000/api/agente-reajente', {
+    'cache': 'no-cache'
+  });
+  return await response.json();
 }

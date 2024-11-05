@@ -1,15 +1,24 @@
-import EquipamentosAula from "@/components/Forms/AulaForm/Equipamento";
+import { LoaderFormSearch } from "@/components/LoaderForm";
+import Section from "@/components/Section";
+import dynamic from "next/dynamic";
 
-async function getDataEquipamentos() {
-  const response = await fetch('https://lab-control-h2e7x2ob3-marciop457s-projects.vercel.app/api/equipamento', {
-    cache: 'no-cache',
-});
-  return await response.json();
-}
+const EquipamentosAula  = dynamic(() => import("@/components/AulaEquipamento"), 
+    { 
+        ssr: false, 
+        loading: () => <LoaderFormSearch quantity={3}></LoaderFormSearch>
+    }
+);
 
 export default async function Page(){
   const dataEquipamentos = await getDataEquipamentos();
   return(
     <EquipamentosAula  equipamentos={dataEquipamentos}></EquipamentosAula>
   )
+}
+
+async function getDataEquipamentos() {
+  const response = await fetch('http://localhost:3000/api/equipamento', {
+    cache: 'no-cache',
+});
+  return await response.json();
 }

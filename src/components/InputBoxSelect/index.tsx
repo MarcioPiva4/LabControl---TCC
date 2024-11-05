@@ -99,23 +99,28 @@ interface PropsInputBoxSelectWithQuantity extends PropInputBoxSelect {
   addQuantity?: any;
   subQuantity?: any;
   quantityFloat?: number;
+  disable?: boolean;
 }
 
-export function InputBoxSelectWithQuntity({ name, id, add, sub, addQuantity, subQuantity, quantityFloat }: PropsInputBoxSelectWithQuantity) {
+export function InputBoxSelectWithQuntity({ name, id, add, sub, addQuantity, subQuantity, quantityFloat, disable }: PropsInputBoxSelectWithQuantity) {
   const [value, setValue] = useState<number>(quantityFloat ?? 1);
   const handleAddQuantity = () => {
-    setValue(value + 1);
-    addQuantity(value + 1);
+    if(!disable){
+      setValue(value + 1);
+      addQuantity(value + 1);
+    }
   };
 
   const handleSubQuantity = () => {
-    setValue(value - 1);
-    subQuantity(value - 1);
+    if(!disable){
+      setValue(value - 1);
+      subQuantity(value - 1);
+    }
   };
 
   return (
     <ThemeProvider theme={theme}>
-      <BoxSelectWrapper>
+      <BoxSelectWrapper style={disable ? {background: '#A5A5A5'} : {}}>
         {sub && (
           <svg
             width="26"

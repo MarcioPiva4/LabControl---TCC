@@ -1,11 +1,10 @@
 import BoxMessage from "@/components/BoxMessage";
 import EditarAulaForm from "@/components/Forms/EditarAulaForm";
-import FinalizarAulaForm from "@/components/Forms/FinalizarAulaForm";
 import Section from "@/components/Section";
 
 async function getDataAulas() {
   const response = await fetch(
-    "https://lab-control-tcc-git-devlopment-marciop457s-projects.vercel.app//api/aula",
+    "http://localhost:3000//api/aula",
     { cache: "no-cache" }
   );
   return response.json();
@@ -13,21 +12,24 @@ async function getDataAulas() {
 
 async function getDataMateria() {
   const response = await fetch(
-    "https://lab-control-gblfdwzu6-marciop457s-projects.vercel.app/api/materia"
+    "http://localhost:3000/api/materia",
+    { cache: "no-cache" }
   );
   return await response.json();
 }
 
 async function getDataLaboratorio() {
   const response = await fetch(
-    "https://lab-control-gblfdwzu6-marciop457s-projects.vercel.app//api/laboratorio"
+    "http://localhost:3000//api/laboratorio",
+    { cache: "no-cache" }
   );
   return await response.json();
 }
 
 async function getDataProfessor() {
   const response = await fetch(
-    "https://lab-control-gblfdwzu6-marciop457s-projects.vercel.app//api/professor"
+    "http://localhost:3000//api/professor",
+    { cache: "no-cache" }
   );
   return await response.json();
 }

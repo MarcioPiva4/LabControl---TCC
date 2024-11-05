@@ -8,6 +8,7 @@ interface PropSelect {
   selectLabel: string;
   onChange?: (e: string) => void;
   value?: string;
+  readOnly?: boolean;
 }
 
 const Label = styled.label`
@@ -34,6 +35,12 @@ const SelectedOption = styled.div`
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
+
+  &.disabled{
+    color: #fff;
+    background-color: #b3b3b3;
+    cursor: unset;
+  }
 `;
 
 const OptionsList = styled.div.attrs<{ $isOpen: boolean }>(({ $isOpen }) => ({
@@ -50,11 +57,11 @@ const OptionsList = styled.div.attrs<{ $isOpen: boolean }>(({ $isOpen }) => ({
   z-index: 1;
 `;
 
-const Option = styled.div<{ isSelected: boolean }>`
+const Option = styled.div<{ selected: boolean }>`
   padding: 10px 15px;
   cursor: pointer;
-  background-color: ${(props) => (props.isSelected ? "#84EEC1" : "#041833")};
-  color: ${(props) => (props.isSelected ? "#041833" : "#fff")};
+  background-color: ${(props) => (props.selected ? "#84EEC1" : "#041833")};
+  color: ${(props) => (props.selected ? "#041833" : "#fff")};
 
   &:hover {
     background-color: #84EEC1;
@@ -68,10 +75,11 @@ export default function FakeSelect({
   selectLabel,
   value,
   onChange,
+  readOnly
 }: PropSelect) {
   const [selectedOption, setSelectedOption] = useState<string>(value || "");
   const [isOpen, setIsOpen] = useState(false);
-
+  
   useEffect(() => {
     if (value) {
       setSelectedOption(value);
@@ -87,38 +95,41 @@ export default function FakeSelect({
   };
 
   const containerRef = useRef<HTMLDivElement>(null);
+  
   const handleClickOutside = (event: MouseEvent) => {
-    if (containerRef.current && event.target instanceof Node && !containerRef.current.contains(event.target)) {
+    if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
       setIsOpen(false);
     }
   };
 
   useEffect(() => {
-    document.addEventListener('click', handleClickOutside, true);
+    document.addEventListener('click', handleClickOutside);
     return () => {
-      document.removeEventListener('click', handleClickOutside, true);
+      document.removeEventListener('click', handleClickOutside);
     };
-  }, [containerRef]);
+  }, []);
 
   return (
     <ThemeProvider theme={theme}>
       <Label>{selectLabel}</Label>
-      <SelectContainer>
-        <SelectedOption onClick={() => setIsOpen(!isOpen)}>
+      <SelectContainer ref={containerRef}>
+        <SelectedOption onClick={() => setIsOpen((prev) => !prev)} className={readOnly ? 'disabled' : ''}>
           {options.find((opt) => opt.id === selectedOption)?.nome || "Selecione uma opção"}
         </SelectedOption>
 
-        <OptionsList $isOpen={isOpen} ref={containerRef}>
+        {!readOnly &&
+        <OptionsList $isOpen={isOpen}>
           {options.map((e) => (
             <Option
               key={e.id}
-              isSelected={e.id == selectedOption} 
+              selected={e.id === selectedOption}
               onClick={() => handleOptionClick(e.id)}
             >
               {e.nome}
             </Option>
           ))}
         </OptionsList>
+        }
       </SelectContainer>
 
       <input type="hidden" id={id} name={id} value={selectedOption} readOnly />

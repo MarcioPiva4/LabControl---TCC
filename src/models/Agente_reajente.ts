@@ -42,23 +42,24 @@ const AgenteReajente = db.define('agentes_reajentes', {
         allowNull: false,
     },
     quantidade: {
-        type: DataTypes.STRING,
+        type: DataTypes.FLOAT,
         allowNull: false,
+    },
+    quantidade_float: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+    },
+    medida_quantidade: {
+        type: DataTypes.STRING,
+        allowNull: true,
     },
     armazenamento_recomendado: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     observacoes: {
         type: DataTypes.STRING,
         allowNull: true,
-    },
-    id_fornecedor: {
-        type: DataTypes.INTEGER, 
-        references: {
-            model: Fornecedor,
-            key: 'id',
-        }
     },
 });
 

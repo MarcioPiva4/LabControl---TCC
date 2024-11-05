@@ -18,11 +18,11 @@ const Laboratorio = db.define('laboratorios', {
     },
     andar: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     bloco: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     sala: {
         type: DataTypes.STRING,
@@ -30,7 +30,7 @@ const Laboratorio = db.define('laboratorios', {
     },
     responsavel: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
     descricao: {
         type: DataTypes.STRING,

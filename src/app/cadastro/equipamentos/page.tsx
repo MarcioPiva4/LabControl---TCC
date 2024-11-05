@@ -1,10 +1,14 @@
-import EquipamentosForm from "@/components/Forms/EquipamentosForm";
+import { LoaderForm } from "@/components/LoaderForm";
 import Section from "@/components/Section";
+import dynamic from "next/dynamic";
 
-async function getData() {
-    const response = await fetch('https://lab-control-h2e7x2ob3-marciop457s-projects.vercel.app/api/fornecedor');
-    return await response.json();
-}
+const EquipamentosForm = dynamic(() => import("@/components/Forms/EquipamentosForm"), 
+    { 
+        ssr: false, 
+        loading: () => <LoaderForm quantity={8} textArea></LoaderForm>
+    }
+);
+
 export default async function Equipamentos(){
     const data = await getData();
     return(
@@ -12,4 +16,11 @@ export default async function Equipamentos(){
             <EquipamentosForm data={data}></EquipamentosForm>
         </Section>
     )
+}
+
+async function getData() {
+    const response = await fetch('http://localhost:3000/api/fornecedor', {
+        cache: 'no-cache'
+    });
+    return await response.json();
 }

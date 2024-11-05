@@ -8,6 +8,7 @@ interface PropForm {
   method?: string;
   action?: string;
   onSubmit?: (event: React.FormEvent<HTMLFormElement>) => void;
+  onReset?: (event: React.FormEvent<HTMLFormElement>) => void;
 }
 
 const Form = styled.form`
@@ -22,6 +23,7 @@ export default function DefaultForm({
   method,
   action,
   onSubmit,
+  onReset,
 }: PropForm) {
   return (
     <Form
@@ -29,7 +31,8 @@ export default function DefaultForm({
       action={action}
       name={idForm}
       id={idForm}
-      onSubmit={onSubmit} // Usando a prop onSubmit
+      onSubmit={onSubmit}
+      onReset={onReset}
     >
       {children}
     </Form>

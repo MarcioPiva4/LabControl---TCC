@@ -27,9 +27,11 @@ const Professor = db.define('professores', {
     senha: {
         type: DataTypes.STRING,
         allowNull: true,
-    }
+    },
+    loginCount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+    },
 });
-
-Professor.sync({alter: true});
 
 export { Professor };

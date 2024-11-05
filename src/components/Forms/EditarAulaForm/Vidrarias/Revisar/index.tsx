@@ -81,7 +81,6 @@ export default function VidrariasRevisarEditar({ idAula, vidrarias, aulas, idVid
 
   }, [aulasData, idAula]);
 
-  console.log(itens)
   const router = useRouter();
   const [parsedData, setParsedData] = useState<Itens[]>([]);
   const [abr,setAbr] = useState([
@@ -109,7 +108,6 @@ export default function VidrariasRevisarEditar({ idAula, vidrarias, aulas, idVid
     }
   }, [aulasDataFiltered, vidrariasDataFiltered, abr, parsedData]);
 
-  console.log(aulasDataFiltered)
   const[dataOptions, setDataOptions] = useState<any>();
   const stateOptions = (childdata: any) => { 
     setDataOptions(childdata);

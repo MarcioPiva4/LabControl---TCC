@@ -9,6 +9,8 @@ interface propTextArea {
   id: string;
   length?: boolean;
   value?: string;
+  readOnly?: boolean;
+  reset?: boolean;
 }
 
 const Label = styled.label`
@@ -32,6 +34,12 @@ const TextAreaWrapper = styled.textarea`
   font-weight: ${(props) => props.theme.font.label.weight};
   margin-bottom: 25px;
   overflow: hidden;
+
+  &:read-only{
+    color: #fff;
+    background-color: #b3b3b3;
+    cursor: unset;
+  }
 `;
 
 const MaxLengthWrapper = styled.div`
@@ -44,7 +52,7 @@ const MaxLengthWrapper = styled.div`
   }
 `;
 
-export default function TextArea({ labelText, id, length, value }: propTextArea) {
+export default function TextArea({ labelText, id, length, value, readOnly, reset }: propTextArea) {
   const [caracteres, setCaracteres] = useState<number>(0);
   const [valueTextBox, setValueTextBox] = useState<string>();
 
@@ -61,6 +69,13 @@ export default function TextArea({ labelText, id, length, value }: propTextArea)
     e.target.value = valueLength;
     setValueTextBox(e.target.value);
   }
+
+  useEffect(() => {
+    if(reset){
+      setValueTextBox('')
+      setCaracteres(0);
+    }
+  }, [reset])
   return (
     <>
       <ThemeProvider theme={theme}>
@@ -72,6 +87,7 @@ export default function TextArea({ labelText, id, length, value }: propTextArea)
               name={id}
               onChange={(e) => {textAreaLength(e)}}
               value={valueTextBox}
+              readOnly={readOnly}
               ></TextAreaWrapper>
             <span>{caracteres} / 255</span>
           </MaxLengthWrapper>

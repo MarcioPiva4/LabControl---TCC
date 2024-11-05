@@ -9,12 +9,12 @@ interface PropPageRevisar {
 }
 
 async function getDataVidrarias() {
-  const response = await fetch('https://lab-control-h2e7x2ob3-marciop457s-projects.vercel.app/api/vidrarias');
+  const response = await fetch('http://localhost:3000/api/vidrarias');
   return await response.json();
 }
 
 async function getDataAulas() {
-  const response = await fetch('https://lab-control-tcc-git-devlopment-marciop457s-projects.vercel.app/api/aula');
+  const response = await fetch('http://localhost:3000/api/aula');
   return await response.json();
 }
 

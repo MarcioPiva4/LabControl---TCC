@@ -1,5 +1,13 @@
 
-import AgenteReajenteID from "@/components/Forms/AulaForm/AgenteReajente/ID";
+import { LoaderFormSearch } from "@/components/LoaderForm";
+import dynamic from "next/dynamic";
+
+const AgenteReajenteID  = dynamic(() => import("@/components/AgenteReajente/ID"), 
+    { 
+        ssr: false, 
+        loading: () => <LoaderFormSearch quantity={3}></LoaderFormSearch>
+    }
+);
 
 interface PropPageEquipamentos {
     params: {
@@ -7,16 +15,18 @@ interface PropPageEquipamentos {
     }
 }
 
-async function getDataAgenteReajente() {
-    const response = await fetch('https://lab-control-h2e7x2ob3-marciop457s-projects.vercel.app/api/agente-reajente');
-    return await response.json();
-}
-  
-
 export default async function Page({params}: PropPageEquipamentos ) {
     const { id } = params;
     const dataEquipamentos = await getDataAgenteReajente();
     return(
         <AgenteReajenteID id={id} agenteReajente={dataEquipamentos}></AgenteReajenteID>
     )
+}
+
+
+async function getDataAgenteReajente() {
+    const response = await fetch('http://localhost:3000/api/agente-reajente', {
+        'cache': 'no-cache'
+      });
+    return await response.json();
 }

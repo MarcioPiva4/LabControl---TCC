@@ -1,4 +1,5 @@
 'use client'
+
 import { ButtonLink } from "@/components/Button";
 import InputBoxSelect from "@/components/InputBoxSelect";
 import InputSearch from "@/components/InputSeach";
@@ -6,13 +7,20 @@ import Section from "@/components/Section";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function EquipamentoID({ id, equipamentos }: {id: any, equipamentos: any}){
+export default function VidrariasID({ id, vidrarias, baixa, idAula }: {id: any, vidrarias: any, baixa?: boolean, idAula?: string}){
     const arrayIds = id.replaceAll('%2C', ',').split(',');
-    const [data,setData] = useState(equipamentos.data);
+    const [data,setData] = useState(vidrarias.data);
 
     useEffect(() => {
-        const activeForId = data.map((e: any) => arrayIds.includes(e.id.toString()) ? {...e, active: true} : {...e, active: false});
-        setData(activeForId);
+        if(baixa){
+          const activeForId = data
+          .filter((e: any, index: number) => arrayIds.includes(e.id.toString()))
+          .map((e: any) => ({ ...e, active: true }));
+          setData(activeForId);
+        } else {
+          const activeForId = data.map((e: any) => arrayIds.includes(e.id.toString()) ? {...e, active: true} : {...e, active: false});
+          setData(activeForId);
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -36,10 +44,10 @@ export default function EquipamentoID({ id, equipamentos }: {id: any, equipament
   const selecteds = data.filter((e: any) => e.active);
   const selectedIds = selecteds.map((e: any) => e.id).join(',');
   return (
-    <Section title="Equipamentos" arrowBefore href="/cadastro/aula">
-      <InputSearch placeholder="pesquise os equipamentos..." id="equipamentosseach"></InputSearch>
+    <Section title="Vidrarias" arrowBefore href={baixa ? `/baixa-aulas/finalizar/${idAula}` :`/cadastro/aula`} bottom>
+      <InputSearch placeholder="pesquise as vidrarias..." id="vidrariasseach"></InputSearch>
         {data.map((e: any, i: number) => ( 
-          <InputBoxSelect name={e.equipamento} key={i} id={e.id} activeOption={activeOption} disableOption={disableOption} active={e.active}></InputBoxSelect>
+          <InputBoxSelect name={e.vidraria} key={i} id={e.id} activeOption={activeOption} disableOption={disableOption} active={e.active}></InputBoxSelect>
         ))}
         <ButtonLink is="isNotTransparent" type="button" link="link" href={`revisar/${selectedIds}`}>Revisar</ButtonLink>
     </Section>

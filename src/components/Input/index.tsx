@@ -28,6 +28,7 @@ interface PropInput {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   readOnly?: boolean;
   stateOptions?: any;
+  children?: React.ReactNode;
 }
 
 const ContentInput = styled.div`
@@ -90,16 +91,12 @@ export default function Input({
   idInput,
   placeHolder,
   type,
-  selectAside,
-  optionsFakeSelect,
-  icon,
-  selectRef,
   max,
   min,
   value,
   onChange,
   readOnly,
-  stateOptions,
+  children
 }: PropInput) {
   return (
     <ThemeProvider theme={theme}>
@@ -116,14 +113,7 @@ export default function Input({
           onChange={onChange}
           readOnly={readOnly}
         />
-        {selectAside && optionsFakeSelect && (
-          <SelectVariant
-            selectRef={selectRef}
-            icon={icon}
-            options={optionsFakeSelect}
-            stateOptions={stateOptions}
-          />
-        )}
+        {children}
       </ContentInput>
     </ThemeProvider>
   );

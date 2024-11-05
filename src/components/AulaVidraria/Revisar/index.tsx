@@ -1,10 +1,10 @@
-"use client";
-import Button, { ButtonLink } from "@/components/Button";
+'use client'
+import { ButtonLink } from "@/components/Button";
 import DefaultForm from "@/components/DefaultForm";
 import Input from "@/components/Input";
 import { InputBoxSelectWithQuntity } from "@/components/InputBoxSelect";
 import Section from "@/components/Section";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
@@ -61,9 +61,7 @@ interface Itens {
   quantidade_vidrarias: number;
 }
 
-
-
-export default function VidrariasRevisar({ id, vidrarias }: { id: string; vidrarias: any}) {
+export default function VidrariasRevisar({ id, vidrarias, baixa, idAula }: { id: string; vidrarias: any; baixa?: boolean; idAula?: string;}) {
   const arrayIds = id.replaceAll('%2C', ',').split(',');
   const [data,setData] = useState(vidrarias.data);
   const [itens, setItens] = useState(data.filter((e: any, i: any) => arrayIds.includes(e.id.toString())));
@@ -118,11 +116,15 @@ export default function VidrariasRevisar({ id, vidrarias }: { id: string; vidrar
   
 
   const submitForm = () => {
-    router.push('/cadastro/aula');
-    if(localStorage.getItem('vidrariasAula')){
-      localStorage.removeItem('vidrariasAula')
+    if(!baixa){
+      if(localStorage.getItem('vidrariasAula')){
+        localStorage.removeItem('vidrariasAula')
+      }
+      localStorage.setItem('vidrariasAula', JSON.stringify(itens.map((e: any) =>  ({id_vidrarias: e.id, quantidade_vidrarias: e.quantidadeAdd})  )));
+      router.push('/cadastro/aula');
+    } else {
+      router.push(`/baixa-aulas/finalizar/${idAula}`);
     }
-    localStorage.setItem('vidrariasAula', JSON.stringify(itens.map((e: any) =>  ({id_vidrarias: e.id, quantidade_vidrarias: e.quantidadeAdd})  )));
   }
   return (
     <>
@@ -141,6 +143,7 @@ export default function VidrariasRevisar({ id, vidrarias }: { id: string; vidrar
                     addQuantity={() => handleAddQuantity(e.id)}
                     subQuantity={() => handleSubQuantity(e.id)}
                     quantityFloat={e.quantidadeAdd}
+                    {...(baixa ? { disable: true } : {})}
                   ></InputBoxSelectWithQuntity>
                   <Input
                     label="Quantidade"
@@ -159,11 +162,12 @@ export default function VidrariasRevisar({ id, vidrarias }: { id: string; vidrar
                     optionsFakeSelect={e.abr}
                     value={e.quantidadeAdd ? e.quantidadeAdd : 1}
                     selectRef={selectRef}
+                    {...(baixa ? { readOnly: true } : {})}
                   />
                 </div>
               ))}
               <Content>
-                <ButtonLink type="button" link="link" is="isTransparent" href={`/cadastro/aula/vidrarias/${itens.map((e: any) => e.id)}`}>
+                <ButtonLink type="button" link="link" is="isTransparent" href={baixa ? `/baixa-aulas/finalizar/${idAula}/vidrarias/${itens.map((e: any) => e.id)}` : `/cadastro/aula/vidrarias/${itens.map((e: any) => e.id)}`}>
                   CANCELAR
                 </ButtonLink>
                 <button onClick={submitForm} type="button">

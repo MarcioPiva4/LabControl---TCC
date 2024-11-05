@@ -2,6 +2,7 @@ import { Administrador } from "@/models/Administrador";
 import { isValidateCEP } from "@/utils/cepValitador";
 import { isValidateDate } from "@/utils/dateValidator";
 import { isValidEmail } from "@/utils/emailValitador";
+import { generatePassword } from "@/utils/generatePassword";
 import { isValidName } from "@/utils/nameValitador";
 import { isValidateHouseNumber } from "@/utils/numHouseValidator";
 import { isValidPhoneNumber } from "@/utils/phoneValitador";
@@ -58,7 +59,7 @@ export async function POST(req: NextRequest){
             return NextResponse.json({ status: 'error', message: `Número inválido`, code: 400 }, {status: 400});
         }
 
-        const randomPassword = Math.random();
+        const password = generatePassword();
 
         const createAdministrador = await Administrador.create({
             nome,
@@ -70,9 +71,9 @@ export async function POST(req: NextRequest){
             cidade,
             rua,
             numero,
-            senha: randomPassword,
+            senha: password,
         });
-        sendEmail(randomPassword.toString(), email, nome);
+        sendEmail(password.toString(), email, nome, 'adm');
         return NextResponse.json({status: 'sucess', message: 'Administrador criado com sucesso', createAdministrador}, {status: 201})
         
     } catch (error) {
@@ -127,11 +128,11 @@ export async function PATCH(req: NextRequest){
         const { id, password, passwordRepeat } = await req.json() as any;
 
         if(!password && !passwordRepeat){
-            return NextResponse.json({ status: 'error', message: 'Não deixe nenhum campo vazio'}, {status: 400}); 
+            return NextResponse.json({ status: 'error', message: 'Não deixe nenhum campo vazio.'}, {status: 400}); 
         }
 
         if(password !== passwordRepeat){
-            return NextResponse.json({ status: 'error', message: 'Adicione duas senha iguais, tente novamente'}, {status: 400}); 
+            return NextResponse.json({ status: 'error', message: 'Adicione duas senha iguais, tente novamente.'}, {status: 400}); 
         }
 
         const update = await Administrador.update({

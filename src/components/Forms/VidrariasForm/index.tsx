@@ -9,6 +9,7 @@ import ErrorMessage from "@/components/ErrorMessage";
 import TextArea from "@/components/TextArea";
 import styled from "styled-components";
 import InputSelectCheckbox from "@/components/InputSelectCheckbox";
+import { SelectVariant } from "@/components/FakeSelect";
 
 const InputCheckboxWrapper = styled.div`
     display: flex;
@@ -60,68 +61,78 @@ const VidrariasForm = ({data}: {data: unknown}) => {
             setSubmiting(null);
         }
     };
+
+    const [abr, setAbr] = useState([
+        { id: 1, nome: "Gramas (g)", abr: "G", active: false, value: "G" },
+        { id: 2, nome: "Quilogramas (Kg)", abr: "Kg", active: false, value: "KG" },
+        { id: 3, nome: "Toneladas (T)", abr: "T", active: false, value: "T" },
+        { id: 4, nome: "Mililitros (ml)", abr: "Ml", active: false, value: "ML" },
+        { id: 5, nome: "Litros (L)", abr: "L", active: false, value: "L" },
+        { id: 6, nome: "Unidade (Un)", abr: "Un", active: true, value: "UN" },
+    ]);
+    const [selectedUnits, setSelectedUnits] = useState({
+        peso_molecular: "UN",
+        concentracao: "g/l",
+        quantidade: "g",
+    });
+
+    const [onResetTriggered, setOnResetTriggered] = useState(false);
+    const handleReset = () => {
+        setOnResetTriggered(true);
+        setTimeout(() => setOnResetTriggered(false), 1000);
+    }
+    
     return (
-        <>
-            <DefaultForm onSubmit={handleSubmit}>
-                {error.error && <ErrorMessage text={error.message} error={error}></ErrorMessage>}
-                <Input type="text" label="Vidraria" idInput="vidraria"></Input>
-                <Input type="text" label="Tipo de Vidraria" idInput="tipo"></Input>
-                <Input type="number" selectRef={selectQuantidade} label="Capacidade" idInput="capacidade" selectAside
-                    optionsFakeSelect={[
-                        {
-                            id: 1,
-                            nome: "Gramas (g)",
-                            abr: "g",
-                            active: true,
-                            value: "g"
-                        },
-                        {
-                            id: 2,
-                            nome: "Quilogramas (Kg)",
-                            abr: "Kg",
-                            active: false,
-                            value: "Kg"
-                        },
-                        {
-                            id: 3,
-                            nome: "Toneladas (T)",
-                            abr: "T",
-                            active: false,
-                            value: "T"
-                        },
-                        {
-                            id: 4,
-                            nome: "Mililitros (ml)",
-                            abr: "ml",
-                            active: false,
-                            value: "ml"
-                        },
-                        {
-                            id: 5,
-                            nome: "Litros (L)",
-                            abr: "L",
-                            active: false,
-                            value: "L"
-                        },
-                        {
-                            id: 6,
-                            nome: "Unidade (Un)",
-                            abr: "Un",
-                            active: false,
-                            value: "Un"
-                        },
-                    ]}></Input>
-                <Input type="text" label="Material" idInput="material"></Input>
-                <Input type="number" label="Quantidade" idInput="quantidade" ></Input>
-                {fornecedores && <InputSelectCheckbox id={'id_fornecedor'} values={fornecedores.data} title="Fornecedores"></InputSelectCheckbox>}
-                <Input type="text" label="Preço de Compra" idInput="preco_compra" ></Input>
-                <Input type="text" label="Localização" idInput="localizacao"></Input>
-                <TextArea labelText="Observações adicionais" id="observacoes" length></TextArea>
-                {submiting ? <Loader></Loader> : null}
-                <Button type="submit" is="isNotTransparent">CADASTRAR</Button>
-                {sucess && <MenuSubmit setSucess={setSucess}></MenuSubmit>}
-            </DefaultForm>
-        </>
+      <>
+        <DefaultForm onSubmit={handleSubmit} onReset={handleReset}>
+          {error.error && (
+            <ErrorMessage text={error.message} error={error}></ErrorMessage>
+          )}
+          <Input type="text" label="Vidraria" idInput="vidraria"></Input>
+          <Input type="text" label="Tipo de Vidraria" idInput="tipo"></Input>
+          <Input
+            type="number"
+            selectRef={selectQuantidade}
+            label="Capacidade"
+            idInput="capacidade">
+            <SelectVariant
+              selectRef={selectQuantidade}
+              options={abr}
+              onChange={(selectedValue) =>
+                setSelectedUnits((prev) => ({
+                  ...prev,
+                  peso_molecular: selectedValue,
+                }))
+              }
+            />
+          </Input>
+          <Input type="text" label="Material" idInput="material"></Input>
+          <Input type="number" label="Quantidade" idInput="quantidade"></Input>
+          {fornecedores && (
+            <InputSelectCheckbox
+              id={"id_fornecedor"}
+              values={fornecedores.data}
+              title="Fornecedores"
+              reset={onResetTriggered}></InputSelectCheckbox>
+          )}
+          <Input
+            type="text"
+            label="Preço de Compra"
+            idInput="preco_compra"></Input>
+          <Input type="text" label="Localização" idInput="localizacao"></Input>
+          <TextArea
+            labelText="Observações adicionais"
+            id="observacoes"
+            length 
+            reset={onResetTriggered}
+            ></TextArea>
+          {submiting ? <Loader></Loader> : null}
+          <Button type="submit" is="isNotTransparent">
+            CADASTRAR
+          </Button>
+          {sucess && <MenuSubmit setSucess={setSucess}></MenuSubmit>}
+        </DefaultForm>
+      </>
     );
 };
 
