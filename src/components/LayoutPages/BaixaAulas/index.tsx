@@ -126,7 +126,7 @@ const ContentAulas = styled.div.attrs<{ $finish?: boolean }>((props) => ({
 
 export default function BaixaAulas({ aulas, professores }: {aulas: any; professores: any}){
     const [dataAulas, setDataAulas] = useState(aulas.data);
-    return dataAulas.length > 0 ? (
+    return dataAulas ? (
       <>
         <ContentFilters>
           <div className="selects">

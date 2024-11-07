@@ -127,14 +127,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const createAula = (await Aula.create({
-      topico_aula,
-      horario_inicio,
-      horario_finalizacao,
-      data,
-      observacoes,
-    })) as any;
-
     if (equipamentos || vidrarias || agenteReajente) {
       const verificarEstoque = async () => {
         if (equipamentos) {
@@ -186,7 +178,17 @@ export async function POST(req: NextRequest) {
         }
       };
       await verificarEstoque();
+    }
 
+    const createAula = (await Aula.create({
+      topico_aula,
+      horario_inicio,
+      horario_finalizacao,
+      data,
+      observacoes,
+    })) as any;
+
+    if (equipamentos || vidrarias || agenteReajente) {
       if(equipamentos){
         //muitos para muitos
         await Promise.all(

@@ -1,4 +1,3 @@
-import EquipamentoRevisar from "@/components/Forms/AulaForm/Equipamento/Revisar";
 import EquipamentoRevisarEditar from "@/components/Forms/EditarAulaForm/Equipamentos/Revisar";
 
 interface PropPageRevisar {

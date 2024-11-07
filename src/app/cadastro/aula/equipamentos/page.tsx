@@ -1,5 +1,4 @@
 import { LoaderFormSearch } from "@/components/LoaderForm";
-import Section from "@/components/Section";
 import dynamic from "next/dynamic";
 
 const EquipamentosAula  = dynamic(() => import("@/components/AulaEquipamento"), 
