@@ -1,14 +1,14 @@
 import EquipamentosAulaEditar from "@/components/Forms/EditarAulaForm/Equipamentos";
 
 async function getDataEquipamentos() {
-  const response = await fetch('http://localhost:3000/api/equipamento', {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/equipamento`, {
     cache: 'no-cache',
 });
   return await response.json();
 }
 
 async function getDataAulas() {
-  const response = await fetch('http://localhost:3000/api/aula', {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/aula`, {
     cache: 'no-cache',
 });
   return await response.json();

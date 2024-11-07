@@ -21,21 +21,21 @@ export default async function Aula(){
 }
 
 async function getDataMateria() {
-    const response = await fetch('http://localhost:3000/api/materia', {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/materia`, {
         cache: 'no-cache',
     });
     return await response.json();
 }
 
 async function getDataLaboratorio() {
-    const response = await fetch('http://localhost:3000/api/laboratorio', {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/laboratorio`, {
         cache: 'no-cache',
     });
     return await response.json();
 }
 
 async function getDataProfessor() {
-    const response = await fetch('http://localhost:3000//api/professor', {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/professor`, {
         cache: 'no-cache',
     });
     return await response.json();

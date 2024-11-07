@@ -18,14 +18,14 @@ export default async function Page(){
 }
 
 async function getDataAulas(){
-    const response = await fetch('http://localhost:3000/api/aula', {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/aula`, {
         cache: 'no-cache',
     });
     return await response.json();
 }
 
 async function getDataProfessores(){
-    const response = await fetch('http://localhost:3000/api/professor', {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/professor`, {
         cache: 'no-cache',
     });
     return await response.json();

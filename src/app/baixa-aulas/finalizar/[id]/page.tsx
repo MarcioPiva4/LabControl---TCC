@@ -2,14 +2,14 @@ import FinalizarAulaForm from "@/components/Forms/FinalizarAulaForm";
 import Section from "@/components/Section";
 
 async function getDataAulas(){
-    const response = await fetch('http://localhost:3000/api/aula',
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/aula`,
         { cache: "no-cache" });
     return response.json();
 }
 
 async function getDataMateria() {
     const response = await fetch(
-      "http://localhost:3000/api/materia",
+      `${process.env.NEXT_PUBLIC_API_URL}/api/materia`,
       { cache: "no-cache" }
     );
     return await response.json();
@@ -17,7 +17,7 @@ async function getDataMateria() {
   
   async function getDataLaboratorio() {
     const response = await fetch(
-      "http://localhost:3000//api/laboratorio",
+      `${process.env.NEXT_PUBLIC_API_URL}/api/laboratorio`,
       { cache: "no-cache" }
     );
     return await response.json();
@@ -25,7 +25,7 @@ async function getDataMateria() {
   
   async function getDataProfessor() {
     const response = await fetch(
-      "http://localhost:3000//api/professor",
+      `${process.env.NEXT_PUBLIC_API_URL}/api/professor`,
       { cache: "no-cache" }
     );
     return await response.json();

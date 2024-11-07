@@ -9,12 +9,12 @@ interface PropPageRevisar {
 }
 
 async function getDataVidrarias() {
-  const response = await fetch('http://localhost:3000/api/vidrarias');
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/vidrarias`);
   return await response.json();
 }
 
 async function getDataAulas() {
-  const response = await fetch('http://localhost:3000/api/aula');
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/aula`);
   return await response.json();
 }
 

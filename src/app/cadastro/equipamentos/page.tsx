@@ -19,7 +19,7 @@ export default async function Equipamentos(){
 }
 
 async function getData() {
-    const response = await fetch('http://localhost:3000/api/fornecedor', {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/fornecedor`, {
         cache: 'no-cache'
     });
     return await response.json();

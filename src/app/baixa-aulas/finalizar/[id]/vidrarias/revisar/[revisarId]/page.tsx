@@ -24,7 +24,7 @@ export default async function Page({ params }: PropPageRevisar){
 }
 
 async function getDataVidrarias() {
-  const response = await fetch('http://localhost:3000/api/vidrarias', {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/vidrarias`, {
     'cache': 'no-cache'
   });
   return await response.json();

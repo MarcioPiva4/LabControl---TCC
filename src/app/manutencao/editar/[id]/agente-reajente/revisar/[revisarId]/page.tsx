@@ -9,12 +9,12 @@ interface PropPageRevisar {
 }
 
 async function getDataAgenteReajente() {
-    const response = await fetch('http://localhost:3000/api/agente-reajente');
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/agente-reajente`);
     return await response.json();
 }
   
 async function getDataAulas() {
-    const response = await fetch('http://localhost:3000/api/aula');
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/aula`);
     return await response.json();
 }
 

@@ -1,14 +1,14 @@
 import AgenteReajenteAulaEditar from "@/components/Forms/EditarAulaForm/AgenteReajente";
 
 async function getDataAgenteReajente() {
-  const response = await fetch('lab-control-tcc-git-devlopment-marciop457s-projects.vercel.app//api/agente-reajente', {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/agente-reajente`, {
     cache: 'no-cache',
 });
   return await response.json();
 }
 
 async function getDataAulas() {
-  const response = await fetch('lab-control-tcc-git-devlopment-marciop457s-projects.vercel.app//api/aula', {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/aula`, {
     cache: 'no-cache',
 });
   return await response.json();

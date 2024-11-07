@@ -7,26 +7,26 @@ const BaixaAulas = dynamic(() => import("@/components/LayoutPages/BaixaAulas"), 
     loading: () => <LoaderAulas quantity={4}></LoaderAulas>
 })
 
-export default async function Page(){
+export default async function Page() {
     const dataAulas = await getDataAulas();
     const dataProfessores = await getDataProfessores();
-    return(
+    return (
         <Section title="Finalizar aula" bottom>
             <BaixaAulas aulas={dataAulas} professores={dataProfessores}></BaixaAulas>
         </Section>
-    )
+    );
 }
 
-async function getDataAulas(){
-    const response = await fetch('http://localhost:3000/api/aula',     {
-        cache: 'no-cache' 
-      });
+async function getDataAulas() {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/aula`, {
+        cache: 'no-cache'
+    });
     return await response.json();
 }
 
-async function getDataProfessores(){
-    const response = await fetch('http://localhost:3000/api/professor', {
-        cache: 'no-cache' 
+async function getDataProfessores() {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/professor`, {
+        cache: 'no-cache'
     });
     return await response.json();
 }
