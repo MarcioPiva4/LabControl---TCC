@@ -55,5 +55,5 @@ const Administrador = db.define("administradores", {
   },
 });
 
-Administrador.sync({ force: true });
+// Administrador.sync({ force: true });
 export { Administrador };
