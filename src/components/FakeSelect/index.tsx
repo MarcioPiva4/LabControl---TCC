@@ -46,16 +46,22 @@ export function SelectVariant({
   icon,
   options,
   onChange,
-  value, 
+  value,
+  valueStartActive,
+  disabled,
 }: {
   selectRef?: any;
   icon?: boolean;
   options: Array<OptionType>;
   onChange: (value: string) => void;
-  value?: string; 
+  value?: string;
+  valueStartActive?: string;
+  disabled?: boolean;
 }) {
   const [openSelect, setOpenSelect] = useState<boolean>(false);
-  const [values, setValues] = useState<Array<OptionType>>(Array.isArray(options) ? options : []);
+  const [values, setValues] = useState<Array<OptionType>>(
+    Array.isArray(options) ? options : []
+  );
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -86,39 +92,61 @@ export function SelectVariant({
   }
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (containerRef.current && event.target instanceof Node && !containerRef.current.contains(event.target)) {
+    if (
+      containerRef.current &&
+      event.target instanceof Node &&
+      !containerRef.current.contains(event.target)
+    ) {
       setOpenSelect(false);
     }
   };
 
   useEffect(() => {
-    document.addEventListener('click', handleClickOutside, true);
+    document.addEventListener("click", handleClickOutside, true);
     return () => {
-      document.removeEventListener('click', handleClickOutside, true);
+      document.removeEventListener("click", handleClickOutside, true);
     };
   }, [containerRef, openSelect]);
 
+  useEffect(() => {
+    if (valueStartActive) {
+      const updatedValues = values.map((e) => ({
+        ...e,
+        active: e.value == valueStartActive,
+      }));
+      setValues(updatedValues);
+    }
+  }, []);
+
   return (
     <div ref={containerRef}>
-      <ContentSelect
-        onClick={() => setOpenSelect(!openSelect)}
-        $active={openSelect}>
-        <p>{selected ? selected.abr : "Selecione"}</p>
-        <Image
-          src="/inputArrow.svg"
-          alt="Ícone de seta virada para a esquerda"
-          width={15}
-          height={15}
-        />
-      </ContentSelect>
-      <FakeSelect
-        openSelect={openSelect}
-        selectRef={selectRef}
-        icon={icon}
-        options={values}
-        setOption={setOption}
-        selected={selected}
-      />
+      {!disabled ? (
+        <>
+          <ContentSelect
+            onClick={() => setOpenSelect(!openSelect)}
+            $active={openSelect}>
+            <p>{selected ? selected.abr : "Selecione"}</p>
+            <Image
+              src="/inputArrow.svg"
+              alt="Ícone de seta virada para a esquerda"
+              width={15}
+              height={15}
+            />
+          </ContentSelect>
+          <FakeSelect
+            openSelect={openSelect}
+            selectRef={selectRef}
+            icon={icon}
+            options={values}
+            setOption={setOption}
+            selected={selected}
+          />
+        </>
+      ) : (
+        <ContentSelect>
+            <p>{selected ? selected.abr : "Selecione"}</p>
+        </ContentSelect>
+      )}
     </div>
   );
 }
@@ -184,7 +212,7 @@ function FakeSelect({
   options: Array<OptionType>;
   setOption: any;
   selected: any;
-}) {  
+}) {
   useEffect(() => {
     if (selectRef?.current && selected) {
       selectRef.current.value = selected.value;

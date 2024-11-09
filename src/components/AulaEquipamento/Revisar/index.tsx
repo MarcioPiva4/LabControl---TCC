@@ -60,12 +60,13 @@ interface Itens {
   quantidade_equipamento: number;
 }
 
-export default function EquipamentoRevisar({ id, equipamentos, baixa, idAula }: { id: string; equipamentos: any; baixa?: boolean; idAula?: string}) {
+export default function EquipamentoRevisar({ id, equipamentos, baixa, idAula, aulas }: { id: string; equipamentos: any; baixa?: boolean; idAula?: string; aulas?: any}) {
   const arrayIds = id.replaceAll('%2C', ',').split(',');
   const [data,setData] = useState(equipamentos.data);
   const [itens, setItens] = useState(data.filter((e: any, i: any) => arrayIds.includes(e.id.toString())));
   const router = useRouter();
   const [parsedData, setParsedData] = useState<Itens[]>([]);
+  const [dataAulas, setDataAulas] = useState(aulas? aulas.data.filter((e: any) => e.id == idAula) : null);
   const [abr,setAbr] = useState([
     { id: 1, nome: "Gramas (g)", abr: "g", active: false, value: "g" },
     { id: 2, nome: "Quilogramas (Kg)", abr: "Kg", active: false, value: "Kg" },
@@ -128,7 +129,6 @@ export default function EquipamentoRevisar({ id, equipamentos, baixa, idAula }: 
       )
     );
   };
-  
 
   const submitForm = () => {
     if(!baixa){
@@ -141,7 +141,6 @@ export default function EquipamentoRevisar({ id, equipamentos, baixa, idAula }: 
       router.push(`/baixa-aulas/finalizar/${idAula}`);
     }
   }
-
   return (
     <>
       {itens.length <= 0 && <h1>Selecione uma opção antes de continuar</h1>}
@@ -149,7 +148,7 @@ export default function EquipamentoRevisar({ id, equipamentos, baixa, idAula }: 
         <Section title={`Revisar Item`} bottom>
           <DefaultForm>
             <Adjust>
-              {itens.map((e: any) => (
+              {itens.map((e: any, i:number) => (
                 <div key={e.id}>
                   <InputBoxSelectWithQuntity
                     name={e.equipamento}
@@ -176,7 +175,7 @@ export default function EquipamentoRevisar({ id, equipamentos, baixa, idAula }: 
                       );
                     }}
                     optionsFakeSelect={e.abr}
-                    value={e.quantidadeAdd ? e.quantidadeAdd : 1}
+                    value={!baixa ? e.quantidadeAdd ? e.quantidadeAdd : 1 : dataAulas && dataAulas[0]?.equipamentos[i]?.EquipamentoAula.quantidade}
                     stateOptions={stateOptions}
                     {...(baixa ? { readOnly: true } : {})}
                   />

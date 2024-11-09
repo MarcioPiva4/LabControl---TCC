@@ -8,6 +8,7 @@ import { CSSTransition } from "react-transition-group";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import logo from "../../../public/logo.png";
+import { signOut } from "next-auth/react";
 
 const HeaderWrapper = styled.header`
   width: 100%;
@@ -236,7 +237,7 @@ export function Header( { session }: { session?: any }) {
                 </Link>
               </Li>
               <Li $active={activePage === "/baixa-aulas"}>
-                <Link
+                <Link 
                   href={"/baixa-aulas"}
                   onClick={() => handleLinkClick("/baixa-aulas")}>
                   <p>Baixa de aulas</p>
@@ -245,9 +246,9 @@ export function Header( { session }: { session?: any }) {
               </Li>
               <Li $active={activePage === "/relatorios"}>
                 <Link
-                  href={"/relatorios"}
-                  onClick={() => handleLinkClick("/relatorios")}>
-                  <p>Relatorios</p>
+                  href={"#"}
+                  onClick={() => signOut({ callbackUrl: "/login" })}>
+                  <p>Sair</p>
                   <Icons icon="relatorios" />
                 </Link>
               </Li>

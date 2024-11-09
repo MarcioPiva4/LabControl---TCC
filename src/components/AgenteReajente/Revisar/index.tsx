@@ -61,19 +61,20 @@ interface Itens {
   quantidade_agenteReajente: number;
 }
 
-export default function AgenteReajenteRevisar({ id, agentesReajentes, baixa, idAula }: { id: string; agentesReajentes: any; baixa?: boolean; idAula?: string}) {
+export default function AgenteReajenteRevisar({ id, agentesReajentes, baixa, idAula, aulas }: { id: string; agentesReajentes: any; baixa?: boolean; idAula?: string; aulas?: any}) {
   const arrayIds = id.replaceAll('%2C', ',').split(',');
   const [data,setData] = useState(agentesReajentes.data);
   const [itens, setItens] = useState(data.filter((e: any, i: any) => arrayIds.includes(e.id.toString())));
   const router = useRouter();
   const [parsedData, setParsedData] = useState<Itens[]>([]);
+  const [dataAulas, setDataAulas] = useState(aulas? aulas.data.filter((e: any) => e.id == idAula) : null);
   const [abr,setAbr] = useState([
     { id: 1, nome: "Gramas (g)", abr: "G", active: false, value: "G" },
     { id: 2, nome: "Quilogramas (Kg)", abr: "Kg", active: false, value: "KG" },
     { id: 3, nome: "Toneladas (T)", abr: "T", active: false, value: "T" },
     { id: 4, nome: "Mililitros (ml)", abr: "Ml", active: false, value: "ML" },
     { id: 5, nome: "Litros (L)", abr: "L", active: false, value: "L" },
-    { id: 6, nome: "Unidade (Un)", abr: "Un", active: true, value: "UN" },
+    { id: 6, nome: "Unidade (Un)", abr: "Un", active: false, value: "UN" },
   ]);
 
   const selectRef = useRef(null);
@@ -146,12 +147,12 @@ export default function AgenteReajenteRevisar({ id, agentesReajentes, baixa, idA
       }));
     
       localStorage.setItem('agenteReajenteAula', JSON.stringify(dadosParaSalvar));
+      router.push(`/cadastro/aula/`);
     } else {
       router.push(`/baixa-aulas/finalizar/${idAula}`);
     }
 
   }
-  
   
   const [selectedUnits, setSelectedUnits] = useState<{ [key: number]: string }>({});
   return (
@@ -161,7 +162,7 @@ export default function AgenteReajenteRevisar({ id, agentesReajentes, baixa, idA
         <Section title={`Revisar Item`} bottom>
           <DefaultForm>
             <Adjust>
-              {itens.map((e: any) => (
+              {itens.map((e: any, i:number) => (
                 <div key={e.id}>
                   <InputBoxSelectWithQuntity
                     name={e.nome}
@@ -186,7 +187,7 @@ export default function AgenteReajenteRevisar({ id, agentesReajentes, baixa, idA
                         )
                       );
                     }}
-                    value={e.quantidadeAdd ? e.quantidadeAdd : 1}
+                    value={!baixa ? e.quantidadeAdd ? e.quantidadeAdd : 1 : dataAulas && dataAulas[0]?.agentes_reajentes[i]?.AgenteReajenteAula.quantidade}
                     {...(baixa ? { readOnly: true } : {})}
                   >
                     <SelectVariant
@@ -195,7 +196,9 @@ export default function AgenteReajenteRevisar({ id, agentesReajentes, baixa, idA
                       onChange={(selectedValue) => {
                         setSelectedUnits((prev) => ({ ...prev, [e.id]: selectedValue }));
                       }}
+                      valueStartActive={dataAulas && dataAulas[0]?.agentes_reajentes[i]?.AgenteReajenteAula.medida_quantidade}
                       value={selectedUnits[e.id] || 'Un'}
+                      {...(baixa ? { disabled: true } : {})}
                     />
                   </Input>
                 </div>

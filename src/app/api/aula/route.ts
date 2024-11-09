@@ -17,7 +17,6 @@ import { isValidateDate } from "@/utils/dateValidator";
 import { isDescriptionLengthMore } from "@/utils/descriptionValidatador";
 import { checkAndSubtractStock } from "@/utils/stockConversion";
 import { NextResponse, NextRequest } from "next/server";
-import { Sequelize } from "sequelize";
 
 export async function GET() {
   try {
@@ -517,14 +516,63 @@ export async function PUT(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
   try {
     const id = (await req.json()) as any;
-    const aula = await Aula.findByPk(id);
+    const aula = await Aula.findByPk(id, {include: [
+        {
+          model: AgenteReajente,
+          as: "agentes_reajentes",
+          attributes: ["id"],
+        },
+        {
+          model: Equipamento,
+          as: "equipamentos",
+          attributes: ["id"],
+        },
+        {
+          model: Vidrarias,
+          as: "vidrarias",
+          attributes: ["id"],
+        }
+      ]
+    }) as any;
     if (aula) {
-      aula.update({ status: "finish" });
+      if (aula.agentes_reajentes && Array.isArray(aula.agentes_reajentes)) {
+        for (const agente of aula.agentes_reajentes) {
+          const agenteReajente = await AgenteReajente.findByPk(agente.id);
+          if (agenteReajente) {
+            const quantidadeFloat = agenteReajente.get().quantidade_float;
+            await agenteReajente.update({ quantidade: quantidadeFloat });
+          }
+        }
+      }
+    
+      if (aula.equipamentos && Array.isArray(aula.equipamentos)) {
+        for (const equipamento of aula.equipamentos) {
+          const equipamentoInstance = await Equipamento.findByPk(equipamento.id);
+          if (equipamentoInstance) {
+            const quantidadeFloat = equipamentoInstance.get().quantidade_float;
+            await equipamentoInstance.update({ quantidade: quantidadeFloat });
+          }
+        }
+      }
+    
+      if (aula.vidrarias && Array.isArray(aula.vidrarias)) {
+        for (const vidraria of aula.vidrarias) {
+          const vidrariaInstance = await Vidrarias.findByPk(vidraria.id);
+          if (vidrariaInstance) {
+            const quantidadeFloat = vidrariaInstance.get().quantidade_float;
+            await vidrariaInstance.update({ quantidade: quantidadeFloat });
+          }
+        }
+      }
+    
+      await aula.update({ status: "finish" });
+    
       return NextResponse.json(
-        { status: "sucess", message: `Aula finalizada com sucesso`, code: 200 },
+        { status: "success", message: `Aula finalizada com sucesso`, code: 200 },
         { status: 200 }
       );
     }
+    
     return NextResponse.json(
       {
         status: "error",

@@ -26,7 +26,6 @@ export default function FinalizarAulaForm({
 }) {
   const [dataAulas, setDataAulas] = useState(aulas.data);
   const [dataAulasFilted, setdataAulasFilted] = useState() as any;
-  console.log(dataAulasFilted);
 
   useEffect(() => {
     setdataAulasFilted(dataAulas.filter((e: any) => e.id == id));
@@ -123,7 +122,7 @@ export default function FinalizarAulaForm({
         : null}
 
       {dataAulasFilted
-        ? dataAulasFilted[0]?.vidrarias[0] && (
+        ? dataAulasFilted[0]?.agentes_reajentes[0] && (
             <InputBoxSelectLink
               name="Agentes/Reajentes"
               href={`${dataAulasFilted && dataAulasFilted[0]?.id}/agente-reajente/${

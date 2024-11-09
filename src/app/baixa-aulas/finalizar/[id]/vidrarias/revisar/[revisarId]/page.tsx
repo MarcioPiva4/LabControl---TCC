@@ -18,13 +18,21 @@ interface PropPageRevisar {
 export default async function Page({ params }: PropPageRevisar){
   const { id, revisarId } = params;
   const dataVidrarias = await  getDataVidrarias();
+  const dataAulas = await getDataAula();
   return(
-    <VidrariasRevisar id={revisarId} vidrarias={dataVidrarias} idAula={id} baixa></VidrariasRevisar>
+    <VidrariasRevisar id={revisarId} vidrarias={dataVidrarias} idAula={id} baixa aulas={dataAulas}></VidrariasRevisar>
   )
 }
 
 async function getDataVidrarias() {
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/vidrarias`, {
+    'cache': 'no-cache'
+  });
+  return await response.json();
+}
+
+async function getDataAula() {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/aula`, {
     'cache': 'no-cache'
   });
   return await response.json();

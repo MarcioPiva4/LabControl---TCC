@@ -61,12 +61,13 @@ interface Itens {
   quantidade_vidrarias: number;
 }
 
-export default function VidrariasRevisar({ id, vidrarias, baixa, idAula }: { id: string; vidrarias: any; baixa?: boolean; idAula?: string;}) {
+export default function VidrariasRevisar({ id, vidrarias, baixa, idAula, aulas }: { id: string; vidrarias: any; baixa?: boolean; idAula?: string; aulas?: any}) {
   const arrayIds = id.replaceAll('%2C', ',').split(',');
   const [data,setData] = useState(vidrarias.data);
   const [itens, setItens] = useState(data.filter((e: any, i: any) => arrayIds.includes(e.id.toString())));
   const router = useRouter();
   const [parsedData, setParsedData] = useState<Itens[]>([]);
+  const [dataAulas, setDataAulas] = useState(aulas? aulas.data.filter((e: any) => e.id == idAula) : null);
   const [abr,setAbr] = useState([
     { id: 1, nome: "Gramas (g)", abr: "g", active: false, value: "g" },
     { id: 2, nome: "Quilogramas (Kg)", abr: "Kg", active: false, value: "Kg" },
@@ -133,7 +134,7 @@ export default function VidrariasRevisar({ id, vidrarias, baixa, idAula }: { id:
         <Section title={`Revisar Item`} bottom>
           <DefaultForm>
             <Adjust>
-              {itens.map((e: any) => (
+              {itens.map((e: any, i: number) => (
                 <div key={e.id}>
                   <InputBoxSelectWithQuntity
                     name={e.vidraria}
@@ -160,7 +161,7 @@ export default function VidrariasRevisar({ id, vidrarias, baixa, idAula }: { id:
                       );
                     }}
                     optionsFakeSelect={e.abr}
-                    value={e.quantidadeAdd ? e.quantidadeAdd : 1}
+                    value={!baixa ? e.quantidadeAdd ? e.quantidadeAdd : 1 : dataAulas && dataAulas[0]?.vidrarias[i]?.VidrariaAula.quantidade}
                     selectRef={selectRef}
                     {...(baixa ? { readOnly: true } : {})}
                   />
