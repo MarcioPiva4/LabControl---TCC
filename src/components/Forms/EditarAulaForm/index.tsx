@@ -95,21 +95,48 @@ export default function EditarAulaForm({
       <Select id="id_materia" options={materias.data } selectLabel="Matérias" value={dataAulasFilted ? dataAulasFilted[0].materias[0].MateriaAula.id_materia : ''}></Select> 
       <Select id="id_professor" options={professor.data } selectLabel="Professor" value={dataAulasFilted ? dataAulasFilted[0].professores[0].ProfessorAula.id_professor : ''}></Select> 
       <Select id="id_laboratorio" options={laboratorio.data } selectLabel="Laboratório" value={dataAulasFilted ? dataAulasFilted[0].laboratorios[0].LaboratorioAula.id_laboratorio : ''}></Select> 
-      <InputBoxSelectLink
-        name="Equipamentos"
-        href={`${
-          dataAulasFilted ? dataAulasFilted[0].id : ""
-        }/equipamentos`}></InputBoxSelectLink>
-      <InputBoxSelectLink
-        name="Agentes-Reajentes"
-        href={`${
-          dataAulasFilted ? dataAulasFilted[0].id : ""
-        }/agente-reajente`}></InputBoxSelectLink>
-      <InputBoxSelectLink
-        name="Vidrarias"
-        href={`${
-          dataAulasFilted ? dataAulasFilted[0].id : ""
-        }/vidrarias`}></InputBoxSelectLink>
+      {dataAulasFilted
+        ? dataAulasFilted[0]?.equipamentos[0] && (
+            <InputBoxSelectLink
+              name="Equipamentos"
+              href={`${dataAulasFilted && dataAulasFilted[0]?.id}/equipamentos/${
+                dataAulasFilted
+                  ? dataAulasFilted[0]?.equipamentos.map(
+                      (e: any) => e.EquipamentoAula.id_equipamento
+                    )
+                  : ""
+              }`}></InputBoxSelectLink>
+          )
+        : null}
+        
+      {dataAulasFilted
+        ? dataAulasFilted[0]?.agentes_reajentes[0] && (
+            <InputBoxSelectLink
+              name="Agentes/Reajentes"
+              href={`${dataAulasFilted && dataAulasFilted[0]?.id}/agente-reajente/${
+                dataAulasFilted
+                  ? dataAulasFilted[0]?.agentes_reajentes.map(
+                      (e: any) => e.AgenteReajenteAula.id_agentereajente
+                    )
+                  : ""
+              }`}></InputBoxSelectLink>
+          )
+        : null}
+
+      {dataAulasFilted
+        ? dataAulasFilted[0]?.vidrarias[0] && (
+            <InputBoxSelectLink
+              name="Vidrarias"
+              href={`${dataAulasFilted && dataAulasFilted[0]?.id}/vidrarias/${
+                dataAulasFilted
+                  ? dataAulasFilted[0]?.vidrarias.map(
+                      (e: any) => e.VidrariaAula.id_vidraria
+                    )
+                  : ""
+              }`}></InputBoxSelectLink>
+          )
+        : null}
+        
       <Input
         type="text"
         label="Tópico da Aula"

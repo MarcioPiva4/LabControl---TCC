@@ -1,4 +1,5 @@
 import { Laboratorio } from "@/models/Laboratorio";
+import { LaboratorioItems } from "@/types/laboratorio";
 import { isDescriptionLengthMore } from "@/utils/descriptionValidatador";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -13,7 +14,7 @@ export async function GET(){
 
 export async function POST(req: NextRequest){
     try{
-        const { nome, predio, andar, bloco, sala, descricao, responsavel } = await req.json() as any;
+        const { nome, predio, andar, bloco, sala, descricao, responsavel } = await req.json() as LaboratorioItems;
 
         if(nome.toString().length <= 0 || responsavel.toString().length <= 0
         ){
@@ -43,7 +44,7 @@ export async function POST(req: NextRequest){
 
 export async function DELETE(req: NextRequest){
     try{
-        const { id } = await req.json() as any;
+        const { id } = await req.json() as { id: number|string };
         const deleteLaboratorio = await Laboratorio.findByPk(id);
         if(deleteLaboratorio){
             await deleteLaboratorio.destroy();
@@ -58,7 +59,7 @@ export async function DELETE(req: NextRequest){
 
 export async function PATCH(req: NextRequest){
     try{
-        const { nome, predio, andar, bloco, sala, descricao, id } = await req.json() as any;
+        const { nome, predio, andar, bloco, sala, descricao, id } = await req.json() as LaboratorioItems;
         const editLaboratorio = await Laboratorio.findByPk(id);
         if(editLaboratorio){
             if(nome != undefined){

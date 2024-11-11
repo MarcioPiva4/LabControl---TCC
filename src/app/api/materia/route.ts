@@ -1,4 +1,5 @@
 import { Materias } from "@/models/Materias";
+import { MateriaItems } from "@/types/materia";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(){
@@ -12,7 +13,7 @@ export async function GET(){
 
 export async function POST(req: NextRequest){
     try{
-        const { nome, emenda } = await req.json() as any;
+        const { nome, emenda } = await req.json() as MateriaItems;
 
 
         if(nome.toString().length <= 0 || emenda.toString().length <= 0){
@@ -37,7 +38,7 @@ export async function POST(req: NextRequest){
 
 export async function DELETE(req: NextRequest){
     try{
-        const { id } = await req.json() as any;
+        const { id } = await req.json() as { id: number | string};
         const deleteMateria = await Materias.findByPk(id);
         if(deleteMateria){
             await deleteMateria.destroy();
@@ -52,7 +53,7 @@ export async function DELETE(req: NextRequest){
 
 export async function PATCH(req: NextRequest){
     try{
-        const { id, nome, emenda } = await req.json() as any;
+        const { id, nome, emenda } = await req.json() as MateriaItems;
         const editMateria = await Materias.findByPk(id);
         if(editMateria){
             if(nome != undefined){

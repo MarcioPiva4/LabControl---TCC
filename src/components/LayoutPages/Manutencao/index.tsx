@@ -1,6 +1,7 @@
 'use client'
 
 import Select from "@/components/Select";
+import { AulaReq } from "@/types/aula";
 import Link from "next/link";
 import { useEffect, useState } from "react"
 import styled from "styled-components";
@@ -122,7 +123,7 @@ const ContentAulas = styled.div`
     }
 `;
 
-export default function Manutencao({ aulas, professores }: {aulas: any; professores: any}){
+export default function Manutencao({ aulas }: {aulas: AulaReq;}){
     const [dataAulas, setDataAulas] = useState(aulas.data);
     return dataAulas ? (
       <>
@@ -241,7 +242,7 @@ export default function Manutencao({ aulas, professores }: {aulas: any; professo
 
         <ContentAulas>
           <ul>
-            {dataAulas?.map((e: any, i: number) => (
+            {dataAulas?.map((e) => (
               <li key={e.id}>
                 <Link href={`manutencao/editar/${e.id}`}>
                   <div className="aulas_content">

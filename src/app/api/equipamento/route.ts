@@ -1,6 +1,8 @@
 import { Equipamento, FornecedorEquipamentos } from "@/models/Equipamento";
+import { EquipamentoItems, EquipamentoPost } from "@/types/equipamento";
 import { isDescriptionLengthMore } from "@/utils/descriptionValidatador";
 import { NextRequest, NextResponse } from "next/server";
+import { Model } from "sequelize";
 
 export async function GET(){
     try{
@@ -13,7 +15,7 @@ export async function GET(){
 
 export async function POST(req: NextRequest){
     try{
-        const { equipamento, quantidade, tipo, numero_serie, marca_modelo, preco_compra, localizacao, observacoes, id_fornecedor } = await req.json() as any;
+        const { equipamento, quantidade, tipo, numero_serie, marca_modelo, preco_compra, localizacao, observacoes, id_fornecedor } = await req.json() as EquipamentoPost;
 
         if(equipamento.toString().length <= 0 ||
             tipo.toString().length <= 0 ||
@@ -43,12 +45,12 @@ export async function POST(req: NextRequest){
             localizacao,
             observacoes,
             id_fornecedor
-        }) as any;
+        }) as Model<EquipamentoItems>;
 
-        await Promise.all(id_fornecedor.map(async (fornecedorId: number) => {
+        await Promise.all(id_fornecedor.map(async (fornecedorId) => {
             await FornecedorEquipamentos.create({
                 id_fornecedor: fornecedorId,
-                id_equipamentos: createEquipamento.id
+                id_equipamentos: createEquipamento.get('id')
             });
         }));
 
@@ -61,7 +63,7 @@ export async function POST(req: NextRequest){
 
 export async function DELETE(req: NextRequest){
     try{
-        const { id } = await req.json() as any;
+        const { id } = await req.json() as { id: string | number };
         const deleteEquipamento = await Equipamento.findByPk(id);
         if(deleteEquipamento){
             await deleteEquipamento.destroy();
@@ -76,7 +78,7 @@ export async function DELETE(req: NextRequest){
 
 export async function PATCH(req: NextRequest){
     try{
-        const { equipamento, quantidade, tipo, numero_serie, marca_modelo, preco_compra, localizacao, observacoes, id_fornecedor, id } = await req.json() as any;
+        const { equipamento, quantidade, tipo, numero_serie, marca_modelo, preco_compra, localizacao, observacoes, id_fornecedor, id } = await req.json() as EquipamentoPost;
         const editEquipamento = await Equipamento.findByPk(id);
         if(editEquipamento){
             if(equipamento != undefined){

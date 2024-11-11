@@ -3,7 +3,7 @@ import styled, { ThemeProvider } from "styled-components";
 import { useState, useEffect, useRef } from "react";
 
 interface PropSelect {
-  options: Array<{ nome: string; id: string }>;
+  options: Array<{ nome: string; id: string; }>;
   id: string;
   selectLabel: string;
   onChange?: (e: string) => void;

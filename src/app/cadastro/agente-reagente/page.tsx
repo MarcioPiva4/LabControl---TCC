@@ -19,7 +19,7 @@ export default async function Agente_Reagente() {
 }
 
 async function getData() {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/fornecedores`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/fornecedor`, {
         cache: 'no-cache'
     });
     return await response.json();

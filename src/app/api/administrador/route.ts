@@ -1,4 +1,5 @@
 import { Administrador } from "@/models/Administrador";
+import { administradorItems, administradorPatch, administradorPut } from "@/types/administrador";
 import { isValidateCEP } from "@/utils/cepValitador";
 import { isValidateDate } from "@/utils/dateValidator";
 import { isValidEmail } from "@/utils/emailValitador";
@@ -20,7 +21,7 @@ export async function GET(){
 
 export async function POST(req: NextRequest){
     try{
-        const { nome, email, telefone, data_contratacao, cep, estado, cidade, rua, numero } = await req.json() as any;
+        const { nome, email, telefone, data_contratacao, cep, estado, cidade, rua, numero } = await req.json() as administradorItems;
 
         if(nome.toString().length <= 0 || 
         data_contratacao.toString().length <= 0 || 
@@ -83,7 +84,7 @@ export async function POST(req: NextRequest){
 
 export async function DELETE(req: NextRequest){
     try{
-        const { id } = await req.json() as any;
+        const { id } = await req.json() as { id: number|string };
         const deleteAdministrador = await Administrador.findByPk(id);
         if(deleteAdministrador){
             await deleteAdministrador.destroy();
@@ -98,7 +99,7 @@ export async function DELETE(req: NextRequest){
 
 export async function PUT(req: NextRequest){
     try{
-        const { nome, email, celular, id } = await req.json() as any;
+        const { nome, email, celular, id } = await req.json() as administradorPut;
         const editAdministrador = await Administrador.findByPk(id);
         if(editAdministrador){
             if(nome != undefined){
@@ -125,7 +126,7 @@ export async function PUT(req: NextRequest){
 
 export async function PATCH(req: NextRequest){
     try{
-        const { id, password, passwordRepeat } = await req.json() as any;
+        const { id, password, passwordRepeat } = await req.json() as administradorPatch;
 
         if(!password && !passwordRepeat){
             return NextResponse.json({ status: 'error', message: 'Não deixe nenhum campo vazio.'}, {status: 400}); 

@@ -9,23 +9,15 @@ const Manutencao = dynamic(() => import("@/components/LayoutPages/Manutencao"), 
 
 export default async function Page(){
     const dataAulas = await getDataAulas();
-    const dataProfessores = await getDataProfessores();
     return(
         <Section title="Edite suas aulas" bottom>
-            <Manutencao aulas={dataAulas} professores={dataProfessores}></Manutencao>
+            <Manutencao aulas={dataAulas}></Manutencao>
         </Section>
     )
 }
 
 async function getDataAulas(){
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/aula`, {
-        cache: 'no-cache',
-    });
-    return await response.json();
-}
-
-async function getDataProfessores(){
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/professor`, {
         cache: 'no-cache',
     });
     return await response.json();

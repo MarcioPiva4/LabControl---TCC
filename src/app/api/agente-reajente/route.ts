@@ -2,8 +2,10 @@ import {
   AgenteReajente,
   FornecedorAgenteReajente,
 } from "@/models/Agente_reajente";
+import { AgenteReajenteItems, AgenteReajenteReqPost } from "@/types/agente_reajente";
 import { isDescriptionLengthMore } from "@/utils/descriptionValidatador";
 import { NextRequest, NextResponse } from "next/server";
+import { Model } from "sequelize";
 
 export async function GET() {
   try {
@@ -40,7 +42,7 @@ export async function POST(req: NextRequest) {
       armazenamento_recomendado,
       observacoes,
       id_fornecedor,
-    } = (await req.json()) as any;
+    } = (await req.json()) as AgenteReajenteReqPost;
     if (
       nome.toString().length <= 0 ||
       formula.toString().length <= 0 ||
@@ -83,13 +85,13 @@ export async function POST(req: NextRequest) {
       quantidade_float,
       armazenamento_recomendado,
       observacoes,
-    })) as any;
+    })) as Model<AgenteReajenteItems>;
 
     await Promise.all(
-      id_fornecedor.map(async (fornecedorId: number) => {
+      id_fornecedor.map(async (fornecedorId) => {
         await FornecedorAgenteReajente.create({
           id_fornecedor: fornecedorId,
-          id_agente_reajente: createAgenteReajente.id,
+          id_agente_reajente: createAgenteReajente.get('id'),
         });
       })
     );
@@ -116,7 +118,7 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
-    const { id } = (await req.json()) as any;
+    const { id } = await req.json() as { id: number|string };
     const deleteAgenteReajente = await AgenteReajente.findByPk(id);
     if (deleteAgenteReajente) {
       await deleteAgenteReajente.destroy();
@@ -161,7 +163,7 @@ export async function PATCH(req: NextRequest) {
       observacoes,
       id_fornecedor,
       id,
-    } = (await req.json()) as any;
+    } = (await req.json()) as AgenteReajenteReqPost;
     const editAgenteReajente = await AgenteReajente.findByPk(id);
     if (editAgenteReajente) {
       if (nome != undefined) {

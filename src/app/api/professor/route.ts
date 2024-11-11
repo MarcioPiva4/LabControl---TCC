@@ -1,4 +1,5 @@
 import { Professor } from "@/models/Professor";
+import { ProfessorItems, ProfessorPatch } from "@/types/professor";
 import { cpfValitador } from "@/utils/cpfValitador";
 import { isValidEmail } from "@/utils/emailValitador";
 import { generatePassword } from "@/utils/generatePassword";
@@ -18,7 +19,7 @@ export async function GET(){
 
 export async function POST(req: NextRequest){
     try{
-        const { nome, telefone, email, cpf } = await req.json() as any;
+        const { nome, telefone, email, cpf } = await req.json() as ProfessorItems;
 
         if(nome.toString().length <= 0 || cpf.toString().length <= 0 || telefone.toString().length <= 0 || email.toString().length <= 0){
             return NextResponse.json({ status: 'error', message: `Não pode haver campos vazios`, code: 400 }, {status: 400});
@@ -60,7 +61,7 @@ export async function POST(req: NextRequest){
 
 export async function DELETE(req: NextRequest){
     try{
-        const { id } = await req.json() as any;
+        const { id } = await req.json() as {id: number|string};
         const deleteProfessor = await Professor.findByPk(id);
         if(deleteProfessor){
             await deleteProfessor.destroy();
@@ -75,7 +76,7 @@ export async function DELETE(req: NextRequest){
 
 export async function PUT(req: NextRequest){
     try{
-        const { id, nome, telefone, email } = await req.json() as any;
+        const { id, nome, telefone, email } = await req.json() as ProfessorItems;
         const editProfessor = await Professor.findByPk(id);
         if(editProfessor){
             if(nome != undefined){
@@ -101,7 +102,7 @@ export async function PUT(req: NextRequest){
 
 export async function PATCH(req: NextRequest){
     try{
-        const { id, password, passwordRepeat } = await req.json() as any;
+        const { id, password, passwordRepeat } = await req.json() as ProfessorPatch;
 
         if(!password && !passwordRepeat){
             return NextResponse.json({ status: 'error', message: 'Não deixe nenhum campo vazio.'}, {status: 400}); 

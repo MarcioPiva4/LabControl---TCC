@@ -9,23 +9,15 @@ const BaixaAulas = dynamic(() => import("@/components/LayoutPages/BaixaAulas"), 
 
 export default async function Page() {
     const dataAulas = await getDataAulas();
-    const dataProfessores = await getDataProfessores();
     return (
         <Section title="Finalizar aula" bottom>
-            <BaixaAulas aulas={dataAulas} professores={dataProfessores}></BaixaAulas>
+            <BaixaAulas aulas={dataAulas}></BaixaAulas>
         </Section>
     );
 }
 
 async function getDataAulas() {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/aula`, {
-        cache: 'no-cache'
-    });
-    return await response.json();
-}
-
-async function getDataProfessores() {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/professor`, {
         cache: 'no-cache'
     });
     return await response.json();

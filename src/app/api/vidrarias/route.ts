@@ -1,8 +1,9 @@
 import { Vidrarias, FornecedorVidrarias } from "@/models/Vidrarias";
-import { isAbreviacaoValidator } from "@/utils/abreviacaoValidator";
+import { VidrariaItems, VidrariaPost } from "@/types/vidraria";
 import { isDescriptionLengthMore } from "@/utils/descriptionValidatador";
 import { isNumber } from "@/utils/numberValitador";
 import { NextRequest, NextResponse } from "next/server";
+import { Model } from "sequelize";
 
 export async function GET(){
     try{
@@ -15,7 +16,7 @@ export async function GET(){
 
 export async function POST(req: NextRequest){
     try{
-        const { vidraria, tipo, capacidade, material, quantidade, preco_compra, observacoes, id_fornecedor } = await req.json() as any;
+        const { vidraria, tipo, capacidade, material, quantidade, preco_compra, observacoes, id_fornecedor } = await req.json() as VidrariaPost;
         if(vidraria.toString().length <= 0 ||
             tipo.toString().length <= 0 ||
             capacidade.toString().length <= 0 ||
@@ -27,7 +28,7 @@ export async function POST(req: NextRequest){
             return NextResponse.json({status: 'error', message: 'Não pode haver campos vazios'}, {status: 400});
         }
 
-        if(!isNumber(quantidade)){
+        if(!isNumber(quantidade.toString())){
             return NextResponse.json({status: 'error', message: 'Apenas números no campo de quantidade'}, {status: 400});
         }
 
@@ -49,13 +50,13 @@ export async function POST(req: NextRequest){
             quantidade_float,
             preco_compra,
             observacoes,
-        }) as any;
+        }) as Model<VidrariaItems>;
 
         // Associa os fornecedores selecionados
-        await Promise.all(id_fornecedor.map(async (fornecedorId: number) => {
+        await Promise.all(id_fornecedor.map(async (fornecedorId) => {
             await FornecedorVidrarias.create({
                 id_fornecedor: fornecedorId,
-                id_vidraria: createVidraria.id 
+                id_vidraria: createVidraria.get('id')
             });
         }));
 
@@ -68,7 +69,7 @@ export async function POST(req: NextRequest){
 
 export async function DELETE(req: NextRequest){
     try{
-        const { id } = await req.json() as any;
+        const { id } = await req.json() as {id: number | string};
         const deleteVidraria = await Vidrarias.findByPk(id);
         if(deleteVidraria){
             await deleteVidraria.destroy();
@@ -83,7 +84,7 @@ export async function DELETE(req: NextRequest){
 
 export async function PATCH(req: NextRequest){
     try{
-        const { vidraria, tipo, capacidade, material, quantidade, preco_compra, observacoes, id_fornecedor, id } = await req.json() as any;
+        const { vidraria, tipo, capacidade, material, quantidade, preco_compra, observacoes, id_fornecedor, id } = await req.json() as VidrariaPost;
         const editVidraria = await Vidrarias.findByPk(id);
         if(editVidraria){
             if(vidraria != undefined){

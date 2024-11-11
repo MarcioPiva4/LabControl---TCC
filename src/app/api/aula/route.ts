@@ -595,7 +595,7 @@ export async function PATCH(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
-    const { id } = (await req.json()) as any;
+    const { id } = await req.json() as { id: number|string };
     const deleteAula = await Aula.findByPk(id);
     if (deleteAula) {
       await deleteAula.destroy();

@@ -1,4 +1,5 @@
 import { Fornecedor } from "@/models/Fornecedor";
+import { FornecedorItems } from "@/types/fornecedor";
 import { isValidateCEP } from "@/utils/cepValitador";
 import { isValidateCNPJ } from "@/utils/cnpjValitador";
 import { isValidEmail } from "@/utils/emailValitador";
@@ -18,7 +19,7 @@ export async function GET(){
 
 export async function POST(req: NextRequest){
     try{
-        const { nome, cnpj, email, telefone, telefone_tipo, cep, estado, cidade, bairro, rua, numero } = await req.json() as any;
+        const { nome, cnpj, email, telefone, telefone_tipo, cep, estado, cidade, bairro, rua, numero } = await req.json() as FornecedorItems;
 
         if(nome.toString().length <= 0 || 
             cnpj.toString().length <= 0 || 
@@ -55,7 +56,7 @@ export async function POST(req: NextRequest){
             return NextResponse.json({ status: 'error', message: `CEP inválido`, code: 400 }, {status: 400});
         }
 
-        if(!isValidateHouseNumber(numero)){
+        if(!isValidateHouseNumber(numero.toString())){
             return NextResponse.json({ status: 'error', message: `Número inválido`, code: 400 }, {status: 400});
         }
 
@@ -86,7 +87,7 @@ export async function POST(req: NextRequest){
 
 export async function DELETE(req: NextRequest){
     try{
-        const { id } = await req.json() as any;
+        const { id } = await req.json() as { id: number | string };
         const deleteFornecedor = await Fornecedor.findByPk(id);
         if(deleteFornecedor){
             await deleteFornecedor.destroy();
@@ -101,7 +102,7 @@ export async function DELETE(req: NextRequest){
 
 export async function PATCH(req: NextRequest){
     try{
-        const { nome, cnpj, email, telefone, telefone_tipo, cep, estado, cidade, bairro, rua, numero, id } = await req.json() as any;
+        const { nome, cnpj, email, telefone, telefone_tipo, cep, estado, cidade, bairro, rua, numero, id } = await req.json() as FornecedorItems;
         const editFornecedor = await Fornecedor.findByPk(id);
         if(editFornecedor){
             if(nome != undefined){
