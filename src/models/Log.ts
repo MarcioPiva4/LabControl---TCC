@@ -26,5 +26,5 @@ const Logs = db.define("logs", {
   },
 });
 
-// Logs.sync({ force: true});
+Logs.sync();
 export { Logs };
