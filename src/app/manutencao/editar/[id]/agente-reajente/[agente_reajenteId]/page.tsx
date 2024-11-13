@@ -20,7 +20,7 @@ export default async function Page({params}: PropPageEquipamentos ) {
     const { id , agente_reajenteId} = params;
     const dataEquipamentos = await getDataAgenteReajente();
     return(
-        <AgenteReajenteID id={agente_reajenteId} agenteReajente={dataEquipamentos} baixa idAula={id}></AgenteReajenteID>
+        <AgenteReajenteID id={agente_reajenteId} agenteReajente={dataEquipamentos} idAula={id} manutencao></AgenteReajenteID>
     )
 }
 

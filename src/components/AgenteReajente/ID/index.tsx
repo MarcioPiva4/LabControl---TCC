@@ -6,7 +6,7 @@ import Section from "@/components/Section";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function AgenteReajenteID({ id, agenteReajente, baixa, idAula }: {id: any, agenteReajente: any; baixa?: boolean; idAula?: string}){
+export default function AgenteReajenteID({ id, agenteReajente, baixa, idAula, manutencao }: {id: any, agenteReajente: any; baixa?: boolean; idAula?: string; manutencao?: boolean}){
     const arrayIds = id.replaceAll('%2C', ',').split(',');
     const [data,setData] = useState(agenteReajente.data);
 
@@ -43,7 +43,7 @@ export default function AgenteReajenteID({ id, agenteReajente, baixa, idAula }: 
   const selecteds = data.filter((e: any) => e.active);
   const selectedIds = selecteds.map((e: any) => e.id).join(',');
   return (
-    <Section title="Agentes/Reajentes" arrowBefore href={baixa ? `/baixa-aulas/finalizar/${idAula}` :`/cadastro/aula`} bottom>
+    <Section title="Agentes/Reajentes" arrowBefore href={baixa && `/baixa-aulas/finalizar/${idAula}` || manutencao && `/manutencao/editar/${idAula}` || '/cadastro/aula'} bottom>
       <InputSearch placeholder="pesquise os agentes/reajentes..." id="agentesreajentessseach"></InputSearch>
         {data.map((e: any, i: number) => ( 
           <InputBoxSelect name={e.nome} key={i} id={e.id} activeOption={activeOption} disableOption={disableOption} active={e.active}></InputBoxSelect>

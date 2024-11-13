@@ -19,7 +19,7 @@ export default async function Page({params}: PropPageEquipamentos ) {
     const { id, equipamentoId } = params;
     const dataEquipamentos = await getDataEquipamentos();
     return(
-        <EquipamentoID id={equipamentoId} equipamentos={dataEquipamentos} baixa idAula={id}></EquipamentoID>
+        <EquipamentoID id={equipamentoId} equipamentos={dataEquipamentos} idAula={id} manutencao></EquipamentoID>
     )
 }
 

@@ -10,12 +10,15 @@ import {
 } from "@/models/Aula";
 import { Equipamento } from "@/models/Equipamento";
 import { Laboratorio } from "@/models/Laboratorio";
+import { Logs } from "@/models/Log";
 import { Materias } from "@/models/Materias";
 import { Professor } from "@/models/Professor";
 import { Vidrarias } from "@/models/Vidrarias";
+import { authOptions } from "@/utils/authOptions";
 import { isValidateDate } from "@/utils/dateValidator";
 import { isDescriptionLengthMore } from "@/utils/descriptionValidatador";
 import { checkAndSubtractStock } from "@/utils/stockConversion";
+import { getServerSession } from "next-auth";
 import { NextResponse, NextRequest } from "next/server";
 
 export async function GET() {
@@ -80,6 +83,13 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+  await Logs.create({
+      nome: session?.user?.name,
+      typeHttp: 'POST',
+      ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
+      message: 'Iniciou uma requisição na rota de aulas'
+  });
   try {
     const { aula, equipamentos, vidrarias, agenteReajente } =
       (await req.json()) as any;
@@ -296,11 +306,25 @@ export async function POST(req: NextRequest) {
       id_aula: createAula.id,
     });
 
+    await Logs.create({
+      nome: session?.user?.name,
+      typeHttp: 'POST',
+      ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
+      message: `Finalizou o cadastro de uma aula`
+    });
+
     return NextResponse.json(
       { status: "sucess", message: "Aula criada com sucesso" },
       { status: 201 }
     );
   } catch (error) {
+    await Logs.create({
+      nome: session?.user?.name,
+      typeHttp: 'POST',
+      ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
+      message: `A requisição fracassou`
+    });
+    
     return NextResponse.json(
       { status: "error", message: `${error}`, code: 400 },
       { status: 400 }
@@ -323,62 +347,6 @@ export async function PUT(req: NextRequest) {
       observacoes,
     } = aula;
 
-    // if (
-    //   topico_aula.toString().length <= 0 ||
-    //   horario_inicio.toString().length <= 0 ||
-    //   horario_finalizacao.toString().length <= 0 ||
-    //   data.toString().length <= 0
-    // ) {
-    //   return NextResponse.json(
-    //     {
-    //       status: "error",
-    //       message: "Não pode haver campos obrigatórios vazios",
-    //     },
-    //     { status: 400 }
-    //   );
-    // }
-
-    // if (!isValidateDate(data)) {
-    //   return NextResponse.json(
-    //     { status: "error", message: "Data inválida" },
-    //     { status: 400 }
-    //   );
-    // }
-
-    // if (isDescriptionLengthMore(observacoes)) {
-    //   return NextResponse.json(
-    //     {
-    //       status: "error",
-    //       message: "Não ultrapasse os 255 caracteres nas observações",
-    //     },
-    //     { status: 400 }
-    //   );
-    // }
-
-    // if (!equipamentos) {
-    //   return NextResponse.json(
-    //     { status: "error", message: "Selecione um equipamento para a aula" },
-    //     { status: 400 }
-    //   );
-    // }
-
-    // if (!vidrarias) {
-    //   return NextResponse.json(
-    //     { status: "error", message: "Selecione uma vidraria para a aula" },
-    //     { status: 400 }
-    //   );
-    // }
-
-    // if (!agenteReajente) {
-    //   return NextResponse.json(
-    //     {
-    //       status: "error",
-    //       message: "Selecione um agente/reajente para a aula",
-    //     },
-    //     { status: 400 }
-    //   );
-    // }
-
     const editAula = (await Aula.update(
       {
         topico_aula,
@@ -390,6 +358,73 @@ export async function PUT(req: NextRequest) {
       { where: { id: id } }
     )) as any;
 
+    const verificarEstoque = async () => {
+      if (equipamentos) {
+        for (const e of equipamentos) {
+          const equipamento = (await Equipamento.findByPk(
+            e.id_equipamento
+          )) as any;
+          if (equipamento) {
+            const novaQuantidadeFloat =
+              equipamento.quantidade_float - e.quantidade_equipamento;
+            if (novaQuantidadeFloat < 0) {
+              throw new Error(
+                "Estoque não disponível para o equipamento, diminua e tente novamente."
+              );
+            }
+            // Atualiza a quantidade do equipamento no estoque
+            await equipamento.update({
+              quantidade_float: novaQuantidadeFloat,
+            });
+          }
+        }
+      }
+
+      if (vidrarias) {
+        for (const e of vidrarias) {
+          const vidraria = (await Vidrarias.findByPk(e.id_vidrarias)) as any;
+          if (vidraria) {
+            const novaQuantidadeFloat =
+              vidraria.quantidade_float - e.quantidade_vidrarias;
+            if (novaQuantidadeFloat < 0) {
+              throw new Error(
+                "Estoque não disponível para a vidraria, diminua e tente novamente."
+              );
+            }
+            // Atualiza a quantidade da vidraria no estoque
+            await vidraria.update({
+              quantidade_float: novaQuantidadeFloat,
+            });
+          }
+        }
+      }
+
+      if (agenteReajente) {
+        for (const e of agenteReajente) {
+          const agentesReajentes = (await AgenteReajente.findByPk(
+            e.id_agenteReajente
+          )) as any;
+          if (agentesReajentes) {
+            checkAndSubtractStock(
+              agentesReajentes.quantidade_float,
+              e.quantidade_agenteReajente,
+              agentesReajentes.medida_quantidade,
+              e.unidade
+            );
+            const novaQuantidadeFloat =
+              agentesReajentes.quantidade_float - e.quantidade_agenteReajente;
+            await agentesReajentes.update({
+              quantidade_float: novaQuantidadeFloat,
+            });
+          }
+        }
+      }
+    };
+
+    // Verifica e subtrai estoque
+    await verificarEstoque();
+
+    // Atualiza o relacionamento da aula com os outros modelos
     if (id_materia) {
       await MateriaAula.update(
         {
@@ -462,6 +497,7 @@ export async function PUT(req: NextRequest) {
       );
     }
 
+    // Retorna a aula atualizada
     const aulas = await Aula.findAll({
       include: [
         {

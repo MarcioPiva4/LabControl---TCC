@@ -1,30 +1,40 @@
-import AgenteReajenteRevisarEditar from "@/components/Forms/EditarAulaForm/AgenteReajente/Revisar";
-import EquipamentoRevisarEditar from "@/components/Forms/EditarAulaForm/Equipamentos/Revisar";
+import { LoaderFormReview } from "@/components/LoaderForm";
+import dynamic from "next/dynamic";
 
+
+const AgenteReajenteRevisar = dynamic(
+  () => import("@/components/AgenteReajente/Revisar"),
+  { 
+    ssr: false, 
+    loading: () => <LoaderFormReview quantity={1} />
+  }
+);
 interface PropPageRevisar {
   params: {
-    revisarId: string;
     id: string;
+    revisarId: string
   }
 }
 
-async function getDataAgenteReajente() {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/agente-reajente`);
-    return await response.json();
-}
-  
-async function getDataAulas() {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/aula`);
-    return await response.json();
-}
-
-
-
 export default async function Page({ params }: PropPageRevisar){
-  const { revisarId, id } = params;
+  const { id, revisarId } = params;
   const dataAgentesReajentes = await getDataAgenteReajente();
-  const dataAulas = await getDataAulas();
+  const dataAulas = await getDataAula();
   return(
-    <AgenteReajenteRevisarEditar idAgenteReajente={revisarId} idAula={id} agentesReajentes={dataAgentesReajentes} aulas={dataAulas}></AgenteReajenteRevisarEditar>
+    <AgenteReajenteRevisar id={revisarId} agentesReajentes={dataAgentesReajentes} idAula={id} aulas={dataAulas} manutencao></AgenteReajenteRevisar>
   )
+}
+
+async function getDataAgenteReajente() {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/agente-reajente`, {
+    'cache': 'no-cache'
+  });
+  return await response.json();
+}
+
+async function getDataAula() {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/aula`, {
+    'cache': 'no-cache'
+  });
+  return await response.json();
 }

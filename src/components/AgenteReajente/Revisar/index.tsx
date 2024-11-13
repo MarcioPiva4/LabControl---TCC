@@ -61,7 +61,7 @@ interface Itens {
   quantidade_agenteReajente: number;
 }
 
-export default function AgenteReajenteRevisar({ id, agentesReajentes, baixa, idAula, aulas }: { id: string; agentesReajentes: any; baixa?: boolean; idAula?: string; aulas?: any}) {
+export default function AgenteReajenteRevisar({ id, agentesReajentes, baixa, idAula, aulas, manutencao }: { id: string; agentesReajentes: any; baixa?: boolean; idAula?: string; aulas?: any; manutencao?: boolean}) {
   const arrayIds = id.replaceAll('%2C', ',').split(',');
   const [data,setData] = useState(agentesReajentes.data);
   const [itens, setItens] = useState(data.filter((e: any, i: any) => arrayIds.includes(e.id.toString())));
@@ -89,12 +89,10 @@ export default function AgenteReajenteRevisar({ id, agentesReajentes, baixa, idA
   }, [id, abr, parsedData]);
 
   useEffect(() => {
-    // Carregar dados do localStorage ao montar o componente
-    const localData = localStorage.getItem('agenteReajenteAula');
+    const localData = localStorage.getItem('agenteReajenteAulaEditar');
     if (localData) {
       const savedData = JSON.parse(localData);
 
-      // Atualiza o estado de itens
       setItens((prev: any) => 
         prev.map((item: any) => {
           const savedItem = savedData.find((saved: any) => saved.id_agenteReajente === item.id);
@@ -105,7 +103,6 @@ export default function AgenteReajenteRevisar({ id, agentesReajentes, baixa, idA
         })
       );
 
-      // Atualiza o estado das unidades selecionadas
       const unitMap = savedData.reduce((acc: any, saved: any) => {
         acc[saved.id_agenteReajente] = saved.unidade;
         return acc;
@@ -135,7 +132,23 @@ export default function AgenteReajenteRevisar({ id, agentesReajentes, baixa, idA
   };
   
   const submitForm = () => {
-    if(!baixa){
+    if(baixa){
+      router.push(`/baixa-aulas/finalizar/${idAula}`);
+    } else if (manutencao){
+      if (localStorage.getItem('agenteReajenteAulaEditar')) {
+        localStorage.removeItem('agenteReajenteAulaEditar');
+      }
+      
+      const dadosParaSalvar = itens.map((e: any) => ({
+        id_agenteReajente: e.id,
+        quantidade_agenteReajente: e.quantidadeAdd,
+        unidade: selectedUnits[e.id] || 'G',
+        id_aula: idAula
+      }));
+    
+      localStorage.setItem('agenteReajenteAulaEditar', JSON.stringify(dadosParaSalvar));
+      router.push(`/manutencao/editar/${idAula}`);
+    } else {
       if (localStorage.getItem('agenteReajenteAula')) {
         localStorage.removeItem('agenteReajenteAula');
       }
@@ -148,8 +161,6 @@ export default function AgenteReajenteRevisar({ id, agentesReajentes, baixa, idA
     
       localStorage.setItem('agenteReajenteAula', JSON.stringify(dadosParaSalvar));
       router.push(`/cadastro/aula/`);
-    } else {
-      router.push(`/baixa-aulas/finalizar/${idAula}`);
     }
 
   }
@@ -204,7 +215,7 @@ export default function AgenteReajenteRevisar({ id, agentesReajentes, baixa, idA
                 </div>
               ))}
               <Content>
-                <ButtonLink type="button" link="link" is="isTransparent" href={baixa ? `/baixa-aulas/finalizar/${idAula}/vidrarias/${itens.map((e: any) => e.id)}` : `/cadastro/aula/vidrarias/${itens.map((e: any) => e.id)}`}>
+                <ButtonLink type="button" link="link" is="isTransparent" href={baixa && `/baixa-aulas/finalizar/${idAula}/agente-reajente/${itens.map((e: any) => e.id)}` || manutencao && `/manutencao/editar/${idAula}/agente-reajente/${itens.map((e: any) => e.id)}` || `/cadastro/aula/agente-reajente/${itens.map((e: any) => e.id)}`}>
                   CANCELAR
                 </ButtonLink>
                 <button onClick={submitForm} type="button">

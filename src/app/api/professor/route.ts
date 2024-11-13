@@ -1,11 +1,14 @@
+import { Logs } from "@/models/Log";
 import { Professor } from "@/models/Professor";
 import { ProfessorItems, ProfessorPatch } from "@/types/professor";
+import { authOptions } from "@/utils/authOptions";
 import { cpfValitador } from "@/utils/cpfValitador";
 import { isValidEmail } from "@/utils/emailValitador";
 import { generatePassword } from "@/utils/generatePassword";
 import { isValidName } from "@/utils/nameValitador";
 import { isValidPhoneNumber } from "@/utils/phoneValitador";
 import { sendEmail } from "@/utils/sendEmail";
+import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(){
@@ -18,6 +21,13 @@ export async function GET(){
 }
 
 export async function POST(req: NextRequest){
+    const session = await getServerSession(authOptions);
+    await Logs.create({
+        nome: session?.user?.name,
+        typeHttp: 'POST',
+        ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
+        message: 'Iniciou uma requisição na rota de professores'
+    });
     try{
         const { nome, telefone, email, cpf } = await req.json() as ProfessorItems;
 
@@ -52,9 +62,22 @@ export async function POST(req: NextRequest){
         });
         
         sendEmail(password.toString(), email, nome, 'prof');
+
+        await Logs.create({
+            nome: session?.user?.name,
+            typeHttp: 'POST',
+            ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
+            message: `Finalizou o cadastro do professor: senha gerada pelo sistema:${password}`
+        });
         return NextResponse.json({status: 'sucess', message: 'Professor criado com sucesso'}, {status: 201})
         
     } catch (error) {
+        await Logs.create({
+            nome: session?.user?.name,
+            typeHttp: 'POST',
+            ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
+            message: `A requisição fracassou`
+        });
         return NextResponse.json({ status: 'error', message: `erro ao fazer a solicitação: ${error}`, code: 400 }, {status: 400})
     }
 }

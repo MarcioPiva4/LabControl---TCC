@@ -1,6 +1,9 @@
 import { Laboratorio } from "@/models/Laboratorio";
+import { Logs } from "@/models/Log";
 import { LaboratorioItems } from "@/types/laboratorio";
+import { authOptions } from "@/utils/authOptions";
 import { isDescriptionLengthMore } from "@/utils/descriptionValidatador";
+import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(){
@@ -13,6 +16,14 @@ export async function GET(){
 }
 
 export async function POST(req: NextRequest){
+    const session = await getServerSession(authOptions);
+    await Logs.create({
+        nome: session?.user?.name,
+        typeHttp: 'POST',
+        ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
+        message: 'Iniciou uma requisição na rota de laboratorios'
+    });
+
     try{
         const { nome, predio, andar, bloco, sala, descricao, responsavel } = await req.json() as LaboratorioItems;
 
@@ -35,9 +46,21 @@ export async function POST(req: NextRequest){
             responsavel
         });
 
+        await Logs.create({
+            nome: session?.user?.name,
+            typeHttp: 'POST',
+            ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
+            message: `Finalizou o cadastro de um laboratorio`
+        });
         return NextResponse.json({status: 'sucess', message: 'Laboratorio criado com sucesso'}, {status: 201})
         
     } catch (error) {
+        await Logs.create({
+            nome: session?.user?.name,
+            typeHttp: 'POST',
+            ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
+            message: `A requisição fracassou`
+        });
         return NextResponse.json({ status: 'error', message: `erro ao fazer a solicitação: ${error}`, code: 400 }, {status: 400})
     }
 }

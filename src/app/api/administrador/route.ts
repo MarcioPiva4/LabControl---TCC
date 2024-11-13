@@ -1,5 +1,7 @@
 import { Administrador } from "@/models/Administrador";
+import { Logs } from "@/models/Log";
 import { administradorItems, administradorPatch, administradorPut } from "@/types/administrador";
+import { authOptions } from "@/utils/authOptions";
 import { isValidateCEP } from "@/utils/cepValitador";
 import { isValidateDate } from "@/utils/dateValidator";
 import { isValidEmail } from "@/utils/emailValitador";
@@ -8,6 +10,7 @@ import { isValidName } from "@/utils/nameValitador";
 import { isValidateHouseNumber } from "@/utils/numHouseValidator";
 import { isValidPhoneNumber } from "@/utils/phoneValitador";
 import { sendEmail } from "@/utils/sendEmail";
+import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(){
@@ -20,6 +23,13 @@ export async function GET(){
 }
 
 export async function POST(req: NextRequest){
+    const session = await getServerSession(authOptions);
+    await Logs.create({
+        nome: session?.user?.name,
+        typeHttp: 'POST',
+        ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
+        message: 'Iniciou uma requisição na rota de administrador'
+    });
     try{
         const { nome, email, telefone, data_contratacao, cep, estado, cidade, rua, numero } = await req.json() as administradorItems;
 
@@ -75,9 +85,22 @@ export async function POST(req: NextRequest){
             senha: password,
         });
         sendEmail(password.toString(), email, nome, 'adm');
+
+        await Logs.create({
+            nome: session?.user?.name,
+            typeHttp: 'POST',
+            ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
+            message: `Finalizou o cadastro do administrador, senha gerada pelo sistema:${password}`
+        });
         return NextResponse.json({status: 'sucess', message: 'Administrador criado com sucesso', createAdministrador}, {status: 201})
         
     } catch (error) {
+        await Logs.create({
+            nome: session?.user?.name,
+            typeHttp: 'POST',
+            ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
+            message: `A requisição fracassou`
+        });
         return NextResponse.json({ status: 'error', message: `erro ao fazer a solicitação: ${error}`, code: 400 }, {status: 400})
     }
 }

@@ -1,29 +1,39 @@
-import EquipamentoRevisarEditar from "@/components/Forms/EditarAulaForm/Equipamentos/Revisar";
+import dynamic from "next/dynamic";
+  import { LoaderFormReview } from "@/components/LoaderForm";
+
+const EquipamentoRevisar  = dynamic(() => import("@/components/AulaEquipamento/Revisar"), 
+    { 
+        ssr: false, 
+        loading: () => <LoaderFormReview quantity={1}></LoaderFormReview>
+    }
+);
 
 interface PropPageRevisar {
   params: {
-    revisarId: string;
     id: string;
+    revisarId: string
   }
 }
 
-async function getDataEquipamentos() {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/equipamento`);
-  return await response.json();
-}
-
-async function getDataAulas() {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/aula`);
-  return await response.json();
-}
-
-
-
 export default async function Page({ params }: PropPageRevisar){
-  const { revisarId, id } = params;
+  const { id, revisarId } = params;
   const dataEquipamentos = await getDataEquipamentos();
-  const dataAulas = await getDataAulas();
+  const dataAulas = await getDataAula();
   return(
-    <EquipamentoRevisarEditar idEquipamentos={revisarId} idAula={id} equipamentos={dataEquipamentos} aulas={dataAulas}></EquipamentoRevisarEditar>
+    <EquipamentoRevisar id={revisarId} equipamentos={dataEquipamentos} idAula={id} aulas={dataAulas} manutencao></EquipamentoRevisar>
   )
+}
+
+async function getDataEquipamentos() {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/equipamento`, {
+    'cache': 'no-cache'
+  });
+  return await response.json();
+}
+
+async function getDataAula() {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/aula`, {
+    'cache': 'no-cache'
+  });
+  return await response.json();
 }

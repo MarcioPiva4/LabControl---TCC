@@ -1,11 +1,14 @@
 import { Fornecedor } from "@/models/Fornecedor";
+import { Logs } from "@/models/Log";
 import { FornecedorItems } from "@/types/fornecedor";
+import { authOptions } from "@/utils/authOptions";
 import { isValidateCEP } from "@/utils/cepValitador";
 import { isValidateCNPJ } from "@/utils/cnpjValitador";
 import { isValidEmail } from "@/utils/emailValitador";
 import { isValidName } from "@/utils/nameValitador";
 import { isValidateHouseNumber } from "@/utils/numHouseValidator";
 import { isValidPhoneNumber } from "@/utils/phoneValitador";
+import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(){
@@ -18,6 +21,13 @@ export async function GET(){
 }
 
 export async function POST(req: NextRequest){
+    const session = await getServerSession(authOptions);
+    await Logs.create({
+        nome: session?.user?.name,
+        typeHttp: 'POST',
+        ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
+        message: 'Iniciou uma requisição na rota de fornecedores'
+    });
     try{
         const { nome, cnpj, email, telefone, telefone_tipo, cep, estado, cidade, bairro, rua, numero } = await req.json() as FornecedorItems;
 
@@ -78,9 +88,22 @@ export async function POST(req: NextRequest){
             numero
         });
 
+        await Logs.create({
+            nome: session?.user?.name,
+            typeHttp: 'POST',
+            ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
+            message: `Finalizou o cadastro de um fornecedor`
+        });
+
         return NextResponse.json({status: 'sucess', message: 'Fornecedor criado com sucesso'}, {status: 201})
         
     } catch (error) {
+        await Logs.create({
+            nome: session?.user?.name,
+            typeHttp: 'POST',
+            ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
+            message: `A requisição fracassou`
+        });
         return NextResponse.json({ status: 'error', message: `erro ao fazer a solicitação: ${error}`, code: 400 }, {status: 400})
     }
 }

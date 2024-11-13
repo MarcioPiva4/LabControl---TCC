@@ -11,7 +11,7 @@ export default async function Page({params}: PropPageEquipamentos){
     const { id, vidrariaId } = params;
     const dataVidrarias = await getDataVidrarias();
     return(
-        <VidrariasID vidrarias={dataVidrarias} id={vidrariaId} baixa idAula={id}></VidrariasID>
+        <VidrariasID vidrarias={dataVidrarias} id={vidrariaId} idAula={id} manutencao></VidrariasID>
     )
 }
 

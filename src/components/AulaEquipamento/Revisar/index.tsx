@@ -60,7 +60,7 @@ interface Itens {
   quantidade_equipamento: number;
 }
 
-export default function EquipamentoRevisar({ id, equipamentos, baixa, idAula, aulas }: { id: string; equipamentos: any; baixa?: boolean; idAula?: string; aulas?: any}) {
+export default function EquipamentoRevisar({ id, equipamentos, baixa, idAula, aulas, manutencao }: { id: string; equipamentos: any; baixa?: boolean; idAula?: string; aulas?: any; manutencao?: boolean;}) {
   const arrayIds = id.replaceAll('%2C', ',').split(',');
   const [data,setData] = useState(equipamentos.data);
   const [itens, setItens] = useState(data.filter((e: any, i: any) => arrayIds.includes(e.id.toString())));
@@ -90,25 +90,14 @@ export default function EquipamentoRevisar({ id, equipamentos, baixa, idAula, au
     );
   }, [id, abr, parsedData]);
 
-  const [values, setValues] = useState(abr);
   useEffect(() => {
-    const savedAbr = localStorage.getItem('selectedAbr');
-    if (savedAbr) {
-      const parsedAbr = JSON.parse(savedAbr);
-      setValues((prevValues) =>
-        prevValues.map((value) =>
-          value.id === parsedAbr.id ? { ...value, active: true } : { ...value, active: false }
-        )
-      );
-    }
-  }, []);
-
-  useEffect(() => {
-    const localData = localStorage.getItem('equipamentosAula');
+    const localData = localStorage.getItem('equipamentosAulaEditar');
     if(localData){
       setParsedData(JSON.parse(localData));
     }
   }, []);
+
+  console.log(parsedData);
 
   const handleAddQuantity = (id: number) => {
     setItens((prev: any) => 
@@ -131,14 +120,20 @@ export default function EquipamentoRevisar({ id, equipamentos, baixa, idAula, au
   };
 
   const submitForm = () => {
-    if(!baixa){
-      router.push('/cadastro/aula');
+    if(baixa){
+      router.push(`/baixa-aulas/finalizar/${idAula}`);
+    }  else if (manutencao){
+      if(localStorage.getItem('equipamentosAulaEditar')){
+        localStorage.removeItem('equipamentosAulaEditar')
+      }
+      localStorage.setItem('equipamentosAulaEditar', JSON.stringify(itens.map((e: any) =>  ({id_aula: idAula,id_equipamento: e.id, quantidade_equipamento: e.quantidadeAdd})  )));
+      router.push(`/manutencao/editar/${idAula}`);
+    }else {
       if(localStorage.getItem('equipamentosAula')){
         localStorage.removeItem('equipamentosAula')
       }
       localStorage.setItem('equipamentosAula', JSON.stringify(itens.map((e: any) =>  ({id_equipamento: e.id, quantidade_equipamento: e.quantidadeAdd})  )));
-    } else {
-      router.push(`/baixa-aulas/finalizar/${idAula}`);
+      router.push('/cadastro/aula');
     }
   }
   return (
@@ -182,7 +177,7 @@ export default function EquipamentoRevisar({ id, equipamentos, baixa, idAula, au
                 </div>
               ))}
               <Content>
-                <ButtonLink type="button" link="link" is="isTransparent" href={baixa ? `/baixa-aulas/finalizar/${idAula}/vidrarias/${itens.map((e: any) => e.id)}` : `/cadastro/aula/vidrarias/${itens.map((e: any) => e.id)}`}>
+                <ButtonLink type="button" link="link" is="isTransparent" href={baixa && `/baixa-aulas/finalizar/${idAula}/equipamentos/${itens.map((e: any) => e.id)}` || manutencao && `/manutencao/editar/${idAula}/equipamentos/${itens.map((e: any) => e.id)}` || `/cadastro/aula/equipamentos/${itens.map((e: any) => e.id)}`}>
                   CANCELAR
                 </ButtonLink>
                 <button onClick={submitForm} type="button">

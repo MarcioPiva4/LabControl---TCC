@@ -6,12 +6,12 @@ import Section from "@/components/Section";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function EquipamentoID({ id, equipamentos, baixa, idAula }: {id: any, equipamentos: any; baixa?: boolean; idAula?: string}){
+export default function EquipamentoID({ id, equipamentos, baixa, idAula, manutencao }: {id: any, equipamentos: any; baixa?: boolean; idAula?: string; manutencao?: boolean}){
     const arrayIds = id.replaceAll('%2C', ',').split(',');
     const [data,setData] = useState(equipamentos.data);
 
     useEffect(() => {
-      if(baixa){
+      if(baixa && manutencao){
         const activeForId = data
         .filter((e: any, index: number) => arrayIds.includes(e.id.toString()))
         .map((e: any) => ({ ...e, active: true }));
@@ -43,7 +43,7 @@ export default function EquipamentoID({ id, equipamentos, baixa, idAula }: {id: 
   const selecteds = data.filter((e: any) => e.active);
   const selectedIds = selecteds.map((e: any) => e.id).join(',');
   return (
-    <Section title="Equipamentos" arrowBefore href={baixa ? `/baixa-aulas/finalizar/${idAula}` :`/cadastro/aula`} bottom>
+    <Section title="Equipamentos" arrowBefore href={baixa && `/baixa-aulas/finalizar/${idAula}` || manutencao && `/manutencao/editar/${idAula}` || '/cadastro/aula'} bottom>
       <InputSearch placeholder="pesquise os equipamentos..." id="equipamentosseach"></InputSearch>
         {data.map((e: any, i: number) => ( 
           <InputBoxSelect name={e.equipamento} key={i} id={e.id} activeOption={activeOption} disableOption={disableOption} active={e.active}></InputBoxSelect>

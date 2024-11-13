@@ -2,8 +2,11 @@ import {
   AgenteReajente,
   FornecedorAgenteReajente,
 } from "@/models/Agente_reajente";
+import { Logs } from "@/models/Log";
 import { AgenteReajenteItems, AgenteReajenteReqPost } from "@/types/agente_reajente";
+import { authOptions } from "@/utils/authOptions";
 import { isDescriptionLengthMore } from "@/utils/descriptionValidatador";
+import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { Model } from "sequelize";
 
@@ -27,6 +30,13 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+  await Logs.create({
+      nome: session?.user?.name,
+      typeHttp: 'POST',
+      ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
+      message: 'Iniciou uma requisição na rota de agentes/reajentes'
+  });
   try {
     const {
       nome,
@@ -96,6 +106,12 @@ export async function POST(req: NextRequest) {
       })
     );
 
+    await Logs.create({
+      nome: session?.user?.name,
+      typeHttp: 'POST',
+      ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
+      message: 'Finalizou o cadastro de um agente/reajente'
+    });
     return NextResponse.json(
       {
         status: "sucess",
@@ -105,6 +121,12 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
+    await Logs.create({
+      nome: session?.user?.name,
+      typeHttp: 'POST',
+      ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
+      message: 'A requisição fracassou'
+    });
     return NextResponse.json(
       {
         status: "error",

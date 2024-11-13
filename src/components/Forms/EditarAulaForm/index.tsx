@@ -9,7 +9,36 @@ import { Loader } from "@/components/Loader";
 import MenuSubmit from "@/components/MenuSubmit";
 import Select from "@/components/Select";
 import TextArea from "@/components/TextArea";
+import { AulaItems, AulaItemsRelationships, AulaReq } from "@/types/aula";
+import { LaboratorioReq } from "@/types/laboratorio";
+import { MateriaReq } from "@/types/materia";
+import { ProfessorReq } from "@/types/professor";
 import { useEffect, useState } from "react";
+
+interface parsedDataEquipamentoEditar {
+  id_aula: string;
+  id_equipamento: number;
+  quantidade_equipamento: number;
+}
+
+interface parsedDataEquipamentoEditar {
+  id_aula: string;
+  id_equipamento: number;
+  quantidade_equipamento: number;
+}
+
+interface parsedDataVidrariaEditar {
+  id_aula: string;
+  id_vidrarias: number;
+  quantidade_vidrarias: number;
+}
+
+interface parsedDataAgenteReajenteEditar {
+  id_aula: string;
+  id_agenteReajente: number;
+  quantidade_agenteReajente: number;
+  unidade: string;
+}
 
 export default function EditarAulaForm({
   aulas,
@@ -18,18 +47,79 @@ export default function EditarAulaForm({
   professor,
   laboratorio,
 }: {
-  aulas: any;
-  id: any;
-  materias: any;
-  professor: any;
-  laboratorio: any;
+  aulas: AulaReq;
+  id: string | number;
+  materias: MateriaReq;
+  professor: ProfessorReq;
+  laboratorio: LaboratorioReq;
 }) {
   const [dataAulas, setDataAulas] = useState(aulas.data);
-  const [dataAulasFilted, setdataAulasFilted] = useState() as any;
+  const [dataAulasFilted, setdataAulasFilted] = useState<any>();
 
   useEffect(() => {
     setdataAulasFilted(dataAulas.filter((e: any) => e.id == id));
   }, [id, dataAulas]);
+
+  const [parsedDataIdsEquipamentos, setParsedDataIdsEquipamentos] = useState<
+    parsedDataEquipamentoEditar[] | null
+  >(JSON.parse(localStorage.getItem("equipamentosAulaEditar") as string));
+
+  useEffect(() => {
+    if (dataAulasFilted) {
+      setParsedDataIdsEquipamentos((prev) => prev &&
+        prev.filter(
+          (e) =>
+            e.id_aula == dataAulasFilted[0].id &&
+            e.id_equipamento !=
+              dataAulasFilted[0]?.equipamentos.map(
+                (e: { EquipamentoAula: { id_equipamento: string } }) =>
+                  e.EquipamentoAula?.id_equipamento
+              )
+        )
+      );
+    }
+  }, [dataAulasFilted]);
+
+  const [parsedDataIdsVidrarias, setParsedDataIdsVidrarias] = useState<
+    parsedDataVidrariaEditar[] | null
+  >(JSON.parse(localStorage.getItem("vidrariasAulaEditar") as string));
+
+  useEffect(() => {
+    if (dataAulasFilted) {
+      setParsedDataIdsVidrarias((prev) => prev &&
+        prev.filter(
+          (e) =>
+            e.id_aula == dataAulasFilted[0].id &&
+            e.id_vidrarias !=
+              dataAulasFilted[0]?.vidrarias.map(
+                (e: { VidrariaAula: { id_vidraria: string } }) =>
+                  e.VidrariaAula?.id_vidraria
+              )
+        )
+      );
+    }
+  }, [dataAulasFilted]);
+
+  const [parsedDataIdsAgenteReajente, setParsedDataIdsAgenteReajente] =
+    useState<parsedDataAgenteReajenteEditar[] | null>(
+      JSON.parse(localStorage.getItem("agenteReajenteAulaEditar") as string)
+    );
+
+  useEffect(() => {
+    if (dataAulasFilted) {
+      setParsedDataIdsAgenteReajente((prev) => prev &&
+        prev.filter(
+          (e) =>
+            e.id_aula == dataAulasFilted[0].id &&
+            e.id_agenteReajente !=
+              dataAulasFilted[0]?.agentes_reajentes.map(
+                (e: { AgenteReajenteAula: { id_agentereajente: string } }) =>
+                  e.AgenteReajenteAula.id_agentereajente
+              )
+        )
+      );
+    }
+  }, [dataAulasFilted]);
 
   const [sucess, setSucess] = useState<null | true>(null);
   const [error, setError] = useState<{ error: boolean; message: string }>({
@@ -47,7 +137,7 @@ export default function EditarAulaForm({
     const parsedEquipamentos = equipamentos ? JSON.parse(equipamentos) : null;
     const vidrarias = localStorage.getItem("vidrariasAulaEditar");
     const parsedVidrarias = vidrarias ? JSON.parse(vidrarias) : null;
-    const agenteReajente = localStorage.getItem("agentesReajentesAulaEditar");
+    const agenteReajente = localStorage.getItem("agenteReajenteAulaEditar");
     const parsedAgenteReajente = agenteReajente
       ? JSON.parse(agenteReajente)
       : null;
@@ -72,9 +162,9 @@ export default function EditarAulaForm({
         setDataAulas(responseJson.data);
         setSucess(true);
         setError({ error: false, message: "" });
-        localStorage.removeItem('equipamentosAulaEditar')
-        localStorage.removeItem('vidrariasAulaEditar')
-        localStorage.removeItem('agentesReajentesAulaEditar')
+        localStorage.removeItem("equipamentosAulaEditar");
+        localStorage.removeItem("vidrariasAulaEditar");
+        localStorage.removeItem("agenteReajenteAulaEditar");
       } else {
         setError({ error: true, message: responseJson.message });
       }
@@ -92,34 +182,58 @@ export default function EditarAulaForm({
       {error.error && (
         <ErrorMessage text={error.message} error={error}></ErrorMessage>
       )}
-      <Select id="id_materia" options={materias.data } selectLabel="Matérias" value={dataAulasFilted ? dataAulasFilted[0].materias[0].MateriaAula.id_materia : ''}></Select> 
-      <Select id="id_professor" options={professor.data } selectLabel="Professor" value={dataAulasFilted ? dataAulasFilted[0].professores[0].ProfessorAula.id_professor : ''}></Select> 
-      <Select id="id_laboratorio" options={laboratorio.data } selectLabel="Laboratório" value={dataAulasFilted ? dataAulasFilted[0].laboratorios[0].LaboratorioAula.id_laboratorio : ''}></Select> 
+      <Select
+        id="id_materia"
+        options={materias.data}
+        selectLabel="Matérias"
+        value={
+          dataAulasFilted
+            ? dataAulasFilted[0]?.materias[0]?.MateriaAula?.id_materia
+            : ""
+        }></Select>
+      <Select
+        id="id_professor"
+        options={professor.data}
+        selectLabel="Professor"
+        value={
+          dataAulasFilted
+            ? dataAulasFilted[0]?.professores[0]?.ProfessorAula?.id_professor
+            : ""
+        }></Select>
+      <Select
+        id="id_laboratorio"
+        options={laboratorio.data}
+        selectLabel="Laboratório"
+        value={
+          dataAulasFilted
+            ? dataAulasFilted[0]?.laboratorios[0]?.LaboratorioAula?.id_laboratorio
+            : ""
+        }></Select>
       {dataAulasFilted
         ? dataAulasFilted[0]?.equipamentos[0] && (
             <InputBoxSelectLink
               name="Equipamentos"
-              href={`${dataAulasFilted && dataAulasFilted[0]?.id}/equipamentos/${
-                dataAulasFilted
-                  ? dataAulasFilted[0]?.equipamentos.map(
-                      (e: any) => e.EquipamentoAula.id_equipamento
-                    )
-                  : ""
-              }`}></InputBoxSelectLink>
+              href={`${
+                dataAulasFilted[0]?.id
+              }/equipamentos/${dataAulasFilted[0]?.equipamentos
+                .map((e: any) => e.EquipamentoAula.id_equipamento)
+                .join(",")},${parsedDataIdsEquipamentos && parsedDataIdsEquipamentos
+                .map((e) => e.id_equipamento)
+                .join(",")}`}></InputBoxSelectLink>
           )
         : null}
-        
+
       {dataAulasFilted
         ? dataAulasFilted[0]?.agentes_reajentes[0] && (
             <InputBoxSelectLink
               name="Agentes/Reajentes"
-              href={`${dataAulasFilted && dataAulasFilted[0]?.id}/agente-reajente/${
-                dataAulasFilted
-                  ? dataAulasFilted[0]?.agentes_reajentes.map(
-                      (e: any) => e.AgenteReajenteAula.id_agentereajente
-                    )
-                  : ""
-              }`}></InputBoxSelectLink>
+              href={`${
+                dataAulasFilted[0]?.id
+              }/agente-reajente/${dataAulasFilted[0]?.agentes_reajentes
+                .map((e: any) => e.AgenteReajenteAula.id_agentereajente)
+                .join(",")},${parsedDataIdsAgenteReajente && parsedDataIdsAgenteReajente
+                .map((e) => e.id_agenteReajente)
+                .join(",")}`}></InputBoxSelectLink>
           )
         : null}
 
@@ -127,28 +241,34 @@ export default function EditarAulaForm({
         ? dataAulasFilted[0]?.vidrarias[0] && (
             <InputBoxSelectLink
               name="Vidrarias"
-              href={`${dataAulasFilted && dataAulasFilted[0]?.id}/vidrarias/${
-                dataAulasFilted
-                  ? dataAulasFilted[0]?.vidrarias.map(
-                      (e: any) => e.VidrariaAula.id_vidraria
-                    )
-                  : ""
-              }`}></InputBoxSelectLink>
+              href={`${
+                dataAulasFilted[0]?.id
+              }/vidrarias/${dataAulasFilted[0]?.vidrarias
+                .map((e: any) => e.VidrariaAula.id_vidraria)
+                .join(",")},${parsedDataIdsVidrarias && parsedDataIdsVidrarias
+                .map((e) => e.id_vidrarias)
+                .join(",")}`}></InputBoxSelectLink>
           )
         : null}
-        
+
       <Input
         type="text"
         label="Tópico da Aula"
         value={dataAulasFilted ? dataAulasFilted[0].topico_aula : ""}
-        onChange={(e) => setdataAulasFilted((prev: any) => prev ? [{ ...prev[0], topico_aula: e.target.value }] : prev)} 
+        onChange={(e) =>
+          setdataAulasFilted((prev: any) =>
+            prev ? [{ ...prev[0], topico_aula: e.target.value }] : prev
+          )
+        }
         idInput="topico_aula"></Input>
       <Input
         type="time"
         label="Horário de inicio"
         value={dataAulasFilted ? dataAulasFilted[0].horario_inicio : ""}
         onChange={(e) =>
-          setdataAulasFilted((prev: any) => (prev ? [{ ...prev[0], horario_inicio: e.target.value }]  : prev))
+          setdataAulasFilted((prev: any) =>
+            prev ? [{ ...prev[0], horario_inicio: e.target.value }] : prev
+          )
         }
         idInput="horario_inicio"></Input>
       <Input
@@ -156,7 +276,9 @@ export default function EditarAulaForm({
         label="Horário de finalização"
         value={dataAulasFilted ? dataAulasFilted[0].horario_finalizacao : ""}
         onChange={(e) =>
-          setdataAulasFilted((prev: any) => (prev ? [{ ...prev[0], horario_finalizacao: e.target.value }] : prev))
+          setdataAulasFilted((prev: any) =>
+            prev ? [{ ...prev[0], horario_finalizacao: e.target.value }] : prev
+          )
         }
         idInput="horario_finalizacao"></Input>
       <Input
@@ -165,14 +287,26 @@ export default function EditarAulaForm({
         idInput="data"
         value={dataAulasFilted ? dataAulasFilted[0].data : ""}
         onChange={(e) =>
-          setdataAulasFilted((prev: any) => (prev ? [{ ...prev[0], data: e.target.value }] : prev))
+          setdataAulasFilted((prev: any) =>
+            prev ? [{ ...prev[0], data: e.target.value }] : prev
+          )
         }></Input>
-      <TextArea labelText="Observações" id="observacoes" length value={dataAulasFilted ? dataAulasFilted[0].observacoes : ''}></TextArea>
+      <TextArea
+        labelText="Observações"
+        id="observacoes"
+        length
+        value={
+          dataAulasFilted ? dataAulasFilted[0].observacoes : ""
+        }></TextArea>
       {submiting ? <Loader></Loader> : null}
       <Button type="submit" is="isNotTransparent">
         FINALIZAR
       </Button>
-      {sucess && <MenuSubmit setSucess={setSucess} message="Editar novamente?"></MenuSubmit>}
+      {sucess && (
+        <MenuSubmit
+          setSucess={setSucess}
+          message="Editar novamente?"></MenuSubmit>
+      )}
       {!dataAulasFilted && <Loader></Loader>}
     </DefaultForm>
   );

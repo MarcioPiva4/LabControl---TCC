@@ -1,13 +1,16 @@
 import { theme } from "@/styles/theme";
 import styled, { ThemeProvider } from "styled-components";
 import { useState, useEffect, useRef } from "react";
+import { MateriaItems } from "@/types/materia";
+import { ProfessorItems } from "@/types/professor";
+import { LaboratorioItems } from "@/types/laboratorio";
 
 interface PropSelect {
-  options: Array<{ nome: string; id: string; }>;
+  options: Array<{ nome: string; id: string; }> | MateriaItems[] | ProfessorItems[] | LaboratorioItems[];
   id: string;
   selectLabel: string;
-  onChange?: (e: string) => void;
-  value?: string;
+  onChange?: (e: string | number) => void;
+  value?: string | number;
   readOnly?: boolean;
 }
 
@@ -77,7 +80,7 @@ export default function FakeSelect({
   onChange,
   readOnly
 }: PropSelect) {
-  const [selectedOption, setSelectedOption] = useState<string>(value || "");
+  const [selectedOption, setSelectedOption] = useState<string | number>(value || "");
   const [isOpen, setIsOpen] = useState(false);
   
   useEffect(() => {
@@ -86,7 +89,7 @@ export default function FakeSelect({
     }
   }, [value]);
 
-  const handleOptionClick = (id: string) => {
+  const handleOptionClick = (id: string | number) => {
     setSelectedOption(id);
     setIsOpen(false);
     if (onChange) {

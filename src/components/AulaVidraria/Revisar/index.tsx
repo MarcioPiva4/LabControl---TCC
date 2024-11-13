@@ -61,7 +61,7 @@ interface Itens {
   quantidade_vidrarias: number;
 }
 
-export default function VidrariasRevisar({ id, vidrarias, baixa, idAula, aulas }: { id: string; vidrarias: any; baixa?: boolean; idAula?: string; aulas?: any}) {
+export default function VidrariasRevisar({ id, vidrarias, baixa, idAula, aulas, manutencao }: { id: string; vidrarias: any; baixa?: boolean; idAula?: string; aulas?: any; manutencao?: boolean}) {
   const arrayIds = id.replaceAll('%2C', ',').split(',');
   const [data,setData] = useState(vidrarias.data);
   const [itens, setItens] = useState(data.filter((e: any, i: any) => arrayIds.includes(e.id.toString())));
@@ -114,17 +114,22 @@ export default function VidrariasRevisar({ id, vidrarias, baixa, idAula, aulas }
       )
     );
   };
-  
 
   const submitForm = () => {
-    if(!baixa){
+    if(baixa){
+      router.push(`/baixa-aulas/finalizar/${idAula}`);
+    }else if(manutencao){
+      if(localStorage.getItem('vidrariasAulaEditar')){
+        localStorage.removeItem('vidrariasAulaEditar')
+      }
+      localStorage.setItem('vidrariasAulaEditar', JSON.stringify(itens.map((e: any) =>  ({id_aula: idAula,id_vidrarias: e.id, quantidade_vidrarias: e.quantidadeAdd})  )));
+      router.push(`/manutencao/editar/${idAula}`);
+    } else {
       if(localStorage.getItem('vidrariasAula')){
         localStorage.removeItem('vidrariasAula')
       }
       localStorage.setItem('vidrariasAula', JSON.stringify(itens.map((e: any) =>  ({id_vidrarias: e.id, quantidade_vidrarias: e.quantidadeAdd})  )));
       router.push('/cadastro/aula');
-    } else {
-      router.push(`/baixa-aulas/finalizar/${idAula}`);
     }
   }
   return (
@@ -168,7 +173,7 @@ export default function VidrariasRevisar({ id, vidrarias, baixa, idAula, aulas }
                 </div>
               ))}
               <Content>
-                <ButtonLink type="button" link="link" is="isTransparent" href={baixa ? `/baixa-aulas/finalizar/${idAula}/vidrarias/${itens.map((e: any) => e.id)}` : `/cadastro/aula/vidrarias/${itens.map((e: any) => e.id)}`}>
+                <ButtonLink type="button" link="link" is="isTransparent" href={baixa && `/baixa-aulas/finalizar/${idAula}/vidrarias/${itens.map((e: any) => e.id)}` || manutencao && `/manutencao/editar/${idAula}/vidrarias/${itens.map((e: any) => e.id)}` || `/cadastro/aula/vidrarias/${itens.map((e: any) => e.id)}`}>
                   CANCELAR
                 </ButtonLink>
                 <button onClick={submitForm} type="button">
@@ -181,5 +186,4 @@ export default function VidrariasRevisar({ id, vidrarias, baixa, idAula, aulas }
       )}
     </>
   );
-  
 }

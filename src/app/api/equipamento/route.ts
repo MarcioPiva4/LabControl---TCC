@@ -1,6 +1,9 @@
 import { Equipamento, FornecedorEquipamentos } from "@/models/Equipamento";
+import { Logs } from "@/models/Log";
 import { EquipamentoItems, EquipamentoPost } from "@/types/equipamento";
+import { authOptions } from "@/utils/authOptions";
 import { isDescriptionLengthMore } from "@/utils/descriptionValidatador";
+import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { Model } from "sequelize";
 
@@ -14,6 +17,13 @@ export async function GET(){
 }
 
 export async function POST(req: NextRequest){
+    const session = await getServerSession(authOptions);
+    await Logs.create({
+        nome: session?.user?.name,
+        typeHttp: 'POST',
+        ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
+        message: 'Iniciou uma requisição na rota de equipamentos'
+    });
     try{
         const { equipamento, quantidade, tipo, numero_serie, marca_modelo, preco_compra, localizacao, observacoes, id_fornecedor } = await req.json() as EquipamentoPost;
 
@@ -54,9 +64,22 @@ export async function POST(req: NextRequest){
             });
         }));
 
+        await Logs.create({
+            nome: session?.user?.name,
+            typeHttp: 'POST',
+            ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
+            message: `Finalizou o cadastro de um equipamento`
+        });
+
         return NextResponse.json({status: 'sucess', message: 'Equipamento criado com sucesso', createEquipamento}, {status: 201})
         
     } catch (error) {
+        await Logs.create({
+            nome: session?.user?.name,
+            typeHttp: 'POST',
+            ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
+            message: `A requisição fracassou`
+        });
         return NextResponse.json({ status: 'error', message: `erro ao fazer a solicitação: ${error}`, code: 400 }, {status: 400})
     }
 }

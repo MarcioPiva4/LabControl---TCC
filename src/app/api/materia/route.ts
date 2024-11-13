@@ -1,5 +1,9 @@
+import { Logs } from "@/models/Log";
 import { Materias } from "@/models/Materias";
 import { MateriaItems } from "@/types/materia";
+import { authOptions } from "@/utils/authOptions";
+import { NextApiResponse } from "next";
+import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(){
@@ -11,10 +15,17 @@ export async function GET(){
     }
 }
 
-export async function POST(req: NextRequest){
+export async function POST(req: NextRequest,  res: NextApiResponse){
+    const session = await getServerSession(authOptions);
+    await Logs.create({
+        nome: session?.user?.name,
+        typeHttp: 'POST',
+        ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
+        message: 'Iniciou uma requisição na rota de matérias'
+    });
+
     try{
         const { nome, emenda } = await req.json() as MateriaItems;
-
 
         if(nome.toString().length <= 0 || emenda.toString().length <= 0){
             return NextResponse.json({ status: 'error', message: `Não pode haver campos vazios`, code: 400 }, {status: 400});
@@ -29,9 +40,22 @@ export async function POST(req: NextRequest){
             emenda,
         });
 
+        await Logs.create({
+            nome: session?.user?.name,
+            typeHttp: 'POST',
+            ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
+            message: `Finalizou o cadastro da matéria: ${nome} e ${emenda}`
+        });
         return NextResponse.json({status: 'sucess', message: 'Matéria criada com sucesso'}, {status: 201})
         
     } catch (error) {
+
+        await Logs.create({
+            nome: session?.user?.name,
+            typeHttp: 'POST',
+            ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
+            message: `A requisição fracassou`
+        });
         return NextResponse.json({ status: 'error', message: `erro ao fazer a solicitação: ${error}`, code: 400 }, {status: 400})
     }
 }
