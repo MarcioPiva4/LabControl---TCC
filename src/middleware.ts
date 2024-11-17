@@ -10,6 +10,10 @@ export async function middleware(req: NextRequest) {
         return NextResponse.redirect(new URL('/login', req.url));
     }
 
+    if (req.nextUrl.pathname.startsWith("/api/socket")) {
+        return NextResponse.next(); 
+    }
+
    return NextResponse.next();
 }
 

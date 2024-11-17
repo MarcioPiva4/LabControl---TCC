@@ -1,4 +1,5 @@
-'use client'
+'use client';
+
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
@@ -14,13 +15,20 @@ export default function Page() {
     const [logs, setLogs] = useState<Log[]>([]);
 
     useEffect(() => {
-        const eventSource = new EventSource('/api/log');
+        const eventSource = new EventSource('/api/socket');
 
         eventSource.onmessage = (event) => {
             const parsedData = JSON.parse(event.data);
             if (parsedData.status === 'success') {
-                setLogs(parsedData.data);
+                // Atualiza o estado dos logs somente com os novos logs
+                setLogs((prevLogs) => {
+                    // Combina os logs antigos com os novos
+                    const newLogs = [...parsedData.data, ...prevLogs];
+                    return newLogs;
+                });
             }
+
+            console.log(parsedData)
         };
 
         eventSource.onerror = () => {
@@ -37,18 +45,26 @@ export default function Page() {
         <Container>
             <Title>LOGS LABCONTROL</Title>
             <LogList>
-                {logs.map((item: Log) => (
-                    <LogItem key={item.id}>
-                        <LogField><strong>Nome:</strong> {item.nome}</LogField>
-                        <LogField><strong>IP:</strong> {item.ip}</LogField>
-                        <LogField><strong>Tipo HTTP:</strong> {item.typeHttp}</LogField>
-                        <LogField><strong>Mensagem:</strong> {item.message}</LogField>
+                {logs.map((log) => (
+                    <LogItem key={log.id}>
+                        <LogField>
+                            <strong>Nome:</strong> {log.nome}
+                        </LogField>
+                        <LogField>
+                            <strong>IP:</strong> {log.ip}
+                        </LogField>
+                        <LogField>
+                            <strong>Tipo HTTP:</strong> {log.typeHttp}
+                        </LogField>
+                        <LogField>
+                            <strong>Mensagem:</strong> {log.message}
+                        </LogField>
                     </LogItem>
                 ))}
             </LogList>
         </Container>
     );
-};
+}
 
 const Container = styled.div`
     background-color: #1e1e1e;
