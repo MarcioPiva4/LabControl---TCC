@@ -21,5 +21,8 @@ export const GlobalStyle = createGlobalStyle`
     display: flex;
     flex-direction: column;
     flex: 1;
+    @media screen and (min-width: 768px){
+      padding-left: 213px;
+    }
   }
 `

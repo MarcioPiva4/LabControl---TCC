@@ -91,12 +91,12 @@ const SubMenu = styled.aside`
   gap: 10px;
   max-width: 300px;
 
-  .logo-content{
+  .logo-content {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-top: 20px;
-    img{
+    img {
       width: 150px;
       height: 100%;
       object-fit: contain;
@@ -184,7 +184,7 @@ const SubMenu = styled.aside`
   }
 `;
 
-export function Header( { session }: { session?: any }) {
+export function Header({ session }: { session?: any }) {
   const pathName = usePathname();
   const [menu, setMenu] = useState<boolean>(false);
   const [activePage, setActivePage] = useState<string>(pathName);
@@ -207,73 +207,254 @@ export function Header( { session }: { session?: any }) {
   };
 
   useEffect(() => {
-    document.addEventListener('click', handleClickOutside, true);
+    document.addEventListener("click", handleClickOutside, true);
     return () => {
-      document.removeEventListener('click', handleClickOutside, true);
+      document.removeEventListener("click", handleClickOutside, true);
     };
+  }, []);
+
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setScreenWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
   return (
     <ThemeProvider theme={theme}>
-      <HeaderWrapper>
-        <div>
-          <nav>
-            <ul>
-              <Li $active={menu} onClick={() => setMenu(!menu)} ref={iconMenu}>
-                <p>Cadastro</p>
-                <Icons icon="cadastro" />
-              </Li>
-              <Li $active={activePage === "/manutencao"}>
-                <Link
-                  href={"/manutencao"}
-                  onClick={() => handleLinkClick("/manutencao")}>
-                  <p>Manutenção</p>
-                  <Icons icon="manutencao" />
+      { screenWidth <= 768 ? 
+        <>
+          <HeaderWrapper>
+            <div>
+              <nav>
+                <ul>
+                  <Li
+                    $active={menu}
+                    onClick={() => setMenu(!menu)}
+                    ref={iconMenu}>
+                    <p>Cadastro</p>
+                    <Icons icon="cadastro" />
+                  </Li>
+                  <Li $active={activePage === "/manutencao"}>
+                    <Link
+                      href={"/manutencao"}
+                      onClick={() => handleLinkClick("/manutencao")}>
+                      <p>Manutenção</p>
+                      <Icons icon="manutencao" />
+                    </Link>
+                  </Li>
+                  <Li $active={activePage === "/"}>
+                    <Link href={"/"} onClick={() => handleLinkClick("/")}>
+                      <p>Home</p>
+                      <Icons icon="home" />
+                    </Link>
+                  </Li>
+                  <Li $active={activePage === "/baixa-aulas"}>
+                    <Link
+                      href={"/baixa-aulas"}
+                      onClick={() => handleLinkClick("/baixa-aulas")}>
+                      <p>Baixa de aulas</p>
+                      <Icons icon="baixaAulas" />
+                    </Link>
+                  </Li>
+                  <Li $active={activePage === "/relatorios"}>
+                    <Link
+                      href={"#"}
+                      onClick={() => signOut({ callbackUrl: "/login" })}>
+                      <p>Sair</p>
+                      <Icons icon="relatorios" />
+                    </Link>
+                  </Li>
+                </ul>
+              </nav>
+            </div>
+          </HeaderWrapper>
+          <CSSTransition
+            classNames="fade"
+            timeout={500}
+            in={menu}
+            unmountOnExit
+            nodeRef={subMenuRef}>
+            <SubMenu ref={subMenuRef}>
+              <div className="logo-content">
+                <Link href={"/"}>
+                  <Image src={logo} alt="logo da labcontrol"></Image>
                 </Link>
-              </Li>
-              <Li $active={activePage === "/"}>
-                <Link href={"/"} onClick={() => handleLinkClick("/")}>
-                  <p>Home</p>
-                  <Icons icon="home" />
-                </Link>
-              </Li>
-              <Li $active={activePage === "/baixa-aulas"}>
-                <Link 
-                  href={"/baixa-aulas"}
-                  onClick={() => handleLinkClick("/baixa-aulas")}>
-                  <p>Baixa de aulas</p>
-                  <Icons icon="baixaAulas" />
-                </Link>
-              </Li>
-              <Li $active={activePage === "/relatorios"}>
-                <Link
-                  href={"#"}
-                  onClick={() => signOut({ callbackUrl: "/login" })}>
-                  <p>Sair</p>
-                  <Icons icon="relatorios" />
-                </Link>
-              </Li>
-            </ul>
-          </nav>
-        </div>
-      </HeaderWrapper>
-      <CSSTransition
-        classNames="fade"
-        timeout={500}
-        in={menu}
-        unmountOnExit
-        nodeRef={subMenuRef}>
-        <SubMenu ref={subMenuRef}>
-          <div className="logo-content">
-            <Link href={'/'}>
-              <Image src={logo} alt="logo da labcontrol"></Image>
-            </Link>
-          </div>
-          <ul>
+              </div>
+              <ul>
+                {session.user.role != "prof" && (
+                  <li>
+                    <Link
+                      href={"/cadastro/administrador"}
+                      onClick={() =>
+                        handleLinkClick("/cadastro/administrador")
+                      }>
+                      <span>Administrador</span>
+                    </Link>
+                  </li>
+                )}
+                <li>
+                  <Link
+                    href={"/cadastro/agente-reagente"}
+                    onClick={() =>
+                      handleLinkClick("/cadastro/agente-reagente")
+                    }>
+                    <span>Agentes/Reagentes</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href={"/cadastro/aula"}
+                    onClick={() => handleLinkClick("/cadastro/aula")}>
+                    <span>Aulas</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href={"/cadastro/equipamentos"}
+                    onClick={() => handleLinkClick("/cadastro/equipamentos")}>
+                    <span>Equipamentos</span>
+                  </Link>
+                </li>
+                {session.user.role != "prof" && (
+                  <li>
+                    <Link
+                      href={"/cadastro/fornecedor"}
+                      onClick={() => handleLinkClick("/cadastro/fornecedor")}>
+                      <span>Fornecedor</span>
+                    </Link>
+                  </li>
+                )}
+                <li>
+                  <Link
+                    href={"/cadastro/laboratorio"}
+                    onClick={() => handleLinkClick("/cadastro/laboratorio")}>
+                    <span>Laboratorio</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href={"/cadastro/materias"}
+                    onClick={() => handleLinkClick("/cadastro/materias")}>
+                    <span>Matérias</span>
+                  </Link>
+                </li>
+                {session.user.role != "prof" && (
+                  <li>
+                    <Link
+                      href={"/cadastro/professor"}
+                      onClick={() => handleLinkClick("/cadastro/professor")}>
+                      <span>Professor</span>
+                    </Link>
+                  </li>
+                )}
+                <li>
+                  <Link
+                    href={"/cadastro/vidrarias"}
+                    onClick={() => handleLinkClick("/cadastro/vidrarias")}>
+                    <span>Vidrarias</span>
+                  </Link>
+                </li>
+              </ul>
+            </SubMenu>
+          </CSSTransition>
+        </>
+        :
+        <HeaderDesktop session={session}></HeaderDesktop>
+      }
+    </ThemeProvider>
+  );
+}
+
+const HeaderDesktopContent = styled.header`
+    height: 100%;
+    width: 213px;
+    background-color: #041833;
+    position: fixed;
+    z-index: 1000;
+    .menu-links{
+      height: 100%;
+      padding: 50px 10px 0 10px;
+      overflow: auto;
+      >li{
+        >a{
+          color: #fff;
+          text-decoration: none;
+          padding: 10px 15px;
+          width: 100%;
+          display: flex;
+          gap: 10px;
+          align-items: center;
+          border-radius: 5px;
+          font-size: 16px;
+          font-weight: 600;
+          transition: 0.2s all;
+          &:hover{
+            background-color: #154580;
+          }
+          svg{
+            width: 20px;
+            height: 20px;
+          }
+        }
+        .submenu-links{
+            padding: 0 15px;
+            li{
+              padding: 5px 0;
+              a{
+                font-size: 16px;
+                font-weight: 400;
+                line-height: 25px;
+                color: #fff;
+                text-decoration: none;
+              }
+            }
+          }
+      }
+      .link-register{
+        &:hover{
+          ul{
+          opacity: 1;
+          visibility: visible;
+          height: 100%;
+          }
+        }
+
+        ul{
+          opacity: 0;
+          visibility: hidden;
+          height: 0;
+        }
+      }
+    }
+`;
+
+export function HeaderDesktop({ session }: { session?: any }){
+  return(
+    <HeaderDesktopContent>
+      <ul className="menu-links">
+        <li>
+          <Link
+            href={"/"}
+            >
+            <Icons icon="home" />
+            <span>Home</span>
+          </Link>
+        </li>
+        <li className="link-register">
+          <Link
+            href={"#"}
+          >
+            <Icons icon="cadastro" />
+            <span>Cadastro</span>
+          </Link>
+
+          <ul className="submenu-links">
             {session.user.role != "prof" && (
               <li>
                 <Link
                   href={"/cadastro/administrador"}
-                  onClick={() => handleLinkClick("/cadastro/administrador")}>
+                >
                   <span>Administrador</span>
                 </Link>
               </li>
@@ -281,21 +462,21 @@ export function Header( { session }: { session?: any }) {
             <li>
               <Link
                 href={"/cadastro/agente-reagente"}
-                onClick={() => handleLinkClick("/cadastro/agente-reagente")}>
+                >
                 <span>Agentes/Reagentes</span>
               </Link>
             </li>
             <li>
               <Link
                 href={"/cadastro/aula"}
-                onClick={() => handleLinkClick("/cadastro/aula")}>
+              >
                 <span>Aulas</span>
               </Link>
             </li>
             <li>
               <Link
                 href={"/cadastro/equipamentos"}
-                onClick={() => handleLinkClick("/cadastro/equipamentos")}>
+                >
                 <span>Equipamentos</span>
               </Link>
             </li>
@@ -303,7 +484,7 @@ export function Header( { session }: { session?: any }) {
               <li>
                 <Link
                   href={"/cadastro/fornecedor"}
-                  onClick={() => handleLinkClick("/cadastro/fornecedor")}>
+                  >
                   <span>Fornecedor</span>
                 </Link>
               </li>
@@ -311,14 +492,14 @@ export function Header( { session }: { session?: any }) {
             <li>
               <Link
                 href={"/cadastro/laboratorio"}
-                onClick={() => handleLinkClick("/cadastro/laboratorio")}>
+                >
                 <span>Laboratorio</span>
               </Link>
             </li>
             <li>
               <Link
                 href={"/cadastro/materias"}
-                onClick={() => handleLinkClick("/cadastro/materias")}>
+                >
                 <span>Matérias</span>
               </Link>
             </li>
@@ -326,7 +507,7 @@ export function Header( { session }: { session?: any }) {
               <li>
                 <Link
                   href={"/cadastro/professor"}
-                  onClick={() => handleLinkClick("/cadastro/professor")}>
+                  >
                   <span>Professor</span>
                 </Link>
               </li>
@@ -334,13 +515,38 @@ export function Header( { session }: { session?: any }) {
             <li>
               <Link
                 href={"/cadastro/vidrarias"}
-                onClick={() => handleLinkClick("/cadastro/vidrarias")}>
+                >
                 <span>Vidrarias</span>
               </Link>
             </li>
-          </ul>
-        </SubMenu>
-      </CSSTransition>
-    </ThemeProvider>
-  );
+          </ul> 
+        </li>
+        <li>
+          <Link
+            href={"/manutencao"}
+            >
+            <Icons icon="manutencao" />
+            <span>Manutenção</span>
+          </Link>
+        </li>
+        <li>
+          <Link
+            href={"/baixa-aulas"}
+            >
+            <Icons icon="baixaAulas" />
+            <span>Baixa de aula</span>
+          </Link>
+        </li>
+        <li>
+          <Link
+            href={"#"}
+            onClick={() => signOut({ callbackUrl: "/login" })}
+            >
+            <Icons icon="relatorios" />
+            <span>Sair</span>
+          </Link>
+        </li>
+      </ul>
+    </HeaderDesktopContent>
+  )
 }
