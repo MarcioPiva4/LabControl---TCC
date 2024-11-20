@@ -11,6 +11,7 @@ interface propTextArea {
   value?: string;
   readOnly?: boolean;
   reset?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
 const Label = styled.label`
@@ -35,7 +36,7 @@ const TextAreaWrapper = styled.textarea`
   margin-bottom: 25px;
   overflow: hidden;
 
-  &:read-only{
+  &:read-only {
     color: #fff;
     background-color: #b3b3b3;
     cursor: unset;
@@ -52,49 +53,62 @@ const MaxLengthWrapper = styled.div`
   }
 `;
 
-export default function TextArea({ labelText, id, length, value, readOnly, reset }: propTextArea) {
+export default function TextArea({
+  labelText,
+  id,
+  length,
+  value,
+  readOnly,
+  reset,
+  onChange,
+}: propTextArea) {
   const [caracteres, setCaracteres] = useState<number>(0);
-  const [valueTextBox, setValueTextBox] = useState<string>();
+  const [valueTextBox, setValueTextBox] = useState<string>("");
 
   useEffect(() => {
-    if(value){
+    if (value) {
       setValueTextBox(value);
       setCaracteres(value.length);
     }
-  }, [value])
+  }, [value]);
 
-  function textAreaLength(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    const valueLength = e.target.value.slice(0, 255);
-    setCaracteres(valueLength.length);
-    e.target.value = valueLength;
-    setValueTextBox(e.target.value);
-  }
+  const textAreaLength = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = e.target.value.slice(0, 255);
+    setCaracteres(newValue.length);
+    setValueTextBox(newValue);
+    if (onChange) onChange(e);
+  };
 
   useEffect(() => {
-    if(reset){
-      setValueTextBox('')
+    if (reset) {
+      setValueTextBox('');
       setCaracteres(0);
     }
-  }, [reset])
+  }, [reset]);
+
   return (
-    <>
-      <ThemeProvider theme={theme}>
-        <Label>{labelText}</Label>
-        {length ? (
-          <MaxLengthWrapper>
-            <TextAreaWrapper
-              id={id}
-              name={id}
-              onChange={(e) => {textAreaLength(e)}}
-              value={valueTextBox}
-              readOnly={readOnly}
-              ></TextAreaWrapper>
-            <span>{caracteres} / 255</span>
-          </MaxLengthWrapper>
-        ) : (
-          <TextAreaWrapper id={id} name={id}></TextAreaWrapper>
-        )}
-      </ThemeProvider>
-    </>
+    <ThemeProvider theme={theme}>
+      <Label>{labelText}</Label>
+      {length ? (
+        <MaxLengthWrapper>
+          <TextAreaWrapper
+            id={id}
+            name={id}
+            value={valueTextBox}
+            onChange={textAreaLength}
+            readOnly={readOnly}
+          />
+          <span>{caracteres} / 255</span>
+        </MaxLengthWrapper>
+      ) : (
+        <TextAreaWrapper
+          id={id}
+          name={id}
+          value={valueTextBox}
+          onChange={textAreaLength}
+          readOnly={readOnly}
+        />
+      )}
+    </ThemeProvider>
   );
 }

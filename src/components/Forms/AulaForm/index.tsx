@@ -9,6 +9,7 @@ import Button from "@/components/Button";
 import MenuSubmit from "@/components/MenuSubmit";
 import Select from "@/components/Select";
 import { InputBoxSelectLink } from "@/components/InputBoxSelect";
+import { useRouter } from "next/navigation";
 
 const AulaForm = ({materias, professor, laboratorio}: {materias: any; professor: any; laboratorio: any}) => {
     const [idsEquipamentos, setIdsEquipamentos] = useState<number[]>();
@@ -77,20 +78,51 @@ const AulaForm = ({materias, professor, laboratorio}: {materias: any; professor:
             setSubmiting(null);
         }
     };
+  
+    const [formData, setFormData] = useState<{[key: string]: string  | number} | null>(null);
+    useEffect(() => {
+        const savedData = sessionStorage.getItem("formData");
+        if (savedData) {
+          setFormData(JSON.parse(savedData));
+        } else {
+          setFormData({
+            id_materia: '',
+            id_professor: '',
+            id_laboratorio: '',
+            topico_aula: '',
+            horario_inicio: '',
+            horario_finalizacao: '',
+            data: '',
+            observacoes: ''
+          });
+        }
+    }, []);
+  
+    useEffect(() => {
+      if (formData !== null) {
+        sessionStorage.setItem("formData", JSON.stringify(formData)); 
+      }
+    }, [formData]);
+  
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | { target: { name: string; value: string | number }}) => {
+        const { name, value } = e.target;
+        setFormData((prevData) => prevData ? { ...prevData, [name]: value } : prevData);
+    };
+    
     return (
         <DefaultForm onSubmit={handleSubmit}>
             {error.error && <ErrorMessage text={error.message} error={error}></ErrorMessage>}
-            <Select id="id_materia" options={materias} selectLabel="Matérias"></Select>
-            <Select id="id_professor" selectLabel="Professor (a)" options={professor}></Select>
-            <Select id="id_laboratorio" selectLabel="Laboratório" options={laboratorio}></Select>
+            <Select id="id_materia" options={materias} selectLabel="Matérias" onChange={(e) => handleChange({ target: { name: 'id_materia', value: e } })}  value={formData ? formData.id_materia : ''}></Select>
+            <Select id="id_professor" selectLabel="Professor (a)" options={professor} onChange={(e) => handleChange({ target: { name: 'id_professor', value: e } })} value={formData ? formData.id_professor : ''}></Select>
+            <Select id="id_laboratorio" selectLabel="Laboratório" options={laboratorio} onChange={(e) => handleChange({ target: { name: 'id_laboratorio', value: e } })} value={formData ? formData.id_laboratorio : ''}></Select>
             <InputBoxSelectLink name="Equipamentos" href={idsEquipamentos ? `/cadastro/aula/equipamentos/${idsEquipamentos.map((e: any) => e.id_equipamento)}` : "/cadastro/aula/equipamentos"}></InputBoxSelectLink>
             <InputBoxSelectLink name="Vidrarias" href={idsVidrarias ? `/cadastro/aula/vidrarias/${idsVidrarias.map((e: any) => e.id_vidrarias)}` : "/cadastro/aula/vidrarias"}></InputBoxSelectLink>
             <InputBoxSelectLink name="Agente/Reajente" href={idsAgenteReajente ? `/cadastro/aula/agente-reajente/${idsAgenteReajente.map((e: any) => e.id_agenteReajente)}` : "/cadastro/aula/agente-reajente"}></InputBoxSelectLink>
-            <Input type="text" label="Tópico da Aula" idInput="topico_aula"></Input>
-            <Input type="time" label="Horário de inicio" idInput="horario_inicio"></Input>
-            <Input type="time" label="Horário de finalização" idInput="horario_finalizacao"></Input>
-            <Input type="date" label="Data de aula" idInput="data"></Input>
-            <TextArea labelText="Observações" id="observacoes" length></TextArea>
+            <Input type="text" label="Tópico da Aula" idInput="topico_aula" onChange={handleChange} value={formData ? formData.topico_aula.toString() : 'Carregando...'}></Input>
+            <Input type="time" label="Horário de inicio" idInput="horario_inicio" onChange={handleChange} value={formData ? formData.horario_inicio.toString() : 'Carregando...'}></Input>
+            <Input type="time" label="Horário de finalização" idInput="horario_finalizacao" onChange={handleChange} value={formData ? formData.horario_finalizacao.toString() : 'Carregando...'}></Input>
+            <Input type="date" label="Data de aula" idInput="data" onChange={handleChange} value={formData ? formData.data.toString() : 'Carregando...'}></Input>
+            <TextArea labelText="Observações" id="observacoes" length onChange={handleChange} value={formData ? formData.observacoes.toString() : 'Carregando...'}></TextArea>
             {submiting ? <Loader></Loader> : null}
             <Button type="submit" is="isNotTransparent">CADASTRAR</Button>
             {sucess && <MenuSubmit setSucess={setSucess}></MenuSubmit>}

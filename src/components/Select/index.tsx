@@ -1,3 +1,4 @@
+"use client";
 import { theme } from "@/styles/theme";
 import styled, { ThemeProvider } from "styled-components";
 import { useState, useEffect, useRef } from "react";
@@ -39,7 +40,7 @@ const SelectedOption = styled.div`
   font-weight: 500;
   cursor: pointer;
 
-  &.disabled{
+  &.disabled {
     color: #fff;
     background-color: #b3b3b3;
     cursor: unset;
@@ -81,13 +82,13 @@ export default function FakeSelect({
   readOnly
 }: PropSelect) {
   const [selectedOption, setSelectedOption] = useState<string | number>(value || "");
-  const [isOpen, setIsOpen] = useState(false);
-  
   useEffect(() => {
-    if (value) {
+    if (value !== undefined) {
       setSelectedOption(value);
     }
   }, [value]);
+
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleOptionClick = (id: string | number) => {
     setSelectedOption(id);
@@ -98,7 +99,7 @@ export default function FakeSelect({
   };
 
   const containerRef = useRef<HTMLDivElement>(null);
-  
+
   const handleClickOutside = (event: MouseEvent) => {
     if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
       setIsOpen(false);
@@ -120,19 +121,19 @@ export default function FakeSelect({
           {options.find((opt) => opt.id === selectedOption)?.nome || "Selecione uma opção"}
         </SelectedOption>
 
-        {!readOnly &&
-        <OptionsList $isOpen={isOpen}>
-          {options.map((e) => (
-            <Option
-              key={e.id}
-              selected={e.id === selectedOption}
-              onClick={() => handleOptionClick(e.id)}
-            >
-              {e.nome}
-            </Option>
-          ))}
-        </OptionsList>
-        }
+        {!readOnly && (
+          <OptionsList $isOpen={isOpen}>
+            {options.map((e) => (
+              <Option
+                key={e.id}
+                selected={e.id === selectedOption}
+                onClick={() => handleOptionClick(e.id)}
+              >
+                {e.nome}
+              </Option>
+            ))}
+          </OptionsList>
+        )}
       </SelectContainer>
 
       <input type="hidden" id={id} name={id} value={selectedOption} readOnly />
