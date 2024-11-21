@@ -65,12 +65,14 @@ const AulaForm = ({materias, professor, laboratorio}: {materias: any; professor:
             const responseJson = await response.json();
             if (response.ok) {
                 setSucess(true);
-                setError({error: false, message: ''});
+                setError({ error: false, message: '' });
                 localStorage.removeItem('equipamentosAula')
                 localStorage.removeItem('vidrariasAula')
                 localStorage.removeItem('agenteReajenteAula')
+                sessionStorage.removeItem('formDataAulas')
             } else {
-                setError({error: true, message: responseJson.message})
+                setError({ error: true, message: responseJson.message });
+                console.log("Error state after setError:", error); // Pode mostrar o valor anterior
             }
         } catch (error) {
             setError({error: true, message: 'Erro ao fazer a requisição, tente novamente.'})
@@ -81,7 +83,7 @@ const AulaForm = ({materias, professor, laboratorio}: {materias: any; professor:
   
     const [formData, setFormData] = useState<{[key: string]: string  | number} | null>(null);
     useEffect(() => {
-        const savedData = sessionStorage.getItem("formData");
+        const savedData = sessionStorage.getItem("formDataAulas");
         if (savedData) {
           setFormData(JSON.parse(savedData));
         } else {
@@ -100,7 +102,7 @@ const AulaForm = ({materias, professor, laboratorio}: {materias: any; professor:
   
     useEffect(() => {
       if (formData !== null) {
-        sessionStorage.setItem("formData", JSON.stringify(formData)); 
+        sessionStorage.setItem("formDataAulas", JSON.stringify(formData)); 
       }
     }, [formData]);
   
@@ -118,11 +120,11 @@ const AulaForm = ({materias, professor, laboratorio}: {materias: any; professor:
             <InputBoxSelectLink name="Equipamentos" href={idsEquipamentos ? `/cadastro/aula/equipamentos/${idsEquipamentos.map((e: any) => e.id_equipamento)}` : "/cadastro/aula/equipamentos"}></InputBoxSelectLink>
             <InputBoxSelectLink name="Vidrarias" href={idsVidrarias ? `/cadastro/aula/vidrarias/${idsVidrarias.map((e: any) => e.id_vidrarias)}` : "/cadastro/aula/vidrarias"}></InputBoxSelectLink>
             <InputBoxSelectLink name="Agente/Reajente" href={idsAgenteReajente ? `/cadastro/aula/agente-reajente/${idsAgenteReajente.map((e: any) => e.id_agenteReajente)}` : "/cadastro/aula/agente-reajente"}></InputBoxSelectLink>
-            <Input type="text" label="Tópico da Aula" idInput="topico_aula" onChange={handleChange} value={formData ? formData.topico_aula.toString() : 'Carregando...'}></Input>
-            <Input type="time" label="Horário de inicio" idInput="horario_inicio" onChange={handleChange} value={formData ? formData.horario_inicio.toString() : 'Carregando...'}></Input>
-            <Input type="time" label="Horário de finalização" idInput="horario_finalizacao" onChange={handleChange} value={formData ? formData.horario_finalizacao.toString() : 'Carregando...'}></Input>
-            <Input type="date" label="Data de aula" idInput="data" onChange={handleChange} value={formData ? formData.data.toString() : 'Carregando...'}></Input>
-            <TextArea labelText="Observações" id="observacoes" length onChange={handleChange} value={formData ? formData.observacoes.toString() : 'Carregando...'}></TextArea>
+            <Input type="text" label="Tópico da Aula" idInput="topico_aula" onChange={handleChange} value={formData ? formData.topico_aula.toString() : ''}></Input>
+            <Input type="time" label="Horário de inicio" idInput="horario_inicio" onChange={handleChange} value={formData ? formData.horario_inicio.toString() : ''}></Input>
+            <Input type="time" label="Horário de finalização" idInput="horario_finalizacao" onChange={handleChange} value={formData ? formData.horario_finalizacao.toString() : ''}></Input>
+            <Input type="date" label="Data de aula" idInput="data" onChange={handleChange} value={formData ? formData.data.toString() : ''}></Input>
+            <TextArea labelText="Observações" id="observacoes" length onChange={handleChange} value={formData ? formData.observacoes.toString() : ''}></TextArea>
             {submiting ? <Loader></Loader> : null}
             <Button type="submit" is="isNotTransparent">CADASTRAR</Button>
             {sucess && <MenuSubmit setSucess={setSucess}></MenuSubmit>}

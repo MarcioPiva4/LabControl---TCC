@@ -118,7 +118,6 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-
     if (!isValidateDate(data)) {
       return NextResponse.json(
         { status: "error", message: "Data inválida" },

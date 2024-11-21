@@ -97,8 +97,6 @@ export default function EquipamentoRevisar({ id, equipamentos, baixa, idAula, au
     }
   }, []);
 
-  console.log(parsedData);
-
   const handleAddQuantity = (id: number) => {
     setItens((prev: any) => 
       prev.map((item: any) =>

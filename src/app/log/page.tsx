@@ -28,7 +28,6 @@ export default function Page() {
                 });
             }
 
-            console.log(parsedData)
         };
 
         eventSource.onerror = () => {

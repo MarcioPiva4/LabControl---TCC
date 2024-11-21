@@ -17,8 +17,9 @@ export default function ErrorMessage({text, error}: {text: string, error: any}){
     const [visible, setVisible] = useState<boolean>(false);
     useEffect(() => {
         setVisible(error.error);
+        setTextP(text)
         scrollTop();
-    }, [error])
+    }, [error, text])
     return(
         visible && 
         <ErrorMessageWrapper>{textP}</ErrorMessageWrapper>
