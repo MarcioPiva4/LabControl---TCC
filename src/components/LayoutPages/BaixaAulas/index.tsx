@@ -73,7 +73,10 @@ const ContentAulas = styled.div.attrs<{ $finish?: boolean }>((props) => ({
         display: flex;
         flex-direction: row;
         gap: 15px;
-        justify-content: center;
+        justify-content: flex-start;
+        @media screen and (max-width: 1030px){
+          justify-content: center;
+        }
         align-items: center;
         flex-wrap: wrap;
         li{

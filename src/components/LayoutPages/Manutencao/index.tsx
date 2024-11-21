@@ -1,9 +1,8 @@
 'use client'
 
-import Select from "@/components/Select";
 import { AulaReq } from "@/types/aula";
 import Link from "next/link";
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import styled from "styled-components";
 
 const ContentFilters = styled.div`
@@ -71,7 +70,10 @@ const ContentAulas = styled.div`
         display: flex;
         flex-direction: row;
         gap: 15px;
-        justify-content: center;
+        justify-content: flex-start;
+        @media screen and (max-width: 1030px){
+          justify-content: center;
+        }
         align-items: center;
         flex-wrap: wrap;
         li{
