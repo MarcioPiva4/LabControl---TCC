@@ -357,71 +357,71 @@ export async function PUT(req: NextRequest) {
       { where: { id: id } }
     )) as any;
 
-    const verificarEstoque = async () => {
-      if (equipamentos) {
-        for (const e of equipamentos) {
-          const equipamento = (await Equipamento.findByPk(
-            e.id_equipamento
-          )) as any;
-          if (equipamento) {
-            const novaQuantidadeFloat =
-              equipamento.quantidade_float - e.quantidade_equipamento;
-            if (novaQuantidadeFloat < 0) {
-              throw new Error(
-                "Estoque não disponível para o equipamento, diminua e tente novamente."
-              );
-            }
-            // Atualiza a quantidade do equipamento no estoque
-            await equipamento.update({
-              quantidade_float: novaQuantidadeFloat,
-            });
-          }
-        }
-      }
+    // const verificarEstoque = async () => {
+    //   if (equipamentos) {
+    //     for (const e of equipamentos) {
+    //       const equipamento = (await Equipamento.findByPk(
+    //         e.id_equipamento
+    //       )) as any;
+    //       if (equipamento) {
+    //         const novaQuantidadeFloat =
+    //           equipamento.quantidade_float - e.quantidade_equipamento;
+    //         if (novaQuantidadeFloat < 0) {
+    //           throw new Error(
+    //             "Estoque não disponível para o equipamento, diminua e tente novamente."
+    //           );
+    //         }
+    //         // Atualiza a quantidade do equipamento no estoque
+    //         await equipamento.update({
+    //           quantidade_float: novaQuantidadeFloat,
+    //         });
+    //       }
+    //     }
+    //   }
 
-      if (vidrarias) {
-        for (const e of vidrarias) {
-          const vidraria = (await Vidrarias.findByPk(e.id_vidrarias)) as any;
-          if (vidraria) {
-            const novaQuantidadeFloat =
-              vidraria.quantidade_float - e.quantidade_vidrarias;
-            if (novaQuantidadeFloat < 0) {
-              throw new Error(
-                "Estoque não disponível para a vidraria, diminua e tente novamente."
-              );
-            }
-            // Atualiza a quantidade da vidraria no estoque
-            await vidraria.update({
-              quantidade_float: novaQuantidadeFloat,
-            });
-          }
-        }
-      }
+    //   if (vidrarias) {
+    //     for (const e of vidrarias) {
+    //       const vidraria = (await Vidrarias.findByPk(e.id_vidrarias)) as any;
+    //       if (vidraria) {
+    //         const novaQuantidadeFloat =
+    //           vidraria.quantidade_float - e.quantidade_vidrarias;
+    //         if (novaQuantidadeFloat < 0) {
+    //           throw new Error(
+    //             "Estoque não disponível para a vidraria, diminua e tente novamente."
+    //           );
+    //         }
+    //         // Atualiza a quantidade da vidraria no estoque
+    //         await vidraria.update({
+    //           quantidade_float: novaQuantidadeFloat,
+    //         });
+    //       }
+    //     }
+    //   }
 
-      if (agenteReajente) {
-        for (const e of agenteReajente) {
-          const agentesReajentes = (await AgenteReajente.findByPk(
-            e.id_agenteReajente
-          )) as any;
-          if (agentesReajentes) {
-            checkAndSubtractStock(
-              agentesReajentes.quantidade_float,
-              e.quantidade_agenteReajente,
-              agentesReajentes.medida_quantidade,
-              e.unidade
-            );
-            const novaQuantidadeFloat =
-              agentesReajentes.quantidade_float - e.quantidade_agenteReajente;
-            await agentesReajentes.update({
-              quantidade_float: novaQuantidadeFloat,
-            });
-          }
-        }
-      }
-    };
+    //   if (agenteReajente) {
+    //     for (const e of agenteReajente) {
+    //       const agentesReajentes = (await AgenteReajente.findByPk(
+    //         e.id_agenteReajente
+    //       )) as any;
+    //       if (agentesReajentes) {
+    //         checkAndSubtractStock(
+    //           agentesReajentes.quantidade_float,
+    //           e.quantidade_agenteReajente,
+    //           agentesReajentes.medida_quantidade,
+    //           e.unidade
+    //         );
+    //         const novaQuantidadeFloat =
+    //           agentesReajentes.quantidade_float - e.quantidade_agenteReajente;
+    //         await agentesReajentes.update({
+    //           quantidade_float: novaQuantidadeFloat,
+    //         });
+    //       }
+    //     }
+    //   }
+    // };
 
-    // Verifica e subtrai estoque
-    await verificarEstoque();
+    // // Verifica e subtrai estoque
+    // await verificarEstoque();
 
     // Atualiza o relacionamento da aula com os outros modelos
     if (id_materia) {
@@ -451,50 +451,50 @@ export async function PUT(req: NextRequest) {
       );
     }
 
-    if (equipamentos) {
-      await Promise.all(
-        equipamentos.map(async (e: any) => {
-          await EquipamentoAula.update(
-            {
-              quantidade: e.quantidade_equipamento,
-            },
-            {
-              where: { id_equipamento: e.id_equipamento, id_aula: id },
-            }
-          );
-        })
-      );
-    }
+    // if (equipamentos) {
+    //   await Promise.all(
+    //     equipamentos.map(async (e: any) => {
+    //       await EquipamentoAula.update(
+    //         {
+    //           quantidade: e.quantidade_equipamento,
+    //         },
+    //         {
+    //           where: { id_equipamento: e.id_equipamento, id_aula: id },
+    //         }
+    //       );
+    //     })
+    //   );
+    // }
 
-    if (vidrarias) {
-      await Promise.all(
-        vidrarias.map(async (e: any) => {
-          await VidrariaAula.update(
-            {
-              quantidade: e.quantidade_vidrarias,
-            },
-            {
-              where: { id_vidraria: e.id_vidrarias, id_aula: id },
-            }
-          );
-        })
-      );
-    }
+    // if (vidrarias) {
+    //   await Promise.all(
+    //     vidrarias.map(async (e: any) => {
+    //       await VidrariaAula.update(
+    //         {
+    //           quantidade: e.quantidade_vidrarias,
+    //         },
+    //         {
+    //           where: { id_vidraria: e.id_vidrarias, id_aula: id },
+    //         }
+    //       );
+    //     })
+    //   );
+    // }
 
-    if (agenteReajente) {
-      await Promise.all(
-        agenteReajente.map(async (e: any) => {
-          await AgenteReajenteAula.update(
-            {
-              quantidade: e.quantidade_agenteReajente,
-            },
-            {
-              where: { id_agentereajente: e.id_agenteReajente, id_aula: id },
-            }
-          );
-        })
-      );
-    }
+    // if (agenteReajente) {
+    //   await Promise.all(
+    //     agenteReajente.map(async (e: any) => {
+    //       await AgenteReajenteAula.update(
+    //         {
+    //           quantidade: e.quantidade_agenteReajente,
+    //         },
+    //         {
+    //           where: { id_agentereajente: e.id_agenteReajente, id_aula: id },
+    //         }
+    //       );
+    //     })
+    //   );
+    // }
 
     // Retorna a aula atualizada
     const aulas = await Aula.findAll({

@@ -1,6 +1,12 @@
 import { LoaderForm } from "@/components/LoaderForm";
 import Section from "@/components/Section";
+import { Metadata } from "next";
 import dynamic from "next/dynamic";
+
+export const metadata: Metadata = {
+    title: "LabControl | Cadastro Agente-Reajente",
+    description: "Cadastro de agentes-reajentes",
+};
 
 const AgenteReajenteForm  = dynamic(() => import("@/components/Forms/AgenteReajenteForm"), 
     { 

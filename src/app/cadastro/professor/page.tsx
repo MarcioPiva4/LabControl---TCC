@@ -2,9 +2,15 @@ import { LoaderForm } from "@/components/LoaderForm";
 import Section from "@/components/Section";
 import { Session } from "@/types/session";
 import { authOptions } from "@/utils/authOptions";
+import { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import dynamic from "next/dynamic";
 import { redirect } from "next/navigation";
+
+export const metadata: Metadata = {
+    title: "LabControl | Cadastro Professor",
+    description: "Cadastro de professores",
+};
 
 const ProfessorForm = dynamic(() => import("@/components/Forms/ProfessorForm"), 
     { 

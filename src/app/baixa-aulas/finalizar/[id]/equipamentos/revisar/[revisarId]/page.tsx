@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-  import { LoaderFormReview } from "@/components/LoaderForm";
+import { LoaderFormReview } from "@/components/LoaderForm";
 
 const EquipamentoRevisar  = dynamic(() => import("@/components/AulaEquipamento/Revisar"), 
     { 

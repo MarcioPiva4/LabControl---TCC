@@ -18,6 +18,9 @@ const HeaderWrapper = styled.header`
   background-color: ${(props) => props.theme.color.secondary};
   height: 12vh;
   z-index: 10;
+  @media screen and (min-width: 768px){
+      display: none;
+  }
   & > div {
     height: 100%;
   }
@@ -190,6 +193,7 @@ export function Header({ session }: { session?: any }) {
   const [activePage, setActivePage] = useState<string>(pathName);
   const subMenuRef = useRef<HTMLDivElement>(null);
   const iconMenu = useRef<HTMLLIElement>(null);
+  
   const handleLinkClick = (path: string) => {
     setMenu(false);
     setActivePage(path);
@@ -213,16 +217,19 @@ export function Header({ session }: { session?: any }) {
     };
   }, []);
 
-  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  const [screenWidth, setScreenWidth] = useState<number>(0);
 
   useEffect(() => {
-    const handleResize = () => setScreenWidth(window.innerWidth);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    if (typeof window !== "undefined") {
+      setScreenWidth(window.innerWidth);
+
+      const handleResize = () => setScreenWidth(window.innerWidth);
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }
   }, []);
   return (
     <ThemeProvider theme={theme}>
-      { screenWidth <= 768 ? 
         <>
           <HeaderWrapper>
             <div>
@@ -359,9 +366,8 @@ export function Header({ session }: { session?: any }) {
             </SubMenu>
           </CSSTransition>
         </>
-        :
+
         <HeaderDesktop session={session}></HeaderDesktop>
-      }
     </ThemeProvider>
   );
 }
@@ -372,6 +378,9 @@ const HeaderDesktopContent = styled.header`
     background-color: #041833;
     position: fixed;
     z-index: 1000;
+    @media screen and (max-width: 768px){
+      display: none;
+    }
     .menu-links{
       height: 100%;
       padding: 50px 10px 0 10px;

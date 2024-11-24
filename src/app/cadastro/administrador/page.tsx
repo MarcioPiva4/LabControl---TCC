@@ -5,6 +5,12 @@ import { authOptions } from '@/utils/authOptions';
 import { Session } from '@/types/session';
 import dynamic from 'next/dynamic';
 import { LoaderForm } from "@/components/LoaderForm";
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: "LabControl | Cadastro Administrador",
+    description: "Cadastro de administradores",
+};
 
 const AdministradorForm  = dynamic(() => import("@/components/Forms/AdministradorForm"), 
     { 

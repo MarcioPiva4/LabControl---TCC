@@ -1,4 +1,5 @@
-import VidrariasID from "@/components/AulaVidraria/ID";
+import { LoaderFormSearch } from "@/components/LoaderForm";
+import dynamic from "next/dynamic";
 
 interface PropPageEquipamentos {
     params: {
@@ -6,6 +7,13 @@ interface PropPageEquipamentos {
         vidrariaId: string;
     }
 }
+
+const VidrariasID  = dynamic(() => import("@/components/AulaVidraria/ID"), 
+    { 
+        ssr: false, 
+        loading: () => <LoaderFormSearch quantity={3}></LoaderFormSearch>,
+    }
+);
 
 export default async function Page({params}: PropPageEquipamentos){
     const { id, vidrariaId } = params;

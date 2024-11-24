@@ -1,5 +1,11 @@
 import dynamic from "next/dynamic";
 import { LoaderFormSearch } from "@/components/LoaderForm";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "LabControl | Cadastro Aula",
+  description: "Cadastro de aulas, página de escolha da vidraria",
+};
 
 const VidrariasAula  = dynamic(() => import("@/components/AulaVidraria"), 
     { 

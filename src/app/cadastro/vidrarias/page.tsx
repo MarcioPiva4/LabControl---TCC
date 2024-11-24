@@ -1,8 +1,12 @@
-"use server";
-
 import dynamic from 'next/dynamic';
 import Section from "@/components/Section";
 import { LoaderForm } from "@/components/LoaderForm";
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: "LabControl | Cadastro vidraria",
+    description: "Cadastro de vidrarias",
+};
 
 const VidrariasForm = dynamic(() => import('@/components/Forms/VidrariasForm'), 
     { 

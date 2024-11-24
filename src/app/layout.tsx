@@ -12,7 +12,7 @@ import ResetPassword from "@/components/ResetPassword";
 
 export const metadata: Metadata = {
   title: "LabControl",
-  description: "Gerenciamento de estoque de laboratio",
+  description: "Gerenciamento de estoque de laboratório",
 };
 
 const fontFamily = Inter({

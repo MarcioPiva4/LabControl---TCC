@@ -1,6 +1,11 @@
-import AgenteReajente from "@/components/AgenteReajente";
 import { LoaderFormSearch } from "@/components/LoaderForm";
+import { Metadata } from "next";
 import dynamic from "next/dynamic";
+
+export const metadata: Metadata = {
+  title: "LabControl | Cadastro Aula",
+  description: "Cadastro de aulas, página de escolha de agente/reajente",
+};
 
 const AgenteReajenteAula  = dynamic(() => import("@/components/AgenteReajente"), 
     { 
@@ -12,7 +17,7 @@ const AgenteReajenteAula  = dynamic(() => import("@/components/AgenteReajente"),
 export default async function Page(){
   const dataAgenteReajente = await getDataAgenteReajente();
   return(
-    <AgenteReajente agentesReajentes={dataAgenteReajente}></AgenteReajente>
+    <AgenteReajenteAula agentesReajentes={dataAgenteReajente}></AgenteReajenteAula>
   )
 }
 
