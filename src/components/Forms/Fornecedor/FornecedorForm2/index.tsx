@@ -85,11 +85,9 @@ export default function FornecedorForm2(){
         const formData = new FormData(form);
         const formEntries = Object.fromEntries(formData.entries());
         const storedData = JSON.parse(localStorage.getItem('fornecedorscreen1') as string);
-        const typePhone = JSON.parse(localStorage.getItem('fornecedortelefone') as string);
         const data = {
           ...formEntries,
           ...storedData,
-          telefone_tipo: typePhone
         };
         try {
           const response = await fetch("/api/fornecedor", {

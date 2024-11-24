@@ -24,10 +24,6 @@ const Fornecedor = db.define('fornecedores', {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    telefone_tipo: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
     cep: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -54,6 +50,6 @@ const Fornecedor = db.define('fornecedores', {
     },
 });
 
-Fornecedor.sync();
+Fornecedor.sync({alter: true});
 
 export { Fornecedor };

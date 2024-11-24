@@ -35,7 +35,6 @@ export async function POST(req: NextRequest){
             cnpj.toString().length <= 0 || 
             telefone.toString().length <= 0 || 
             email.toString().length <= 0 || 
-            telefone_tipo.toString().length <= 0 || 
             cep.toString().length <= 0 || 
             estado.toString().length <= 0 || 
             cidade.toString().length <= 0 || 
@@ -70,16 +69,11 @@ export async function POST(req: NextRequest){
             return NextResponse.json({ status: 'error', message: `Número inválido`, code: 400 }, {status: 400});
         }
 
-        if(telefone_tipo != 'whatsapp' && telefone_tipo != 'telefone'){
-            return NextResponse.json({ status: 'error', message: `Tipo de telefone inválido`, code: 400 }, {status: 400});
-        }
-
         const createFornecedor = await Fornecedor.create({
             nome,
             cnpj,
             email,
             telefone,
-            telefone_tipo,
             cep,
             estado,
             cidade,
