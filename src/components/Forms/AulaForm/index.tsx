@@ -66,10 +66,20 @@ const AulaForm = ({materias, professor, laboratorio}: {materias: any; professor:
             if (response.ok) {
                 setSucess(true);
                 setError({ error: false, message: '' });
-                localStorage.removeItem('equipamentosAula')
-                localStorage.removeItem('vidrariasAula')
-                localStorage.removeItem('agenteReajenteAula')
-                sessionStorage.removeItem('formDataAulas')
+                localStorage.removeItem('equipamentosAula');
+                localStorage.removeItem('vidrariasAula');
+                localStorage.removeItem('agenteReajenteAula');
+                sessionStorage.removeItem('formDataAulas');
+                setFormData({
+                    id_materia: '',
+                    id_professor: '',
+                    id_laboratorio: '',
+                    topico_aula: '',
+                    horario_inicio: '',
+                    horario_finalizacao: '',
+                    data: '',
+                    observacoes: ''
+                })
             } else {
                 setError({ error: true, message: responseJson.message });
                 console.log("Error state after setError:", error); // Pode mostrar o valor anterior

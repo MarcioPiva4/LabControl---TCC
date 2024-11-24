@@ -67,34 +67,28 @@ export default function EquipamentoRevisar({ id, equipamentos, baixa, idAula, au
   const router = useRouter();
   const [parsedData, setParsedData] = useState<Itens[]>([]);
   const [dataAulas, setDataAulas] = useState(aulas? aulas.data.filter((e: any) => e.id == idAula) : null);
-  const [abr,setAbr] = useState([
-    { id: 1, nome: "Gramas (g)", abr: "g", active: false, value: "g" },
-    { id: 2, nome: "Quilogramas (Kg)", abr: "Kg", active: false, value: "Kg" },
-    { id: 3, nome: "Toneladas (T)", abr: "T", active: false, value: "T" },
-    { id: 4, nome: "Mililitros (ml)", abr: "ml", active: false, value: "ml" },
-    { id: 5, nome: "Litros (L)", abr: "L", active: false, value: "L" },
-    { id: 6, nome: "Unidade (Un)", abr: "Un", active: true, value: "Un" },
-  ]);
-
-  const[dataOptions, setDataOptions] = useState<any>();
-  const stateOptions = (childdata: any) => { 
-    setDataOptions(childdata);
-  }
 
   useEffect(() => {
     setItens((prev: any) => 
       prev.map((item: any, i: number) =>(
-        { ...item, quantidadeAdd: parsedData[i]?.quantidade_equipamento || 1, abr }
+        { ...item, quantidadeAdd: parsedData[i]?.quantidade_equipamento || 1 }
        )
       )
     );
-  }, [id, abr, parsedData]);
+  }, [id, parsedData]);
 
   useEffect(() => {
-    const localData = localStorage.getItem('equipamentosAulaEditar');
-    if(localData){
-      setParsedData(JSON.parse(localData));
+    if(manutencao){
+      const localData = localStorage.getItem('equipamentosAulaEditar');
+      if(localData){
+         return setParsedData(JSON.parse(localData));
+      }
     }
+    const localData = localStorage.getItem('equipamentosAula');
+    if(localData){
+      return setParsedData(JSON.parse(localData));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleAddQuantity = (id: number) => {
@@ -156,7 +150,6 @@ export default function EquipamentoRevisar({ id, equipamentos, baixa, idAula, au
                   <Input
                     label="Quantidade"
                     type="number"
-                    selectAside
                     onChange={(event) => {
                       const newQuantity = parseFloat(event.target.value);
                       setItens((prev: any) => 
@@ -167,9 +160,7 @@ export default function EquipamentoRevisar({ id, equipamentos, baixa, idAula, au
                         )
                       );
                     }}
-                    optionsFakeSelect={e.abr}
                     value={!baixa ? e.quantidadeAdd ? e.quantidadeAdd : 1 : dataAulas && dataAulas[0]?.equipamentos[i]?.EquipamentoAula.quantidade}
-                    stateOptions={stateOptions}
                     {...(baixa ? { readOnly: true } : {})}
                   />
                 </div>

@@ -68,32 +68,31 @@ export default function VidrariasRevisar({ id, vidrarias, baixa, idAula, aulas, 
   const router = useRouter();
   const [parsedData, setParsedData] = useState<Itens[]>([]);
   const [dataAulas, setDataAulas] = useState(aulas? aulas.data.filter((e: any) => e.id == idAula) : null);
-  const [abr,setAbr] = useState([
-    { id: 1, nome: "Gramas (g)", abr: "g", active: false, value: "g" },
-    { id: 2, nome: "Quilogramas (Kg)", abr: "Kg", active: false, value: "Kg" },
-    { id: 3, nome: "Toneladas (T)", abr: "T", active: false, value: "T" },
-    { id: 4, nome: "Mililitros (ml)", abr: "ml", active: false, value: "ml" },
-    { id: 5, nome: "Litros (L)", abr: "L", active: false, value: "L" },
-    { id: 6, nome: "Unidade (Un)", abr: "Un", active: true, value: "Un" },
-  ]);
-
-  const selectRef = useRef(null);
 
   useEffect(() => {
-    setItens((prev: any, i: number) => 
-      prev.map((item: any) =>(
-        { ...item, quantidadeAdd: parsedData[i]?.quantidade_vidrarias || 1, abr }
+    setItens((prev: any) => 
+      prev.map((item: any, i: number) =>(
+        { ...item, quantidadeAdd: parsedData[i]?.quantidade_vidrarias || 1}
        )
       )
     );
-  }, [id, abr, parsedData]);
+  }, [id, parsedData]);
 
   useEffect(() => {
+    if(manutencao){
+      const localData = localStorage.getItem('vidrariasAulaEditar');
+      if(localData){
+         return setParsedData(JSON.parse(localData));
+      }
+    }
     const localData = localStorage.getItem('vidrariasAula');
     if(localData){
-      setParsedData(JSON.parse(localData));
+      return setParsedData(JSON.parse(localData));
     }
-  }, [])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  console.log(parsedData);
 
   const handleAddQuantity = (id: number) => {
     setItens((prev: any) => 
@@ -154,7 +153,6 @@ export default function VidrariasRevisar({ id, vidrarias, baixa, idAula, aulas, 
                   <Input
                     label="Quantidade"
                     type="number"
-                    selectAside
                     onChange={(event) => {
                       const newQuantity = parseFloat(event.target.value);
                       setItens((prev: any) => 
@@ -165,9 +163,7 @@ export default function VidrariasRevisar({ id, vidrarias, baixa, idAula, aulas, 
                         )
                       );
                     }}
-                    optionsFakeSelect={e.abr}
                     value={!baixa ? e.quantidadeAdd ? e.quantidadeAdd : 1 : dataAulas && dataAulas[0]?.vidrarias[i]?.VidrariaAula.quantidade}
-                    selectRef={selectRef}
                     {...(baixa ? { readOnly: true } : {})}
                   />
                 </div>

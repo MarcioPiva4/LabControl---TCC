@@ -89,7 +89,30 @@ export default function AgenteReajenteRevisar({ id, agentesReajentes, baixa, idA
   }, [id, abr, parsedData]);
 
   useEffect(() => {
-    const localData = localStorage.getItem('agenteReajenteAulaEditar');
+    if(manutencao){
+      const localData = localStorage.getItem('agenteReajenteAulaEditar');
+      if (localData) {
+        const savedData = JSON.parse(localData);
+  
+        setItens((prev: any) => 
+          prev.map((item: any) => {
+            const savedItem = savedData.find((saved: any) => saved.id_agenteReajente === item.id);
+            return {
+              ...item,
+              quantidadeAdd: savedItem ? savedItem.quantidade_agenteReajente : item.quantidadeAdd,
+            };
+          })
+        );
+  
+        const unitMap = savedData.reduce((acc: any, saved: any) => {
+          acc[saved.id_agenteReajente] = saved.unidade;
+          return acc;
+        }, {});
+        return setSelectedUnits(unitMap);
+      }
+    }
+
+    const localData = localStorage.getItem('agenteReajenteAula');
     if (localData) {
       const savedData = JSON.parse(localData);
 
@@ -107,8 +130,9 @@ export default function AgenteReajenteRevisar({ id, agentesReajentes, baixa, idA
         acc[saved.id_agenteReajente] = saved.unidade;
         return acc;
       }, {});
-      setSelectedUnits(unitMap);
+      return setSelectedUnits(unitMap);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleAddQuantity = (id: number) => {
