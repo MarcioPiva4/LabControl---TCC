@@ -1,10 +1,16 @@
-export interface Session {
+import { Session as NextAuthSession } from "next-auth";
+
+declare module "next-auth" {
+  interface Session {
     user: {
-      id: string;
-      role: string;
       name?: string | null;
       email?: string | null;
       image?: string | null;
-      isFirstLogin?: boolean;
+      role: string; 
+      isFirstLogin?: string;
+      id: string;
     };
   }
+}
+
+export type Session = NextAuthSession;

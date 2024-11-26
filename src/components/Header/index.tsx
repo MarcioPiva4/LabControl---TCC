@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import logo from "../../../public/logo.png";
 import { signOut } from "next-auth/react";
+import { Session } from "@/types/session";
 
 const HeaderWrapper = styled.header`
   width: 100%;
@@ -187,7 +188,7 @@ const SubMenu = styled.aside`
   }
 `;
 
-export function Header({ session }: { session?: any }) {
+export function Header({ session }: { session: Session | null }) {
   const pathName = usePathname();
   const [menu, setMenu] = useState<boolean>(false);
   const [activePage, setActivePage] = useState<string>(pathName);
@@ -264,12 +265,12 @@ export function Header({ session }: { session?: any }) {
                       <Icons icon="baixaAulas" />
                     </Link>
                   </Li>
-                  <Li $active={activePage === "/relatorios"}>
+                  <Li>
                     <Link
                       href={"#"}
                       onClick={() => signOut({ callbackUrl: "/login" })}>
                       <p>Sair</p>
-                      <Icons icon="relatorios" />
+                      <Icons icon="sair" />
                     </Link>
                   </Li>
                 </ul>
@@ -289,7 +290,7 @@ export function Header({ session }: { session?: any }) {
                 </Link>
               </div>
               <ul>
-                {session.user.role != "prof" && (
+                {session!.user?.role != "prof" && (
                   <li>
                     <Link
                       href={"/cadastro/administrador"}
@@ -300,6 +301,7 @@ export function Header({ session }: { session?: any }) {
                     </Link>
                   </li>
                 )}
+                {session!.user!.role != "prof" && (
                 <li>
                   <Link
                     href={"/cadastro/agente-reagente"}
@@ -309,6 +311,7 @@ export function Header({ session }: { session?: any }) {
                     <span>Agentes/Reagentes</span>
                   </Link>
                 </li>
+                )}
                 <li>
                   <Link
                     href={"/cadastro/aula"}
@@ -316,6 +319,7 @@ export function Header({ session }: { session?: any }) {
                     <span>Aulas</span>
                   </Link>
                 </li>
+                {session!.user?.role != "prof" && (
                 <li>
                   <Link
                     href={"/cadastro/equipamentos"}
@@ -323,7 +327,8 @@ export function Header({ session }: { session?: any }) {
                     <span>Equipamentos</span>
                   </Link>
                 </li>
-                {session.user.role != "prof" && (
+                )}
+                {session!.user!.role != "prof" && (
                   <li>
                     <Link
                       href={"/cadastro/fornecedor"}
@@ -346,7 +351,7 @@ export function Header({ session }: { session?: any }) {
                     <span>Matérias</span>
                   </Link>
                 </li>
-                {session.user.role != "prof" && (
+                {session!.user!.role != "prof" && (
                   <li>
                     <Link
                       href={"/cadastro/professor"}
@@ -355,6 +360,7 @@ export function Header({ session }: { session?: any }) {
                     </Link>
                   </li>
                 )}
+                {session!.user!.role != "prof" && (
                 <li>
                   <Link
                     href={"/cadastro/vidrarias"}
@@ -362,6 +368,7 @@ export function Header({ session }: { session?: any }) {
                     <span>Vidrarias</span>
                   </Link>
                 </li>
+                )}
               </ul>
             </SubMenu>
           </CSSTransition>
@@ -386,6 +393,15 @@ const HeaderDesktopContent = styled.header`
       padding: 50px 10px 0 10px;
       overflow: auto;
       >li{
+        padding: 2px 0;
+        &.active > a {
+        background-color: #154580;
+        color: #fff;
+        }
+
+        &.active > a svg {
+          fill: #fff;
+        }
         >a{
           color: #fff;
           text-decoration: none;
@@ -420,127 +436,163 @@ const HeaderDesktopContent = styled.header`
             }
           }
       }
-      .link-register{
-        &:hover{
-          ul{
-          opacity: 1;
-          visibility: visible;
-          height: 100%;
-          }
-        }
-
-        ul{
-          opacity: 0;
-          visibility: hidden;
-          height: 0;
-        }
-      }
     }
 `;
 
-export function HeaderDesktop({ session }: { session?: any }){
+export function HeaderDesktop({ session }: { session?: Session | null }){
+  const pathName = usePathname();
+  const [cadastro, setCadastro] = useState<boolean>(false);
+
+  const [homeOpen, setHomeOpen] = useState<boolean>(false || pathName === '/');
+  const [manutencaoOpen, setManutencaoOpen] = useState<boolean>(false || pathName === '/manutencao');
+  const [baixaAulaOpen, setBaixaAulaOpen ] = useState<boolean>(false || pathName === '/baixa-aulas');
+
+  const submenuRef = useRef<HTMLUListElement>(null);
+
+  const handleOutsideClick = (event: MouseEvent) => {
+    if (
+      submenuRef.current &&
+      !submenuRef.current.contains(event.target as Node)
+    ) {
+      setCadastro(false);
+    }
+  };
+
+  useEffect(() => {
+    if (cadastro) {
+      document.addEventListener("click", handleOutsideClick);
+    } else {
+      document.removeEventListener("click", handleOutsideClick);
+    }
+
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, [cadastro]);
   return(
     <HeaderDesktopContent>
       <ul className="menu-links">
-        <li>
+        <li className={`${homeOpen ? "active" : ""}`}>
           <Link
             href={"/"}
+            onClick={() => setCadastro(false)}
             >
             <Icons icon="home" />
             <span>Home</span>
           </Link>
         </li>
-        <li className="link-register">
+        <li className={`link-register ${cadastro ? "active" : ""}`}>
           <Link
             href={"#"}
+            onClick={() => setCadastro(!cadastro)}
           >
             <Icons icon="cadastro" />
             <span>Cadastro</span>
           </Link>
 
-          <ul className="submenu-links">
-            {session.user.role != "prof" && (
-              <li>
-                <Link
-                  href={"/cadastro/administrador"}
-                >
-                  <span>Administrador</span>
-                </Link>
-              </li>
-            )}
-            <li>
-              <Link
-                href={"/cadastro/agente-reagente"}
-                >
-                <span>Agentes/Reagentes</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href={"/cadastro/aula"}
-              >
-                <span>Aulas</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href={"/cadastro/equipamentos"}
-                >
-                <span>Equipamentos</span>
-              </Link>
-            </li>
-            {session.user.role != "prof" && (
-              <li>
-                <Link
-                  href={"/cadastro/fornecedor"}
+          {cadastro &&
+            <ul className="submenu-links" ref={submenuRef}>
+              {session!.user!.role != "prof" && (
+                <li>
+                  <Link
+                    href={"/cadastro/administrador"}
+                    onClick={() => setCadastro(false)}
                   >
-                  <span>Fornecedor</span>
-                </Link>
-              </li>
-            )}
-            <li>
-              <Link
-                href={"/cadastro/laboratorio"}
-                >
-                <span>Laboratorio</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href={"/cadastro/materias"}
-                >
-                <span>Matérias</span>
-              </Link>
-            </li>
-            {session.user.role != "prof" && (
+                    <span>Administrador</span>
+                  </Link>
+                </li>
+              )}
+
+              {session!.user!.role != "prof" && (
               <li>
                 <Link
-                  href={"/cadastro/professor"}
+                  href={"/cadastro/agente-reagente"}
+                  onClick={() => setCadastro(false)}
                   >
-                  <span>Professor</span>
+                  <span>Agentes/Reagentes</span>
                 </Link>
               </li>
-            )}
-            <li>
-              <Link
-                href={"/cadastro/vidrarias"}
+              )} 
+              <li>
+                <Link
+                  href={"/cadastro/aula"}
+                  onClick={() => setCadastro(false)}
                 >
-                <span>Vidrarias</span>
-              </Link>
-            </li>
-          </ul> 
+                  <span>Aulas</span>
+                </Link>
+              </li>
+              {session!.user!.role != "prof" && (
+              <li>
+                <Link
+                  href={"/cadastro/equipamentos"}
+                  onClick={() => setCadastro(false)}
+                  >
+                  <span>Equipamentos</span>
+                </Link>
+              </li>
+              )}
+              {session!.user!.role != "prof" && (
+                <li>
+                  <Link
+                    href={"/cadastro/fornecedor"}
+                    onClick={() => setCadastro(false)}
+                    >
+                    <span>Fornecedor</span>
+                  </Link>
+                </li>
+              )}
+              <li>
+                <Link
+                  href={"/cadastro/laboratorio"}
+                  onClick={() => setCadastro(false)}
+                  >
+                  <span>Laboratorio</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={"/cadastro/materias"}
+                  onClick={() => setCadastro(false)}
+                  >
+                  <span>Matérias</span>
+                </Link>
+              </li>
+              {session!.user!.role != "prof" && (
+                <li>
+                  <Link
+                    href={"/cadastro/professor"}
+                    onClick={() => setCadastro(false)}
+                    >
+                    <span>Professor</span>
+                  </Link>
+                </li>
+              )}
+              {session!.user!.role != "prof" && (
+              <li>
+                <Link
+                  href={"/cadastro/vidrarias"}
+                  onClick={() => setCadastro(false)}
+                  >
+                  <span>Vidrarias</span>
+                </Link>
+              </li>
+              )}
+            </ul> 
+          }
         </li>
-        <li>
+        <li className={`${manutencaoOpen ? "active" : ""}`}>
           <Link
             href={"/manutencao"}
+            onClick={() => setCadastro(false)}
             >
             <Icons icon="manutencao" />
             <span>Manutenção</span>
           </Link>
         </li>
-        <li>
+        <li className={`${baixaAulaOpen ? "active" : ""}`}>
           <Link
             href={"/baixa-aulas"}
+            onClick={() => setCadastro(false)}
             >
             <Icons icon="baixaAulas" />
             <span>Baixa de aula</span>
@@ -551,7 +603,7 @@ export function HeaderDesktop({ session }: { session?: any }){
             href={"#"}
             onClick={() => signOut({ callbackUrl: "/login" })}
             >
-            <Icons icon="relatorios" />
+            <Icons icon="sair" />
             <span>Sair</span>
           </Link>
         </li>

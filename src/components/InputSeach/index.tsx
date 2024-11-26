@@ -10,7 +10,7 @@ interface PropInputSeach{
 
 const Content = styled.div`
     position: relative;
-    
+    width: 100%;
     svg{
         position: absolute;
         right: 24px;
@@ -24,7 +24,7 @@ const InputSearchBox = styled.input`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 5px 20px;
+    padding: 5px 60px 5px 20px;
     background-color: #fff;
     border-radius: 50px;
     margin-bottom: 20px;
