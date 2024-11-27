@@ -42,7 +42,9 @@ Para instalar este projeto, siga os passos abaixo:
 No terminal dentro do repositório, digite:
 
 1. `npm install` (Instalação das dependências necessárias para rodar o projeto) 🛠️
-2. `npm run dev` (Vai rodar o projeto em modo de desenvolvimento) 🚀
+2. `npm run dev` (Roda o projeto em modo de desenvolvimento) 🚀
+3. `npm run build` (Construi o projeto para rodar em modo de produção) 🛠️
+4. `npm run start` (Roda o projeto em modo de produção) 🚀
 
 ## Contribuição
 Se você deseja contribuir para este projeto, siga os passos abaixo:
