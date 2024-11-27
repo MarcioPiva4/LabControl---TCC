@@ -141,7 +141,7 @@ const EquipamentoAula = db.define('EquipamentoAula', {
     id_equipamento: {
         type: DataTypes.INTEGER,
         references: {
-            model: Laboratorio,
+            model: Equipamento,
             key: 'id'
         }
     },
@@ -153,13 +153,15 @@ const EquipamentoAula = db.define('EquipamentoAula', {
         }
     },
     quantidade: {
-        type: DataTypes.STRING,
+        type: DataTypes.FLOAT,
         allowNull: false,
     }
-})
+}, {
+    timestamps: false, 
+});
 
 Equipamento.belongsToMany(Aula, {
-    through: EquipamentoAula, 
+    through: EquipamentoAula,
     foreignKey: 'id_equipamento',
     otherKey: 'id_aula',
     as: 'equipamentoAulas',
@@ -188,7 +190,7 @@ const VidrariaAula = db.define('VidrariaAula', {
         }
     },
     quantidade: {
-        type: DataTypes.STRING,
+        type: DataTypes.FLOAT,
         allowNull: false,
     }
 })
@@ -223,7 +225,7 @@ const AgenteReajenteAula = db.define('AgenteReajenteAula', {
         }
     },
     quantidade: {
-        type: DataTypes.STRING,
+        type: DataTypes.FLOAT,
         allowNull: false,
     },
     medida_quantidade: {

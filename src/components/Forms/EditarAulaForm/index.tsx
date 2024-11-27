@@ -9,7 +9,7 @@ import { Loader } from "@/components/Loader";
 import MenuSubmit from "@/components/MenuSubmit";
 import Select from "@/components/Select";
 import TextArea from "@/components/TextArea";
-import { AulaItems, AulaItemsRelationships, AulaReq } from "@/types/aula";
+import { AulaReq } from "@/types/aula";
 import { LaboratorioReq } from "@/types/laboratorio";
 import { MateriaReq } from "@/types/materia";
 import { ProfessorReq } from "@/types/professor";
@@ -162,9 +162,6 @@ export default function EditarAulaForm({
         setDataAulas(responseJson.data);
         setSucess(true);
         setError({ error: false, message: "" });
-        localStorage.removeItem("equipamentosAulaEditar");
-        localStorage.removeItem("vidrariasAulaEditar");
-        localStorage.removeItem("agenteReajenteAulaEditar");
       } else {
         setError({ error: true, message: responseJson.message });
       }

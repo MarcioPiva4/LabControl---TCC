@@ -2,6 +2,8 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { Administrador } from "@/models/Administrador";
 import { Professor } from "@/models/Professor";
+import GoogleProvider from "next-auth/providers/google";
+import FacebookProvider from "next-auth/providers/facebook";
 
 export const authOptions: NextAuthOptions = {
   pages: {
@@ -15,7 +17,6 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-
         const userEmailAdministrador = await Administrador.findOne({
           where: { email: credentials?.email },
         }) as any;
@@ -23,14 +24,17 @@ export const authOptions: NextAuthOptions = {
         if (userEmailAdministrador && userEmailAdministrador.senha == credentials?.password) {
           const isFirstLogin = userEmailAdministrador.loginCount === 0;
 
-          await Administrador.increment('loginCount', { by: 1, where: { id: userEmailAdministrador.id } });
+          await Administrador.increment("loginCount", {
+            by: 1,
+            where: { id: userEmailAdministrador.id },
+          });
 
           return {
             id: userEmailAdministrador.id,
             name: userEmailAdministrador.nome,
             email: userEmailAdministrador.email,
-            role: 'adm',
-            isFirstLogin: isFirstLogin, 
+            role: "adm",
+            isFirstLogin: isFirstLogin,
           };
         }
 
@@ -41,37 +45,89 @@ export const authOptions: NextAuthOptions = {
         if (userEmailProfessor && userEmailProfessor.senha == credentials?.password) {
           const isFirstLogin = userEmailProfessor.loginCount === 0;
 
-          await Professor.increment('loginCount', { by: 1, where: { id: userEmailProfessor.id } });
+          await Professor.increment("loginCount", {
+            by: 1,
+            where: { id: userEmailProfessor.id },
+          });
 
           return {
             id: userEmailProfessor.id,
             name: userEmailProfessor.nome,
             email: userEmailProfessor.email,
-            role: 'prof',
+            role: "prof",
             isFirstLogin: isFirstLogin,
           };
         }
 
-        return null;
+        // Nenhum usuário encontrado no banco de dados
+        throw new Error("Email ou senha inválidos. Verifique suas credenciais e tente novamente.");
       },
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+    FacebookProvider({
+      clientId: process.env.FACEBOOK_CLIENT_ID!,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
     }),
   ],
   callbacks: {
-    async jwt({ token, user }: any) {
-      if (user) {
-        token.id = user.id;
-        token.role = user.role;
-        token.isFirstLogin = user.isFirstLogin; 
+    async jwt({ token, account, profile, user }) {
+      if (account && profile) {
+        if (account.provider === "google" || account.provider === "facebook") {
+          const userFromDb =
+            (await Administrador.findOne({ where: { email: token.email } })) as any ||
+            (await Professor.findOne({ where: { email: token.email } })) as any; 
+
+          if (userFromDb) {
+            token.id = userFromDb.id;
+            token.role = userFromDb instanceof Administrador ? "adm" : "prof";
+            token.isFirstLogin = userFromDb.loginCount === 0;
+
+            await userFromDb.increment("loginCount", { by: 1 });
+          } else {
+            throw new Error("Usuário não autorizado. Contate o administrador.");
+          }
+        }
       }
+
       return token;
     },
-    async session({ session, token }: any) {
+
+    async session({ session, token }) {
       if (token) {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
-        session.user.isFirstLogin = token.isFirstLogin as boolean;
+        session.user.isFirstLogin = token.isFirstLogin as string;
       }
       return session;
+    },
+
+    async signIn({ account, profile }) {
+      if (account?.provider === "google") {
+        const userFromDb =
+          (await Administrador.findOne({ where: { email: profile?.email } })) ||
+          (await Professor.findOne({ where: { email: profile?.email } }));
+    
+        if (!userFromDb) {
+          return `/login?error=googleUnauthorized`;
+        }
+      } else if (account?.provider === "facebook") {
+        const userFromDb =
+          (await Administrador.findOne({ where: { email: profile?.email } })) ||
+          (await Professor.findOne({ where: { email: profile?.email } }));
+    
+        if (!userFromDb) {
+          return `/login?error=facebookUnauthorized`;
+        }
+      }
+    
+      return true;
+    },
+    
+    async redirect({ url, baseUrl }) {
+      return baseUrl;
     },
   },
 };

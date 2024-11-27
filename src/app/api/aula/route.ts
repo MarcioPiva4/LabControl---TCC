@@ -17,7 +17,7 @@ import { Vidrarias } from "@/models/Vidrarias";
 import { authOptions } from "@/utils/authOptions";
 import { isValidateDate } from "@/utils/dateValidator";
 import { isDescriptionLengthMore } from "@/utils/descriptionValidatador";
-import { checkAndSubtractStock } from "@/utils/stockConversion";
+import { checkAndSubtractStock, convertUnits } from "@/utils/stockConversion";
 import { getServerSession } from "next-auth";
 import { NextResponse, NextRequest } from "next/server";
 
@@ -333,8 +333,7 @@ export async function POST(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   try {
-    const { aula, equipamentos, vidrarias, agenteReajente, id } =
-      (await req.json()) as any;
+    const { aula, equipamentos, vidrarias, agenteReajente, id } = (await req.json()) as any;
     const {
       id_materia,
       id_professor,
@@ -346,189 +345,215 @@ export async function PUT(req: NextRequest) {
       observacoes,
     } = aula;
 
-    const editAula = (await Aula.update(
-      {
-        topico_aula,
-        horario_inicio,
-        horario_finalizacao,
-        data,
-        observacoes,
-      },
-      { where: { id: id } }
-    )) as any;
+    const verificarEstoque = async () => {
+      // if (equipamentos) {
+      //   for (const e of equipamentos) {
+      //     const equipamento = (await Equipamento.findByPk(e.id_equipamento)) as any;
+      //     if (equipamento) {
+      //       const aulaEquipamento = await Aula.findByPk(e.id_aula, {
+      //         include: [
+      //           {
+      //             model: Equipamento,
+      //             as: "equipamentos",
+      //             attributes: ["id", "equipamento"],
+      //             through: {
+      //               attributes: ["quantidade"],
+      //             },
+      //           },
+      //         ],
+      //       }) as any;
 
-    // const verificarEstoque = async () => {
-    //   if (equipamentos) {
-    //     for (const e of equipamentos) {
-    //       const equipamento = (await Equipamento.findByPk(
-    //         e.id_equipamento
-    //       )) as any;
-    //       if (equipamento) {
-    //         const novaQuantidadeFloat =
-    //           equipamento.quantidade_float - e.quantidade_equipamento;
-    //         if (novaQuantidadeFloat < 0) {
-    //           throw new Error(
-    //             "Estoque não disponível para o equipamento, diminua e tente novamente."
-    //           );
-    //         }
-    //         // Atualiza a quantidade do equipamento no estoque
-    //         await equipamento.update({
-    //           quantidade_float: novaQuantidadeFloat,
-    //         });
-    //       }
-    //     }
-    //   }
+      //       for (const equip of aulaEquipamento.equipamentos) {
+      //         const quantidadeAula = equip.EquipamentoAula.quantidade;
+      //         const novaQuantidadeSub = e.quantidade_equipamento - quantidadeAula;
 
-    //   if (vidrarias) {
-    //     for (const e of vidrarias) {
-    //       const vidraria = (await Vidrarias.findByPk(e.id_vidrarias)) as any;
-    //       if (vidraria) {
-    //         const novaQuantidadeFloat =
-    //           vidraria.quantidade_float - e.quantidade_vidrarias;
-    //         if (novaQuantidadeFloat < 0) {
-    //           throw new Error(
-    //             "Estoque não disponível para a vidraria, diminua e tente novamente."
-    //           );
-    //         }
-    //         // Atualiza a quantidade da vidraria no estoque
-    //         await vidraria.update({
-    //           quantidade_float: novaQuantidadeFloat,
-    //         });
-    //       }
-    //     }
-    //   }
+      //         if (novaQuantidadeSub < 0) {
+      //           const quantidadeEstoqueFloat = equipamento.quantidade_float + Math.abs(novaQuantidadeSub);
+      //           await EquipamentoAula.update(
+      //             { quantidade: e.quantidade_equipamento },
+      //             {
+      //               where: {
+      //                 id_equipamento: e.id_equipamento,
+      //                 id_aula: e.id_aula,
+      //               },
+      //             }
+      //           );
+      //           await equipamento.update({ quantidade_float: quantidadeEstoqueFloat });
+      //         } else {
+      //           const novaQuantidadeEstoque = equipamento.quantidade_float - novaQuantidadeSub;
+      //           if (novaQuantidadeEstoque < 0) {
+      //             throw new Error(`Estoque insuficiente para o equipamento: "${equip.equipamento}". Reduza a quantidade e tente novamente!`);
+      //           }
+      //           await EquipamentoAula.update(
+      //             { quantidade: e.quantidade_equipamento },
+      //             {
+      //               where: {
+      //                 id_equipamento: e.id_equipamento,
+      //                 id_aula: e.id_aula,
+      //               },
+      //             }
+      //           );
+      //           await equipamento.update({ quantidade_float: novaQuantidadeEstoque });
+      //         }
+      //       }
+      //     }
+      //   }
+      // }
 
-    //   if (agenteReajente) {
-    //     for (const e of agenteReajente) {
-    //       const agentesReajentes = (await AgenteReajente.findByPk(
-    //         e.id_agenteReajente
-    //       )) as any;
-    //       if (agentesReajentes) {
-    //         checkAndSubtractStock(
-    //           agentesReajentes.quantidade_float,
-    //           e.quantidade_agenteReajente,
-    //           agentesReajentes.medida_quantidade,
-    //           e.unidade
-    //         );
-    //         const novaQuantidadeFloat =
-    //           agentesReajentes.quantidade_float - e.quantidade_agenteReajente;
-    //         await agentesReajentes.update({
-    //           quantidade_float: novaQuantidadeFloat,
-    //         });
-    //       }
-    //     }
-    //   }
-    // };
+      // if (vidrarias) {
+      //   for (const e of vidrarias) {
+      //     const vidraria = (await Vidrarias.findByPk(e.id_vidrarias)) as any;
+      //     if (vidraria) {
+      //       const aulaVidraria = await Aula.findByPk(e.id_aula, {
+      //         include: [
+      //           {
+      //             model: Vidrarias,
+      //             as: "vidrarias",
+      //             attributes: ["id", "vidraria"],
+      //             through: {
+      //               attributes: ["quantidade"],
+      //             },
+      //           },
+      //         ],
+      //       }) as any;
 
-    // // Verifica e subtrai estoque
-    // await verificarEstoque();
+      //       for (const vidr of aulaVidraria.vidrarias) {
+      //         const quantidadeAula = vidr.VidrariaAula.quantidade;
+      //         const novaQuantidadeSub = e.quantidade_vidrarias - quantidadeAula;
 
-    // Atualiza o relacionamento da aula com os outros modelos
+      //         if (novaQuantidadeSub < 0) {
+      //           const quantidadeEstoqueFloat = vidraria.quantidade_float + Math.abs(novaQuantidadeSub);
+      //           await VidrariaAula.update(
+      //             { quantidade: e.quantidade_vidrarias },
+      //             {
+      //               where: {
+      //                 id_vidraria: e.id_vidrarias,
+      //                 id_aula: e.id_aula,
+      //               },
+      //             }
+      //           );
+      //           await vidraria.update({ quantidade_float: quantidadeEstoqueFloat });
+      //         } else {
+      //           const novaQuantidadeEstoque = vidraria.quantidade_float - novaQuantidadeSub;
+      //           if (novaQuantidadeEstoque < 0) {
+      //             throw new Error(`Estoque insuficiente para a vidraria: "${vidraria.vidraria}". Reduza a quantidade e tente novamente!`);
+      //           }
+      //           await VidrariaAula.update(
+      //             { quantidade: e.quantidade_vidrarias },
+      //             {
+      //               where: {
+      //                 id_vidraria: e.id_vidrarias,
+      //                 id_aula: e.id_aula,
+      //               },
+      //             }
+      //           );
+      //           await vidraria.update({ quantidade_float: novaQuantidadeEstoque });
+      //         }
+      //       }
+      //     }
+      //   }
+      // }
+
+      // if (agenteReajente) {
+      //   for (const e of agenteReajente) {
+      //     const agentesReajentes = (await AgenteReajente.findByPk(e.id_agenteReajente)) as any;
+      //     if (agentesReajentes) {
+      //       const aulaAgenteReajente = await Aula.findByPk(e.id_aula, {
+      //         include: [
+      //           {
+      //             model: AgenteReajente,
+      //             as: "agentes_reajentes",
+      //             attributes: ["id", "nome", "medida_quantidade"],  
+      //             through: {
+      //               attributes: ["quantidade"],
+      //             },
+      //           },
+      //         ],
+      //       }) as any;
+      
+      //       for (const agente of aulaAgenteReajente.agentes_reajentes) {
+      //         const unidadeEstoque = agente.medida_quantidade; // Medida do estoque
+      //         const unidadeRequisitada = e.unidade; // Medida que está sendo requisitada
+      //         const quantidadeAula = agente.AgenteReajenteAula.quantidade; // Quantidade na aula
+      //         const quantidadeRequisitada = e.quantidade_agenteReajente; // Quantidade requisitada
+      
+      //         console.log(unidadeEstoque, unidadeRequisitada, quantidadeAula, quantidadeRequisitada);
+      
+      //         // Calcular a diferença entre a quantidade na aula e a quantidade requisitada
+      //         let quantidadeDelta = quantidadeRequisitada - quantidadeAula;
+      
+      //         // Se as unidades forem diferentes, converte a quantidade requisitada para a unidade de medida do estoque
+      //         if (unidadeEstoque !== unidadeRequisitada) {
+      //           quantidadeDelta = convertUnits(unidadeRequisitada, unidadeEstoque, quantidadeDelta);
+      //           console.log('quantidadeDelta após conversão: ', quantidadeDelta);
+      //         }
+      
+      //         // Calcula a nova quantidade do estoque após a adição ou subtração
+      //         const novaQuantidadeEstoque = agentesReajentes.quantidade_float + quantidadeDelta;
+      
+      //         console.log('novaQuantidadeEstoque: ', novaQuantidadeEstoque);
+      
+      //         // Verifica se a nova quantidade é válida (não negativa)
+      //         if (novaQuantidadeEstoque < 0) {
+      //           throw new Error("Estoque insuficiente");
+      //         }
+      
+      //         // Atualiza a quantidade na tabela AgenteReajenteAula
+      //         await AgenteReajenteAula.update(
+      //           { quantidade: quantidadeRequisitada, medida_quantidade: unidadeRequisitada },
+      //           {
+      //             where: {
+      //               id_agenteReajente: e.id_agenteReajente,
+      //               id_aula: e.id_aula,
+      //             },
+      //           }
+      //         );
+      
+      //         // Atualiza a quantidade no estoque (quantidade_float) no banco de dados
+      //         await agentesReajentes.update({ quantidade_float: novaQuantidadeEstoque });
+      
+      //         console.log("Novo estoque atualizado: ", novaQuantidadeEstoque);
+      //       }
+      //     }
+      //   }
+      // }
+      
+
+    };
+
+    await verificarEstoque();
+
+
     if (id_materia) {
       await MateriaAula.update(
-        {
-          id_materia: id_materia,
-        },
+        { id_materia: id_materia },
         { where: { id_aula: id } }
       );
     }
 
     if (id_professor) {
       await ProfessorAula.update(
-        {
-          id_professor: id_professor,
-        },
+        { id_professor: id_professor },
         { where: { id_aula: id } }
       );
     }
 
     if (id_laboratorio) {
       await LaboratorioAula.update(
-        {
-          id_laboratorio: id_laboratorio,
-        },
+        { id_laboratorio: id_laboratorio },
         { where: { id_aula: id } }
       );
     }
 
-    // if (equipamentos) {
-    //   await Promise.all(
-    //     equipamentos.map(async (e: any) => {
-    //       await EquipamentoAula.update(
-    //         {
-    //           quantidade: e.quantidade_equipamento,
-    //         },
-    //         {
-    //           where: { id_equipamento: e.id_equipamento, id_aula: id },
-    //         }
-    //       );
-    //     })
-    //   );
-    // }
-
-    // if (vidrarias) {
-    //   await Promise.all(
-    //     vidrarias.map(async (e: any) => {
-    //       await VidrariaAula.update(
-    //         {
-    //           quantidade: e.quantidade_vidrarias,
-    //         },
-    //         {
-    //           where: { id_vidraria: e.id_vidrarias, id_aula: id },
-    //         }
-    //       );
-    //     })
-    //   );
-    // }
-
-    // if (agenteReajente) {
-    //   await Promise.all(
-    //     agenteReajente.map(async (e: any) => {
-    //       await AgenteReajenteAula.update(
-    //         {
-    //           quantidade: e.quantidade_agenteReajente,
-    //         },
-    //         {
-    //           where: { id_agentereajente: e.id_agenteReajente, id_aula: id },
-    //         }
-    //       );
-    //     })
-    //   );
-    // }
-
     // Retorna a aula atualizada
     const aulas = await Aula.findAll({
       include: [
-        {
-          model: Professor,
-          as: "professores",
-          attributes: ["nome"],
-        },
-        {
-          model: Materias,
-          as: "materias",
-          attributes: ["nome"],
-        },
-        {
-          model: Laboratorio,
-          as: "laboratorios",
-          attributes: ["nome"],
-        },
-        {
-          model: Equipamento,
-          as: "equipamentos",
-          attributes: ["equipamento"],
-        },
-        {
-          model: Vidrarias,
-          as: "vidrarias",
-          attributes: ["vidraria"],
-        },
-        {
-          model: AgenteReajente,
-          as: "agentes_reajentes",
-          attributes: ["nome"],
-        },
+        { model: Professor, as: "professores", attributes: ["nome"] },
+        { model: Materias, as: "materias", attributes: ["nome"] },
+        { model: Laboratorio, as: "laboratorios", attributes: ["nome"] },
+        { model: Equipamento, as: "equipamentos", attributes: ["equipamento"] },
+        { model: Vidrarias, as: "vidrarias", attributes: ["vidraria"] },
+        { model: AgenteReajente, as: "agentes_reajentes", attributes: ["nome"] },
       ],
     });
 
