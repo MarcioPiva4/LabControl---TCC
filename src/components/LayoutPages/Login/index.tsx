@@ -7,11 +7,40 @@ import DefaultForm from "@/components/DefaultForm";
 import { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
-import background from '@/../public/sort-down.png';
+import backgroundDesktop from '@/../public/Subtract.png';
+import backgroundMobile from '@/../public/background-mobile.png'
 
 const SectionWrappaper = styled.section`
   width: 100%;
   height: 100vh;
+  background: linear-gradient(90deg, rgba(4, 24, 51, 1) 0%, rgba(21, 69, 128, 1) 70%);
+  overflow: hidden;
+  position: relative;
+  @media screen and (max-width: 1000px){
+    background: linear-gradient(180deg, rgba(21,69,128,1) 10%, rgba(4,24,51,1) 60%);
+  }
+  .background {
+    position: fixed;
+    top: 0; 
+    left: 30%;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    animation: none;
+    object-fit: cover;
+  }
+
+  .background-mobile{
+    position: absolute;
+    width: 100%;
+    object-fit: cover;
+    height: 100%;
+    top: 24%;
+    @media screen and (min-width: 550px){
+      object-fit: fill;
+    }
+  }
+
   .login {
     display: flex;
     justify-content: space-around;
@@ -120,7 +149,7 @@ const SectionWrappaper = styled.section`
             }
 
             &:-internal-autofill-selected {
-              -webkit-box-shadow: 0 0 0px 1000px white inset; /* Mude 'white' para a cor de fundo desejada */
+              -webkit-box-shadow: 0 0 0px 1000px white inset;
               box-shadow: 0 0 0px 1000px white inset;
               -webkit-text-fill-color: black;
             }
@@ -244,8 +273,22 @@ export default function LoginLayout() {
     });
   }, []);
 
+  const [screenWidth, setScreenWidth] = useState<number>(0);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setScreenWidth(window.innerWidth);
+
+      const handleResize = () => setScreenWidth(window.innerWidth);
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }
+  }, []);
+
   return (
     <SectionWrappaper>
+      {screenWidth >= 1000 && <Image src={backgroundDesktop} alt="background" className="background"></Image>}
+      {screenWidth <= 1000 && <Image src={backgroundMobile} alt="background-mobile" className="background-mobile"></Image> }
       <div className="login">
         <div>
           <Image src={logo} alt="logo da labcontrol"></Image>

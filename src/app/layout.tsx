@@ -6,13 +6,15 @@ import { theme } from "@/styles/theme";
 import ButtonBackTop from "@/components/ButtonBackTop";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/authOptions";
-import { Session } from "@/types/session";
-import { Loader } from "@/components/Loader";
+import { Session } from "next-auth";
 import ResetPassword from "@/components/ResetPassword";
 
 export const metadata: Metadata = {
   title: "LabControl",
   description: "Gerenciamento de estoque de laboratório",
+  icons: {
+    icon: "/favicon.png", 
+  },
 };
 
 const fontFamily = Inter({

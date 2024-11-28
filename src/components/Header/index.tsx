@@ -9,7 +9,7 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import logo from "../../../public/logo.png";
 import { signOut } from "next-auth/react";
-import { Session } from "@/types/session";
+import { Session } from "next-auth";
 
 const HeaderWrapper = styled.header`
   width: 100%;

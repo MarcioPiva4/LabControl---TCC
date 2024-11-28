@@ -5,6 +5,25 @@ import { Professor } from "@/models/Professor";
 import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
 
+import { DefaultUser } from "next-auth";
+
+declare module "next-auth" {
+  interface User extends DefaultUser {
+    role: string;
+    isFirstLogin?: boolean;
+  }
+
+  interface Session {
+    user: User;
+  }
+
+  interface JWT {
+    id: string;
+    role: string;
+    isFirstLogin?: boolean;
+  }
+}
+
 export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/login",
@@ -74,11 +93,17 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, account, profile, user }) {
+      if (user) {
+        token.id = user.id;
+        token.role = user.role;
+        token.isFirstLogin = user.isFirstLogin;
+      }
+
       if (account && profile) {
         if (account.provider === "google" || account.provider === "facebook") {
           const userFromDb =
             (await Administrador.findOne({ where: { email: token.email } })) as any ||
-            (await Professor.findOne({ where: { email: token.email } })) as any; 
+            (await Professor.findOne({ where: { email: token.email } })) as any;
 
           if (userFromDb) {
             token.id = userFromDb.id;
@@ -99,7 +124,7 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
-        session.user.isFirstLogin = token.isFirstLogin as string;
+        session.user.isFirstLogin = token.isFirstLogin as boolean;
       }
       return session;
     },
@@ -109,7 +134,7 @@ export const authOptions: NextAuthOptions = {
         const userFromDb =
           (await Administrador.findOne({ where: { email: profile?.email } })) ||
           (await Professor.findOne({ where: { email: profile?.email } }));
-    
+
         if (!userFromDb) {
           return `/login?error=googleUnauthorized`;
         }
@@ -117,15 +142,15 @@ export const authOptions: NextAuthOptions = {
         const userFromDb =
           (await Administrador.findOne({ where: { email: profile?.email } })) ||
           (await Professor.findOne({ where: { email: profile?.email } }));
-    
+
         if (!userFromDb) {
           return `/login?error=facebookUnauthorized`;
         }
       }
-    
+
       return true;
     },
-    
+
     async redirect({ url, baseUrl }) {
       return baseUrl;
     },
