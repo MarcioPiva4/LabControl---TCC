@@ -9,6 +9,12 @@ const db = new Sequelize(
     port: parseInt(process.env.MYSQLPORT as string),
     dialect: 'mysql',
     dialectModule: require('mysql2'),
+    pool: {
+      max: 1000, 
+      min: 0,
+      acquire: 30000,
+      idle: 10000
+    }
   }
 );
 
