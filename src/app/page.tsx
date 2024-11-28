@@ -12,7 +12,7 @@ export default async function Home() {
   console.log(session);
   return (
     <>
-      <Header session={session}></Header>
+      {/* <Header session={session}></Header> */}
       <main>
         <Section title="Localize seu laboratorio" direction="column">
           <DefaultForm>
