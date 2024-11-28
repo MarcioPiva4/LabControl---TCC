@@ -10,10 +10,19 @@ export const GlobalStyle = createGlobalStyle`
     list-style: none;
   }
   body{
-    background: linear-gradient(180deg, rgba(21,69,128,1) 0%, rgba(4,24,51,1) 100%);
+    background: ${props => props.theme.color.gradient};
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     font-family: "Inter", sans-serif;
+    overflow-x: hidden;
+  }
+  main{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    @media screen and (min-width: 769px){
+      padding-left: 213px;
+    }
   }
 `
