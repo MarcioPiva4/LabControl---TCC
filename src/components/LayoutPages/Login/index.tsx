@@ -6,7 +6,7 @@ import logo from "../../../../public/logo.png";
 import DefaultForm from "@/components/DefaultForm";
 import { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import backgroundDesktop from '@/../public/Subtract.png';
 import backgroundMobile from '@/../public/background-mobile.png'
 
@@ -233,6 +233,7 @@ export default function LoginLayout() {
   const [valueEmail, setValueEmail] = useState("");
   const [valuePassword, setValuePassword] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const router = useRouter();
   const searchParams = useSearchParams();
   const erro = searchParams.get('error') as 'googleUnauthorized' | 'facebookUnauthorized';
   useEffect(() => {
@@ -261,7 +262,7 @@ export default function LoginLayout() {
     if (res?.error) {
       setErrorMessage(res.error);
     } else {
-      window.location.href = "/";
+      router.push('/')
     }
   }
 
