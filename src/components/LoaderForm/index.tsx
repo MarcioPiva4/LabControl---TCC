@@ -360,3 +360,33 @@ export function LoaderAulas({ quantity }: {quantity: number}){
         </LoaderAulasWrapper>
     )
 }
+
+const LoaderHeaderWrapper = styled.header`
+    @media screen and (min-width: 769px){
+        height: 100%;
+        width: 213px;
+    }
+    z-index: 10;
+    position: fixed;
+    width: 100%;
+    height: 12vh;
+    bottom: 0;
+    left: 0;
+    background-color: #c5c5c5;
+    background-image: linear-gradient(
+        to right,
+        #c5c5c5 0%,
+        #e8e8e8 20%,
+        #c5c5c5 40%,
+        #c5c5c5 100%
+    );
+    background-repeat: no-repeat;
+    background-size: 200% 100%;
+    animation: ${shimmer} 1.6s infinite ease-in-out;
+`;
+
+export function LoaderHeader(){
+    return(
+        <LoaderHeaderWrapper></LoaderHeaderWrapper>
+    )
+}

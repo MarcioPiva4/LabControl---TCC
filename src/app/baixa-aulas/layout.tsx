@@ -1,7 +1,8 @@
-import Header from "@/components/Header";
-import { authOptions } from "@/utils/authOptions";
+import { LoaderHeader } from "@/components/LoaderForm";
 import { Metadata } from "next";
-import { getServerSession } from "next-auth";
+import dynamic from "next/dynamic";
+
+const Header = dynamic(() => import('@/components/Header'), { ssr: false, loading: () => <LoaderHeader></LoaderHeader> });
 
 export const metadata: Metadata = {
   title: "LabControl | Baixa de Aula",
@@ -13,7 +14,6 @@ export default async function RootLayout({
   }: Readonly<{
     children: React.ReactNode;
   }>) {
-    const session = await getServerSession(authOptions);
     return (
         <>
             <Header></Header>

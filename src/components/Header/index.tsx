@@ -19,7 +19,7 @@ const HeaderWrapper = styled.header`
   background-color: ${(props) => props.theme.color.secondary};
   height: 12vh;
   z-index: 10;
-  @media screen and (min-width: 768px){
+  @media screen and (min-width: 769px){
       display: none;
   }
   & > div {
@@ -386,7 +386,7 @@ const HeaderDesktopContent = styled.header`
     background-color: #041833;
     position: fixed;
     z-index: 1000;
-    @media screen and (max-width: 768px){
+    @media screen and (max-width: 769px){
       display: none;
     }
     .menu-links{

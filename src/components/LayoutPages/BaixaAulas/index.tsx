@@ -1,75 +1,75 @@
-'use client'
+"use client";
 
 import Select from "@/components/Select";
 import { AulaReq } from "@/types/aula";
 import Link from "next/link";
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const ContentFilters = styled.div`
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  gap: 10px;
+  padding-bottom: 15px;
+  flex-direction: column;
+
+  .selects {
     display: flex;
     gap: 10px;
-    padding-bottom: 15px;
     flex-direction: column;
+    width: 100%;
+    border-bottom: 1px solid white;
+    padding-bottom: 15px;
 
-    .selects{
-        display: flex;
-        gap: 10px;
-        flex-direction: column;
-        width: 100%;
-        border-bottom: 1px solid white;
-        padding-bottom: 15px;
-
-        .select{
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            line-height: 20px;
-            padding: 3px 10px;
-            color: #fff;
-            border: 1.5px solid #CCD1D2;
-            border-radius: 50px;
-            font-size: 14px;
-            font-weight: 400;
-            letter-spacing: 0.1px;
-            width: fit-content;
-            cursor: pointer;
-        }
+    .select {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      line-height: 20px;
+      padding: 3px 10px;
+      color: #fff;
+      border: 1.5px solid #ccd1d2;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: 0.1px;
+      width: fit-content;
+      cursor: pointer;
     }
-    .results{
-        width: 100%;
-        height: 100%;
+  }
+  .results {
+    width: 100%;
+    height: 100%;
 
-        .result{
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-            line-height: 20px; 
-            padding: 3px 10px; 
-            color: #fff; 
-            border: 1.5px solid #CCD1D2; 
-            border-radius: 50px; 
-            font-size: 14px; 
-            font-weight: 400; 
-            letter-spacing: 0.1px;
-            width: fit-content; 
-            cursor: pointer; 
-        }
-
-        .clear_all{
-            background-color: #fff;
-            color: #000 !important;
-            font-weight: 400;
-        }
+    .result {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      line-height: 20px;
+      padding: 3px 10px;
+      color: #fff;
+      border: 1.5px solid #ccd1d2;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: 0.1px;
+      width: fit-content;
+      cursor: pointer;
     }
+
+    .clear_all {
+      background-color: #fff;
+      color: #000 !important;
+      font-weight: 400;
+    }
+  }
 `;
 
 const ContentAulas = styled.div.attrs<{ $finish?: boolean }>((props) => ({
   $finish: props.$finish || false,
 }))`
-    ul{
+    ul {
         display: flex;
         flex-direction: row;
         gap: 15px;
@@ -79,7 +79,8 @@ const ContentAulas = styled.div.attrs<{ $finish?: boolean }>((props) => ({
         }
         align-items: center;
         flex-wrap: wrap;
-        li{
+
+        li {
             background-color: #fff;
             border-radius: 15px;
             width: 100%;
@@ -88,7 +89,8 @@ const ContentAulas = styled.div.attrs<{ $finish?: boolean }>((props) => ({
             min-height: 100px;
             display: flex;
             max-width: 370px;
-            a{
+            
+            a {
                 width: 100%;
                 height: auto;
                 padding: 10px 15px;
@@ -97,12 +99,13 @@ const ContentAulas = styled.div.attrs<{ $finish?: boolean }>((props) => ({
                 justify-content: space-between;
                 text-decoration: none;
 
-                .aulas_content{
+                .aulas_content {
                     display: flex;
                     flex-direction: column;
                     width: 100%;
                     padding-right: 20px;
-                    p{
+                    
+                    p {
                         font-size: 16px;
                         line-height: 20px;
                         font-weight: 500;
@@ -113,8 +116,8 @@ const ContentAulas = styled.div.attrs<{ $finish?: boolean }>((props) => ({
                     }
                 }
 
-                .status_content{
-                    span{
+                .status_content {
+                    span {
                         display: block;
                         width: 15px;
                         height: 15px;
@@ -126,11 +129,30 @@ const ContentAulas = styled.div.attrs<{ $finish?: boolean }>((props) => ({
             }
         }
     }
+
+    .no_results {
+      background-color: #041833;
+      color: #ffffff;
+      border: 1px solid #f5c6cb;
+      padding: 15px 25px;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-top: 20px;
+      text-align: center;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 0.5s ease-out;
+      margin-bottom: 20px;
+      a{
+        color: #c5c5c5;
+        font-weight: bold;
+      }
+    }
 `;
 
-export default function BaixaAulas({ aulas }: { aulas: AulaReq; }){
-    const [dataAulas, setDataAulas] = useState(aulas.data);
-    return dataAulas ? (
+export default function BaixaAulas({ aulas }: { aulas: AulaReq }) {
+  const [dataAulas, setDataAulas] = useState(aulas.data);
+  return (
+    dataAulas && (
       <>
         <ContentFilters>
           <div className="selects">
@@ -247,27 +269,36 @@ export default function BaixaAulas({ aulas }: { aulas: AulaReq; }){
 
         <ContentAulas>
           <ul>
-            {dataAulas?.map((e) => (
-              <li key={e.id}>
-                <Link href={`baixa-aulas/finalizar/${e.id}`}>
-                  <div className="aulas_content">
-                    <p>Matéria: {e.materias[0]?.nome}</p>
-                    <p>Tópico da Aula: {e.topico_aula}</p>
-                    <p>Professor: {e.professores[0]?.nome} </p>
-                    <p>Laboratório: {e.laboratorios[0]?.nome}</p>
-                    <p>Data: {e.data}</p>
-                  </div>
+            {dataAulas.length > 0 ? (
+              dataAulas?.map((e) => (
+                <li key={e.id}>
+                  <Link href={`baixa-aulas/finalizar/${e.id}`}>
+                    <div className="aulas_content">
+                      <p>Matéria: {e.materias[0]?.nome}</p>
+                      <p>Tópico da Aula: {e.topico_aula}</p>
+                      <p>Professor: {e.professores[0]?.nome} </p>
+                      <p>Laboratório: {e.laboratorios[0]?.nome}</p>
+                      <p>Data: {e.data}</p>
+                    </div>
 
-                  <div className="status_content">
-                    <span className="status" style={e.status == 'in progress' ? {backgroundColor: '#FF04D7'} : {background: '#8aff99'}}></span>
-                  </div>
-                </Link>
-              </li>
-            ))}
+                    <div className="status_content">
+                      <span
+                        className="status"
+                        style={
+                          e.status == "in progress"
+                            ? { backgroundColor: "#FF04D7" }
+                            : { background: "#8aff99" }
+                        }></span>
+                    </div>
+                  </Link>
+                </li>
+              ))
+            ) : (
+              <p className="no_results">Nenhuma aula encontrada, cadastre novas aulas <Link href={'/cadastro/aula'}>aqui</Link></p>
+            )}
           </ul>
         </ContentAulas>
       </>
-    ) : (
-      <p>Nenhuma aula encontrada</p>
-    );
+    )
+  );
 }

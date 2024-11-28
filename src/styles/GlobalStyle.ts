@@ -21,7 +21,7 @@ export const GlobalStyle = createGlobalStyle`
     display: flex;
     flex-direction: column;
     flex: 1;
-    @media screen and (min-width: 768px){
+    @media screen and (min-width: 769px){
       padding-left: 213px;
     }
   }

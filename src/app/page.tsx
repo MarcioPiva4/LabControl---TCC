@@ -2,11 +2,11 @@ import BoxList from "@/components/BoxList";
 import Button from "@/components/Button";
 import DefaultForm from "@/components/DefaultForm";
 import Input from "@/components/Input";
+import { LoaderHeader } from "@/components/LoaderForm";
 import Section from "@/components/Section";
 import dynamic from "next/dynamic";
 
-// Usando dynamic corretamente
-const Header = dynamic(() => import('@/components/Header'), { ssr: false });
+const Header = dynamic(() => import('@/components/Header'), { ssr: false, loading: () => <LoaderHeader></LoaderHeader> });
 
 export default function Home() {
   return (

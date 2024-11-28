@@ -1,13 +1,13 @@
-import Header from "@/components/Header";
-import { authOptions } from "@/utils/authOptions";
-import { getServerSession } from "next-auth";
+import { LoaderHeader } from "@/components/LoaderForm";
+import dynamic from "next/dynamic";
+
+const Header = dynamic(() => import('@/components/Header'), { ssr: false, loading: () => <LoaderHeader></LoaderHeader> });
 
 export default async function RootLayout({
     children,
   }: Readonly<{
     children: React.ReactNode;
   }>) {
-    const session = await getServerSession(authOptions);
     return (
         <>
             <Header></Header>
