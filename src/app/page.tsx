@@ -1,15 +1,12 @@
+'use client'
 import BoxList from "@/components/BoxList";
 import Button from "@/components/Button";
 import DefaultForm from "@/components/DefaultForm";
-import { Header } from "@/components/Header";
 import Input from "@/components/Input";
 import Section from "@/components/Section";
-import { authOptions } from "@/utils/authOptions";
-import { getServerSession } from "next-auth";
+import { useSession } from "next-auth/react";
 
-export default async function Home() {
-  const session = await getServerSession(authOptions);
-  console.log(session);
+export default function Home() {
   return (
     <>
       {/* <Header session={session}></Header> */}
