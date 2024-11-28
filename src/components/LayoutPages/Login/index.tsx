@@ -287,8 +287,8 @@ export default function LoginLayout() {
 
   return (
     <SectionWrappaper>
-      {screenWidth >= 1000 && <Image src={backgroundDesktop} alt="background" className="background"></Image>}
-      {screenWidth <= 1000 && <Image src={backgroundMobile} alt="background-mobile" className="background-mobile"></Image> }
+      {screenWidth >= 1000 && <Image src={backgroundDesktop} alt="background" className="background" priority loading="eager" ></Image>}
+      {screenWidth <= 1000 && <Image src={backgroundMobile} alt="background-mobile" className="background-mobile" priority loading="eager" ></Image> }
       <div className="login">
         <div>
           <Image src={logo} alt="logo da labcontrol"></Image>
