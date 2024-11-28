@@ -5,7 +5,8 @@ import dynamic from "next/dynamic";
 const BaixaAulas = dynamic(() => import("@/components/LayoutPages/BaixaAulas"), {
     ssr: false,
     loading: () => <LoaderAulas quantity={4}></LoaderAulas>
-})
+});
+
 
 export default async function Page() {
     const dataAulas = await getDataAulas();

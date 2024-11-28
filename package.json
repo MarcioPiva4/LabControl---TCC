@@ -21,7 +21,8 @@
     "sequelize": "^6.37.3",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
-    "styled-components": "^6.1.8"
+    "styled-components": "^6.1.8",
+    "swr": "^2.2.5"
   },
   "devDependencies": {
     "@types/node": "^20",

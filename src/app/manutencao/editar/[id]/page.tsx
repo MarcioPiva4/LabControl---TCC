@@ -1,4 +1,3 @@
-import BoxMessage from "@/components/BoxMessage";
 import { LoaderForm } from "@/components/LoaderForm";
 import Section from "@/components/Section";
 import dynamic from "next/dynamic";
@@ -6,7 +5,11 @@ import dynamic from "next/dynamic";
 const EditarAulaForm = dynamic(() => import("@/components/Forms/EditarAulaForm"), {
   ssr: false,
   loading: () => <LoaderForm quantity={7} textArea></LoaderForm>
-})
+});
+
+const BoxMessage = dynamic(() => import("@/components/BoxMessage"), {
+  ssr: false,
+});
 
 export default async function Page({ params }: { params: any }) {
   const dataAulas = await getDataAulas();
