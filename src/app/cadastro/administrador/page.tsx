@@ -2,10 +2,10 @@ import { getServerSession } from 'next-auth/next';
 import Section from '@/components/Section';
 import { redirect } from 'next/navigation';
 import { authOptions } from '@/utils/authOptions';
-import { Session } from '@/types/session';
 import dynamic from 'next/dynamic';
 import { LoaderForm } from "@/components/LoaderForm";
 import { Metadata } from 'next';
+import { Session } from 'next-auth';
 
 export const metadata: Metadata = {
     title: "LabControl | Cadastro Administrador",
