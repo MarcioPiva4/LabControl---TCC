@@ -3,12 +3,15 @@ import Button from "@/components/Button";
 import DefaultForm from "@/components/DefaultForm";
 import Input from "@/components/Input";
 import Section from "@/components/Section";
-import { useSession } from "next-auth/react";
+import dynamic from "next/dynamic";
+
+// Usando dynamic corretamente
+const Header = dynamic(() => import('@/components/Header'), { ssr: false });
 
 export default function Home() {
   return (
     <>
-      {/* <Header session={session}></Header> */}
+      <Header></Header>
       <main>
         <Section title="Localize seu laboratorio" direction="column">
           <DefaultForm>

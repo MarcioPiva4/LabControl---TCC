@@ -8,7 +8,7 @@ import { CSSTransition } from "react-transition-group";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import logo from "../../../public/logo.png";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { Session } from "next-auth";
 
 const HeaderWrapper = styled.header`
@@ -188,7 +188,8 @@ const SubMenu = styled.aside`
   }
 `;
 
-export function Header({ session }: { session: Session | null }) {
+export default function Header() {
+  const { data: session, status } = useSession(); 
   const pathName = usePathname();
   const [menu, setMenu] = useState<boolean>(false);
   const [activePage, setActivePage] = useState<string>(pathName);
