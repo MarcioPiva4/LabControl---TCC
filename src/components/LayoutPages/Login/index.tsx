@@ -28,6 +28,9 @@ const SectionWrappaper = styled.section`
     z-index: 0;
     animation: none;
     object-fit: cover;
+    @media screen and (max-width: 999px){
+      display: none;
+    }
   }
 
   .background-mobile{
@@ -36,6 +39,9 @@ const SectionWrappaper = styled.section`
     object-fit: cover;
     height: 100%;
     top: 24%;
+    @media screen and (min-width: 1000px){
+      display: none;
+    }
     @media screen and (min-width: 550px){
       object-fit: fill;
     }
@@ -292,7 +298,7 @@ export default function LoginLayout() {
       {screenWidth <= 1000 && <Image src={backgroundMobile} alt="background-mobile" className="background-mobile" priority loading="eager" ></Image> }
       <div className="login">
         <div>
-          <Image src={logo} alt="logo da labcontrol"></Image>
+          <Image src={logo} alt="logo da labcontrol" priority loading="eager"></Image>
         </div>
         <div className="login__content">
           {errorMessage && (
