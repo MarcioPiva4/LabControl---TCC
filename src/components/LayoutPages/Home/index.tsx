@@ -200,7 +200,7 @@ function HomeDashboardProfessor({ nome, totalAulasInProgress, totalAulasFinish, 
             <ContentAboutUser>
                 <div className="user">
                     <figure>
-                        <Image src={image ? image : imageUser} alt="user profile" width={50} height={50}></Image>
+                        <Image src={image ? imageUser : imageUser} alt="user profile" width={50} height={50}></Image>
                     </figure>
                     <div className="user-text">
                         <h3>Bem vindo(a) a tela inicial</h3>
