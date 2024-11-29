@@ -2,24 +2,24 @@
 
 import { useSession } from "next-auth/react";
 import styled from "styled-components";
-
 import imageUser from '@/../public/user.webp';
 import Image from "next/image";
 import Link from "next/link";
-import { AulaItems, AulaReq } from "@/types/aula";
+import { AulaReq } from "@/types/aula";
 import { useState } from "react";
+import { ProfessorReq } from "@/types/professor";
+import { FornecedorReq } from "@/types/fornecedor";
+import { MateriaReq } from "@/types/materia";
 
-export default function Home({ aulas }: {aulas: AulaReq}){
+export default function Home({ aulas, professores, fornecedores, materias }: {aulas: AulaReq; professores: ProfessorReq; fornecedores: FornecedorReq; materias: MateriaReq}){
     const { data: session, status } = useSession(); 
     const [aulasDataInProgress, setAulasDataInProgress] = useState(aulas.data.filter((e) => e.status == 'in progress'));
     const [aulasDataFinish, setAulasDataFinish] = useState(aulas.data.filter((e) => e.status == 'finish'));
-    
     return(
         session?.user.role == 'prof' ? (
             <HomeDashboardProfessor image={session?.user.image} nome={session?.user.name} totalAulasInProgress={aulasDataInProgress.length} totalAulasFinish={aulasDataFinish.length}></HomeDashboardProfessor>
         ) : (
-            // <HomeDashboardAdministrador nome={session?.user.name}></HomeDashboardAdministrador>
-            <HomeDashboardProfessor image={session?.user.image} nome={session?.user.name} totalAulasInProgress={aulasDataInProgress.length} totalAulasFinish={aulasDataFinish.length}></HomeDashboardProfessor>
+            <HomeDashboardAdministrador image={session?.user.image} nome={session?.user.name} totalFornecedores={fornecedores.data.length} totalMaterias={materias.data.length} totalProfessores={professores.data.length}></HomeDashboardAdministrador>
         )
 
     )
@@ -188,9 +188,87 @@ const ContentItens = styled.div`
     }
 `;
 
-function HomeDashboardAdministrador({ nome } : {nome?: string | null}){
+function HomeDashboardAdministrador({ nome, image, totalFornecedores, totalProfessores, totalMaterias } : {nome?: string | null; totalFornecedores: number; totalProfessores:  number; totalMaterias: number; image?: string | null}){
     return(
-        <Section></Section>
+        <Section>
+            <ContentAboutUser>
+                <div className="user">
+                    <figure>
+                        <Image src={image ? imageUser : imageUser} alt="user profile" width={50} height={50}></Image>
+                    </figure>
+                    <div className="user-text">
+                        <h3>Bem vindo(a) a tela inicial</h3>
+                        <p>{nome ? nome : ''}</p>
+                    </div>
+                </div>
+
+                <div className="icons">
+                    <Link href="/cadastro/aula" title="Cadastrar Aula">
+                        + 
+                    </Link>
+                </div>
+            </ContentAboutUser>
+
+            <ContentNotification>
+                <div className="notication-text">
+                    <h3>Notificações</h3>
+
+                    <p>data</p>
+                </div>
+
+                <div className="Notifications"></div>
+            </ContentNotification>
+
+            <ContentItens>
+                <div className="item">
+                    <Link href="/itens/fornecedores">
+                        <div className="icon">
+                        <svg width="24" height="16" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14.4441 0.248516H1.58022C1.20815 0.248516 0.906357 0.55017 0.906357 0.922307V10.858H0.566266C0.253487 10.858 0 11.1116 0 11.4244V12.7476C0 13.0604 0.253487 13.314 0.566266 13.314H2.37798C2.37432 13.2594 2.37199 13.2045 2.37199 13.149C2.37199 11.7818 3.4842 10.6695 4.85123 10.6695C6.2186 10.6695 7.33081 11.7818 7.33081 13.149C7.33081 13.2045 7.32848 13.2594 7.32481 13.314H15.118V0.922307C15.118 0.55017 14.8162 0.248516 14.4441 0.248516Z" fill="#12283D"/>
+                            <path d="M4.8512 14.1672C4.28993 14.1672 3.83325 13.7104 3.83325 13.1489C3.83325 12.5875 4.28993 12.1307 4.8512 12.1307C5.4128 12.1307 5.86947 12.5875 5.86947 13.1489C5.86947 13.7104 5.4128 14.1672 4.8512 14.1672ZM4.8512 11.054C3.69435 11.054 2.75635 11.9919 2.75635 13.1489C2.75635 14.306 3.69435 15.2439 4.8512 15.2439C6.00838 15.2439 6.94638 14.306 6.94638 13.1489C6.94638 11.9919 6.00838 11.054 4.8512 11.054Z" fill="#12283D"/>
+                            <path d="M19.222 14.1672C18.6604 14.1672 18.2038 13.7104 18.2038 13.1489C18.2038 12.5875 18.6604 12.1307 19.222 12.1307C19.7836 12.1307 20.2403 12.5875 20.2403 13.1489C20.2403 13.7104 19.7836 14.1672 19.222 14.1672ZM19.222 11.054C18.0649 11.054 17.1272 11.9919 17.1272 13.1489C17.1272 14.306 18.0649 15.2439 19.222 15.2439C20.3789 15.2439 21.3169 14.306 21.3169 13.1489C21.3169 11.9919 20.3789 11.054 19.222 11.054Z" fill="#12283D"/>
+                            <path d="M22.6599 8.57869C22.6599 8.77162 22.5037 8.928 22.3108 8.928H20.5691C20.4462 8.928 20.3322 8.86322 20.2693 8.75746L19.8529 8.05855C19.7899 7.95279 19.6757 7.88804 19.5528 7.88804H16.7201C16.6498 7.88804 16.5929 7.83101 16.5929 7.7607V4.69287C16.5929 4.62255 16.6498 4.56556 16.7201 4.56556H19.7033C19.8093 4.56556 19.9095 4.61359 19.9758 4.69617L22.583 7.94323C22.6329 8.00522 22.6599 8.0824 22.6599 8.16191V8.57869ZM23.4337 10.858H23.3261V8.04526C23.3261 7.88954 23.2731 7.73851 23.1756 7.6171L20.3432 4.08986C20.2466 3.96945 20.1004 3.89937 19.9458 3.89937H15.5023V13.314H16.7488C16.7451 13.2594 16.7424 13.2045 16.7424 13.149C16.7424 11.7818 17.855 10.6695 19.222 10.6695C20.5894 10.6695 21.7016 11.7818 21.7016 13.149C21.7016 13.2045 21.6989 13.2594 21.6956 13.314H23.4337C23.7465 13.314 24 13.0604 24 12.7476V11.4244C24 11.1116 23.7465 10.858 23.4337 10.858Z" fill="#12283D"/>
+                        </svg>
+                        </div>
+
+                        <h2>Ver Fornecedores</h2>
+                        <p> <span>{totalFornecedores}</span> <span>Fornecedores</span></p>
+                    </Link>
+                </div>
+
+                <div className="item">
+                    <Link href="/itens/professores">
+                        <div className="icon">
+                        <svg width="25" height="19" viewBox="0 0 25 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19.71 10.6496L19.0629 11.0246V14.2012L19.7035 13.8286L19.71 10.6496Z" fill="#12283D"/>
+                            <path d="M12.7461 14.5453L5.94903 10.6211L5.94336 13.8285L12.8457 17.8142L18.542 14.5032V11.3274L13.006 14.5445C12.9259 14.5915 12.8262 14.5915 12.7461 14.5453Z" fill="#12283D"/>
+                            <path d="M18.3023 10.8651L12.6943 7.28682C12.5728 7.20987 12.538 7.0495 12.6149 6.92801C12.6927 6.80652 12.853 6.7717 12.9745 6.84864L18.8093 10.5703L24.8345 7.06894L12.7939 0.117219L0.834473 7.06732L12.8757 14.019L18.3023 10.8651Z" fill="#12283D"/>
+                            <path d="M18.2472 16.4228C18.0917 16.5792 17.9961 16.7914 17.9961 17.0295V18.1804H19.7116V17.0295C19.7116 16.7914 19.6152 16.5792 19.4605 16.4228C19.3042 16.2673 19.0911 16.1718 18.8538 16.1718C18.6165 16.1718 18.4035 16.2673 18.2472 16.4228Z" fill="#12283D"/>
+                        </svg>
+                        </div>
+
+                        <h2>Ver Professores</h2>
+                        <p> <span>{totalProfessores}</span> <span>Professores</span></p>
+                    </Link>
+                </div>
+
+                <div className="item">
+                    <Link href="/itens/materias">
+                        <div className="icon">
+                        <svg width="25" height="19" viewBox="0 0 25 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19.71 10.6496L19.0629 11.0246V14.2012L19.7035 13.8286L19.71 10.6496Z" fill="#12283D"/>
+                            <path d="M12.7461 14.5453L5.94903 10.6211L5.94336 13.8285L12.8457 17.8142L18.542 14.5032V11.3274L13.006 14.5445C12.9259 14.5915 12.8262 14.5915 12.7461 14.5453Z" fill="#12283D"/>
+                            <path d="M18.3023 10.8651L12.6943 7.28682C12.5728 7.20987 12.538 7.0495 12.6149 6.92801C12.6927 6.80652 12.853 6.7717 12.9745 6.84864L18.8093 10.5703L24.8345 7.06894L12.7939 0.117219L0.834473 7.06732L12.8757 14.019L18.3023 10.8651Z" fill="#12283D"/>
+                            <path d="M18.2472 16.4228C18.0917 16.5792 17.9961 16.7914 17.9961 17.0295V18.1804H19.7116V17.0295C19.7116 16.7914 19.6152 16.5792 19.4605 16.4228C19.3042 16.2673 19.0911 16.1718 18.8538 16.1718C18.6165 16.1718 18.4035 16.2673 18.2472 16.4228Z" fill="#12283D"/>
+                        </svg>
+                        </div>
+
+                        <h2>Ver Matérias</h2>
+                        <p> <span>{totalMaterias}</span> <span>Matérias</span></p>
+                    </Link>
+                </div>
+            </ContentItens>
+        </Section>
     )
 }
 
