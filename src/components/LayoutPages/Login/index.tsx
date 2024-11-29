@@ -396,7 +396,7 @@ export default function LoginLayout() {
                     </clipPath>
                   </defs>
                 </svg>
-                <span>Facabook</span>
+                <span>Facebook</span>
               </button>
             </div>
           </div>
