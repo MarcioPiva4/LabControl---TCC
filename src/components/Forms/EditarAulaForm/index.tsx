@@ -162,6 +162,9 @@ export default function EditarAulaForm({
         setDataAulas(responseJson.data);
         setSucess(true);
         setError({ error: false, message: "" });
+        // localStorage.removeItem('equipamentosAulaEditar')
+        // localStorage.removeItem('vidrariasAulaEditar')
+        // localStorage.removeItem('agentesReajentesAulaEditar')
       } else {
         setError({ error: true, message: responseJson.message });
       }

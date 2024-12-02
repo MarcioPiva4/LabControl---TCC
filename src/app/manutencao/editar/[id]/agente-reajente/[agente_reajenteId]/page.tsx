@@ -25,7 +25,7 @@ export default async function Page({params}: PropPageEquipamentos ) {
 
 async function getDataAgenteReajente() {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/agente-reajente`, {
-        'cache': 'no-cache'
+        'cache': 'no-store'
       });
     return await response.json();
 }

@@ -25,7 +25,7 @@ export default async function Page({params}: PropPageEquipamentos ) {
 
 async function getDataEquipamentos() {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/equipamento`, {
-        'cache': 'no-cache'
+        'cache': 'no-store'
       });
     return await response.json();
 }

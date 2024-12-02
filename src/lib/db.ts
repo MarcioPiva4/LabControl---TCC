@@ -5,16 +5,11 @@ const db = new Sequelize(
   process.env.MYSQLUSER as string,
   process.env.MYSQLPASSWORD,
   {
+    logging: false,
     host: process.env.MYSQLHOST,
     port: parseInt(process.env.MYSQLPORT as string),
     dialect: 'mysql',
     dialectModule: require('mysql2'),
-    pool: {
-      max: 1000, 
-      min: 0,
-      acquire: 30000,
-      idle: 10000
-    }
   }
 );
 

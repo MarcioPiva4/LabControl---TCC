@@ -82,7 +82,7 @@ const AulaForm = ({materias, professor, laboratorio}: {materias: any; professor:
                 })
             } else {
                 setError({ error: true, message: responseJson.message });
-                console.log("Error state after setError:", error); // Pode mostrar o valor anterior
+                console.log("Error state after setError:", error); 
             }
         } catch (error) {
             setError({error: true, message: 'Erro ao fazer a requisição, tente novamente.'})

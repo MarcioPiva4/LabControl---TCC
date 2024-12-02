@@ -21,6 +21,7 @@ declare module "next-auth" {
     id: string;
     role: string;
     isFirstLogin?: boolean;
+    image?: string; 
   }
 }
 
@@ -54,6 +55,7 @@ export const authOptions: NextAuthOptions = {
             email: userEmailAdministrador.email,
             role: "adm",
             isFirstLogin: isFirstLogin,
+            image: userEmailAdministrador.image || ""
           };
         }
 
@@ -75,6 +77,7 @@ export const authOptions: NextAuthOptions = {
             email: userEmailProfessor.email,
             role: "prof",
             isFirstLogin: isFirstLogin,
+            image: userEmailProfessor.image || ""
           };
         }
 
@@ -92,11 +95,19 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, account, profile, user }) {
+    async jwt({ token, account, profile, user, trigger, session }) {
+      if (trigger === "update" && session) {
+        return {
+          ...token,
+          name: session.name || token.name,
+          image: session.image || token.image,
+        };
+      }
       if (user) {
         token.id = user.id;
         token.role = user.role;
         token.isFirstLogin = user.isFirstLogin;
+        token.image = user.image;
       }
 
       if (account && profile) {
@@ -109,6 +120,7 @@ export const authOptions: NextAuthOptions = {
             token.id = userFromDb.id;
             token.role = userFromDb instanceof Administrador ? "adm" : "prof";
             token.isFirstLogin = userFromDb.loginCount === 0;
+            token.image = userFromDb.image || "";
 
             await userFromDb.increment("loginCount", { by: 1 });
           } else {
@@ -125,6 +137,7 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
         session.user.isFirstLogin = token.isFirstLogin as boolean;
+        session.user.image = token.image as string;
       }
       return session;
     },

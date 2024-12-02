@@ -64,18 +64,24 @@ export default function EquipamentoRevisar({ id, equipamentos, baixa, idAula, au
   const arrayIds = id.replaceAll('%2C', ',').split(',');
   const [data,setData] = useState(equipamentos.data);
   const [itens, setItens] = useState(data.filter((e: any, i: any) => arrayIds.includes(e.id.toString())));
+  console.log(itens)
   const router = useRouter();
   const [parsedData, setParsedData] = useState<Itens[]>([]);
   const [dataAulas, setDataAulas] = useState(aulas? aulas.data.filter((e: any) => e.id == idAula) : null);
 
-  useEffect(() => {
-    setItens((prev: any) => 
-      prev.map((item: any, i: number) =>(
-        { ...item, quantidadeAdd: parsedData[i]?.quantidade_equipamento || 1 }
-       )
-      )
-    );
-  }, [id, parsedData]);
+useEffect(() => {
+  setItens((prev: any) =>
+    prev.map((item: any) => {
+      const quantidadeAdd =
+        parsedData.find((data: any) => data.id === item.id)?.quantidade_equipamento ||
+        dataAulas[0]?.equipamentos.find((e: any) => e.EquipamentoAula.id_equipamento === item.id)?.EquipamentoAula.quantidade ||
+        1;
+
+      return { ...item, quantidadeAdd };
+    })
+  );
+}, [parsedData, dataAulas, id]);
+
 
   useEffect(() => {
     if(manutencao){
@@ -91,25 +97,25 @@ export default function EquipamentoRevisar({ id, equipamentos, baixa, idAula, au
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleAddQuantity = (id: number) => {
-    setItens((prev: any) => 
-      prev.map((item: any) =>
-        item.id === id
-          ? { ...item, quantidadeAdd: (item.quantidadeAdd || 0) + 1 }
-          : item
-      )
-    );
-  };
-  
-  const handleSubQuantity = (id: number) => {
-    setItens((prev: any) => 
-      prev.map((item: any) =>
-        item.id === id
-          ? { ...item, quantidadeAdd: Math.max((item.quantidadeAdd || 0) - 1, 1) }
-          : item
-      )
-    );
-  };
+const handleAddQuantity = (id: number | string) => {
+  setItens((prev: any) =>
+    prev.map((item: any) =>
+      item.id === id
+        ? { ...item, quantidadeAdd: (item.quantidadeAdd || 0) + 1 }
+        : item
+    )
+  );
+};
+
+const handleSubQuantity = (id: number | string) => {
+  setItens((prev: any) =>
+    prev.map((item: any) =>
+      item.id === id
+        ? { ...item, quantidadeAdd: Math.max((item.quantidadeAdd || 0) - 1, 1) }
+        : item
+    )
+  );
+};
 
   const submitForm = () => {
     if(baixa){
@@ -128,6 +134,20 @@ export default function EquipamentoRevisar({ id, equipamentos, baixa, idAula, au
       router.push('/cadastro/aula');
     }
   }
+
+  function valueInput(quantidadeAdd: any, id: string, i: number){
+    if(baixa){
+      const value = dataAulas && dataAulas[0]?.equipamentos[i]?.EquipamentoAula.quantidade || 1
+      return value
+    } else if (manutencao){
+      // const quantidadeValue = dataAulas[0]?.equipamentos.map((e: any) => e.EquipamentoAula.id_equipamento == id ? e.EquipamentoAula.quantidade : 1);
+      const value = quantidadeAdd
+      return value
+    } else {
+      return quantidadeAdd;
+    }
+  }
+
   return (
     <>
       {itens.length <= 0 && <h1>Selecione uma opção antes de continuar</h1>}
@@ -136,7 +156,7 @@ export default function EquipamentoRevisar({ id, equipamentos, baixa, idAula, au
           <DefaultForm>
             <Adjust>
               {itens.map((e: any, i:number) => (
-                <div key={e.id}>
+                <div key={i}>
                   <InputBoxSelectWithQuntity
                     name={e.equipamento}
                     id={e.id}
@@ -160,7 +180,7 @@ export default function EquipamentoRevisar({ id, equipamentos, baixa, idAula, au
                         )
                       );
                     }}
-                    value={!baixa ? e.quantidadeAdd ? e.quantidadeAdd : 1 : dataAulas && dataAulas[0]?.equipamentos[i]?.EquipamentoAula.quantidade}
+                    value={valueInput(e.quantidadeAdd, e.id, i)}
                     {...(baixa ? { readOnly: true } : {})}
                   />
                 </div>

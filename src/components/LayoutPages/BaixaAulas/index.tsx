@@ -2,7 +2,7 @@
 
 import { FilterAula } from "@/components/FilterAula";
 import Select from "@/components/Select";
-import { AulaReq } from "@/types/aula";
+import { AulaItems, AulaReq } from "@/types/aula";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
@@ -92,8 +92,10 @@ const ContentAulas = styled.div.attrs<{ $finish?: boolean }>((props) => ({
     }
 `;
 
-export default function BaixaAulas({ aulas }: { aulas: AulaReq }) {
-  const [dataAulas, setDataAulas] = useState(aulas.data);
+export default function BaixaAulas({ aulas }: { aulas: AulaReq | AulaItems[] }) {
+  const [dataAulas, setDataAulas] = useState<AulaItems[]>(
+    'data' in aulas ? aulas.data : aulas
+  );
   return (
     dataAulas && (
       <>

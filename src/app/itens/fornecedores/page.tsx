@@ -2,7 +2,7 @@ import { FornecedorReq } from "@/types/fornecedor";
 
 async function getDataFornecedores() {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/fornecedor`, {
-        cache: "no-cache",
+        cache: "no-store", 
     });
     if (!response.ok) {
         throw new Error("Failed to fetch data");

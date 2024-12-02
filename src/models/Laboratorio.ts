@@ -9,27 +9,27 @@ const Laboratorio = db.define('laboratorios', {
         primaryKey: true,
     },
     nome: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(100),
         allowNull: false,
     },
     predio: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(50),
         allowNull: true,
     },
     andar: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(50),
         allowNull: true,
     },
     bloco: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(50),
         allowNull: true,
     },
     sala: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(50),
         allowNull: true,
     },
     responsavel: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(100),
         allowNull: false,
     },
     descricao: {

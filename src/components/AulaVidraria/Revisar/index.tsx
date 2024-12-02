@@ -92,8 +92,6 @@ export default function VidrariasRevisar({ id, vidrarias, baixa, idAula, aulas, 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log(parsedData);
-
   const handleAddQuantity = (id: number) => {
     setItens((prev: any) => 
       prev.map((item: any) =>

@@ -10,11 +10,11 @@ const Equipamento = db.define('equipamentos', {
         primaryKey: true,
     },
     equipamento: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(100),
         allowNull: false,
     },
     tipo: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(50),
         allowNull: false,
     },
     numero_serie: {
@@ -22,7 +22,7 @@ const Equipamento = db.define('equipamentos', {
         allowNull: false,
     },
     marca_modelo: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(100),
         allowNull: false,
     },
     quantidade: {
@@ -34,11 +34,11 @@ const Equipamento = db.define('equipamentos', {
         allowNull: false,
     },
     preco_compra: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(50),
         allowNull: false,
     },
     localizacao: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(100),
         allowNull: false,
     },
     observacoes: {

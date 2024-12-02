@@ -26,14 +26,14 @@ export default async function Page({ params }: PropPageRevisar){
 
 async function getDataEquipamentos() {
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/equipamento`, {
-    'cache': 'no-cache'
+    'cache': 'no-store'
   });
   return await response.json();
 }
 
 async function getDataAula() {
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/aula`, {
-    'cache': 'no-cache'
+    'cache': 'no-store'
   });
   return await response.json();
 }

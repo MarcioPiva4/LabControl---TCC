@@ -1,5 +1,8 @@
 import { LoaderAulas } from "@/components/LoaderForm";
 import Section from "@/components/Section";
+import { AulaReq } from "@/types/aula";
+import { authOptions } from "@/utils/authOptions";
+import { getServerSession } from "next-auth";
 import dynamic from "next/dynamic";
 
 const BaixaAulas = dynamic(() => import("@/components/LayoutPages/BaixaAulas"), {
@@ -9,10 +12,13 @@ const BaixaAulas = dynamic(() => import("@/components/LayoutPages/BaixaAulas"), 
 
 
 export default async function Page() {
-    const dataAulas = await getDataAulas();
+    const dataAulas = await getDataAulas() as AulaReq;
+    const session = await getServerSession(authOptions);
+    const dataAulasFiltered = dataAulas.data.filter((e) => e.professores[0].email == session?.user.email);
+
     return (
         <Section title="Finalizar aula" bottom>
-            <BaixaAulas aulas={dataAulas}></BaixaAulas>
+            <BaixaAulas aulas={session?.user.role === 'prof' ? dataAulasFiltered : dataAulas}></BaixaAulas>
         </Section>
     );
 }

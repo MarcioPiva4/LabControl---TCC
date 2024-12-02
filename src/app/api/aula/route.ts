@@ -1,3 +1,4 @@
+import { db } from "@/lib/db";
 import { AgenteReajente } from "@/models/Agente_reajente";
 import {
   AgenteReajenteAula,
@@ -17,9 +18,10 @@ import { Vidrarias } from "@/models/Vidrarias";
 import { authOptions } from "@/utils/authOptions";
 import { isValidateDate } from "@/utils/dateValidator";
 import { isDescriptionLengthMore } from "@/utils/descriptionValidatador";
-import { checkAndSubtractStock, convertUnits } from "@/utils/stockConversion";
+import { checkAndSubtractStock } from "@/utils/stockConversion";
 import { getServerSession } from "next-auth";
 import { NextResponse, NextRequest } from "next/server";
+import { Sequelize } from "sequelize";
 
 export async function GET() {
   try {
@@ -28,7 +30,7 @@ export async function GET() {
         {
           model: Professor,
           as: "professores",
-          attributes: ["nome"],
+          attributes: ["nome", "email"],
         },
         {
           model: Materias,
@@ -85,10 +87,10 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   await Logs.create({
-      nome: session?.user?.name,
-      typeHttp: 'POST',
-      ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
-      message: 'Iniciou uma requisição na rota de aulas'
+    nome: session?.user?.name,
+    typeHttp: "POST",
+    ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
+    message: "Iniciou uma requisição na rota de aulas",
   });
   try {
     const { aula, equipamentos, vidrarias, agenteReajente } =
@@ -197,7 +199,7 @@ export async function POST(req: NextRequest) {
     })) as any;
 
     if (equipamentos || vidrarias || agenteReajente) {
-      if(equipamentos){
+      if (equipamentos) {
         //muitos para muitos
         await Promise.all(
           equipamentos.map(async (e: any) => {
@@ -228,7 +230,7 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      if(vidrarias){
+      if (vidrarias) {
         //muitos para muitos
         await Promise.all(
           vidrarias.map(async (e: any) => {
@@ -244,11 +246,11 @@ export async function POST(req: NextRequest) {
         await Promise.all(
           vidrarias.map(async (e: any) => {
             const vidraria = (await Vidrarias.findByPk(e.id_vidrarias)) as any;
-  
+
             if (vidraria) {
               const novaQuantidadeFloat =
                 vidraria.quantidade_float - e.quantidade_vidrarias;
-  
+
               await vidraria.update({
                 quantidade_float: novaQuantidadeFloat,
               });
@@ -257,7 +259,7 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      if(agenteReajente){
+      if (agenteReajente) {
         //muitos para muitos
         await Promise.all(
           agenteReajente.map(async (e: any) => {
@@ -276,11 +278,11 @@ export async function POST(req: NextRequest) {
             const agentesReajentes = (await AgenteReajente.findByPk(
               e.id_agenteReajente
             )) as any;
-  
+
             if (agentesReajentes) {
               const novaQuantidadeFloat =
                 agentesReajentes.quantidade_float - e.quantidade_agenteReajente;
-  
+
               await agentesReajentes.update({
                 quantidade_float: novaQuantidadeFloat,
               });
@@ -307,9 +309,9 @@ export async function POST(req: NextRequest) {
 
     await Logs.create({
       nome: session?.user?.name,
-      typeHttp: 'POST',
+      typeHttp: "POST",
       ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
-      message: `Finalizou o cadastro de uma aula`
+      message: `Finalizou o cadastro de uma aula`,
     });
 
     return NextResponse.json(
@@ -319,11 +321,11 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     await Logs.create({
       nome: session?.user?.name,
-      typeHttp: 'POST',
+      typeHttp: "POST",
       ip: req.headers.get("x-forwarded-for")?.split(",")[0] || req.ip,
-      message: `A requisição fracassou`
+      message: `A requisição fracassou`,
     });
-    
+
     return NextResponse.json(
       { status: "error", message: `${error}`, code: 400 },
       { status: 400 }
@@ -333,217 +335,141 @@ export async function POST(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   try {
-    const { aula, equipamentos, vidrarias, agenteReajente, id } = (await req.json()) as any;
-    const {
-      id_materia,
-      id_professor,
-      id_laboratorio,
-      topico_aula,
-      horario_inicio,
-      horario_finalizacao,
-      data,
-      observacoes,
-    } = aula;
+    const { aula, equipamentos, vidrarias, agenteReajente, id } = await req.json();
+    const { id_materia, id_professor, id_laboratorio, topico_aula, horario_inicio, horario_finalizacao, data, observacoes } = aula;
 
+    console.log("Recuperado do front", equipamentos);
+
+    // Função para verificar e atualizar estoque
     const verificarEstoque = async () => {
-      // if (equipamentos) {
-      //   for (const e of equipamentos) {
-      //     const equipamento = (await Equipamento.findByPk(e.id_equipamento)) as any;
-      //     if (equipamento) {
-      //       const aulaEquipamento = await Aula.findByPk(e.id_aula, {
-      //         include: [
-      //           {
-      //             model: Equipamento,
-      //             as: "equipamentos",
-      //             attributes: ["id", "equipamento"],
-      //             through: {
-      //               attributes: ["quantidade"],
-      //             },
-      //           },
-      //         ],
-      //       }) as any;
+      if (equipamentos) {
+        // Itera sobre cada equipamento
+        for (const e of equipamentos) {
+          const t = await db.transaction(); // Cria uma transação isolada por item
 
-      //       for (const equip of aulaEquipamento.equipamentos) {
-      //         const quantidadeAula = equip.EquipamentoAula.quantidade;
-      //         const novaQuantidadeSub = e.quantidade_equipamento - quantidadeAula;
+          try {
+            // Recupera o equipamento
+            const equipamento = await Equipamento.findByPk(e.id_equipamento, { transaction: t }) as any;
+            if (equipamento) {
+              const aulaEquipamento = await Aula.findByPk(e.id_aula, {
+                include: [
+                  {
+                    model: Equipamento,
+                    as: "equipamentos",
+                    attributes: ["id", "equipamento"],
+                    through: {
+                      attributes: ["quantidade"],
+                    },
+                  },
+                ],
+                transaction: t,
+              }) as any;
 
-      //         if (novaQuantidadeSub < 0) {
-      //           const quantidadeEstoqueFloat = equipamento.quantidade_float + Math.abs(novaQuantidadeSub);
-      //           await EquipamentoAula.update(
-      //             { quantidade: e.quantidade_equipamento },
-      //             {
-      //               where: {
-      //                 id_equipamento: e.id_equipamento,
-      //                 id_aula: e.id_aula,
-      //               },
-      //             }
-      //           );
-      //           await equipamento.update({ quantidade_float: quantidadeEstoqueFloat });
-      //         } else {
-      //           const novaQuantidadeEstoque = equipamento.quantidade_float - novaQuantidadeSub;
-      //           if (novaQuantidadeEstoque < 0) {
-      //             throw new Error(`Estoque insuficiente para o equipamento: "${equip.equipamento}". Reduza a quantidade e tente novamente!`);
-      //           }
-      //           await EquipamentoAula.update(
-      //             { quantidade: e.quantidade_equipamento },
-      //             {
-      //               where: {
-      //                 id_equipamento: e.id_equipamento,
-      //                 id_aula: e.id_aula,
-      //               },
-      //             }
-      //           );
-      //           await equipamento.update({ quantidade_float: novaQuantidadeEstoque });
-      //         }
-      //       }
-      //     }
-      //   }
-      // }
+              // Processa a atualização do estoque para cada equipamento
+              for (const equip of aulaEquipamento.equipamentos) {
+                const quantidadeAula = equip.EquipamentoAula.quantidade;
+                const quantidadeSub = e.quantidade_equipamento - quantidadeAula;
+                const quantidadeAdi = e.quantidade_equipamento + quantidadeAula;
 
-      // if (vidrarias) {
-      //   for (const e of vidrarias) {
-      //     const vidraria = (await Vidrarias.findByPk(e.id_vidrarias)) as any;
-      //     if (vidraria) {
-      //       const aulaVidraria = await Aula.findByPk(e.id_aula, {
-      //         include: [
-      //           {
-      //             model: Vidrarias,
-      //             as: "vidrarias",
-      //             attributes: ["id", "vidraria"],
-      //             through: {
-      //               attributes: ["quantidade"],
-      //             },
-      //           },
-      //         ],
-      //       }) as any;
+                console.log("quantidadeSub:", quantidadeSub, "quantidadeAdi:", quantidadeAdi, "estoque:", equipamento.quantidade, "quantidadeAula:", quantidadeAula, "estoque_float:", equipamento.quantidade_float);
 
-      //       for (const vidr of aulaVidraria.vidrarias) {
-      //         const quantidadeAula = vidr.VidrariaAula.quantidade;
-      //         const novaQuantidadeSub = e.quantidade_vidrarias - quantidadeAula;
+                // Ajuste no estoque baseado na quantidade subtraída ou adicionada
+                if (quantidadeSub < 0 && quantidadeAdi > quantidadeAula) {
+                  const incrementEstoque = equipamento.quantidade_float + Math.abs(quantidadeSub);
 
-      //         if (novaQuantidadeSub < 0) {
-      //           const quantidadeEstoqueFloat = vidraria.quantidade_float + Math.abs(novaQuantidadeSub);
-      //           await VidrariaAula.update(
-      //             { quantidade: e.quantidade_vidrarias },
-      //             {
-      //               where: {
-      //                 id_vidraria: e.id_vidrarias,
-      //                 id_aula: e.id_aula,
-      //               },
-      //             }
-      //           );
-      //           await vidraria.update({ quantidade_float: quantidadeEstoqueFloat });
-      //         } else {
-      //           const novaQuantidadeEstoque = vidraria.quantidade_float - novaQuantidadeSub;
-      //           if (novaQuantidadeEstoque < 0) {
-      //             throw new Error(`Estoque insuficiente para a vidraria: "${vidraria.vidraria}". Reduza a quantidade e tente novamente!`);
-      //           }
-      //           await VidrariaAula.update(
-      //             { quantidade: e.quantidade_vidrarias },
-      //             {
-      //               where: {
-      //                 id_vidraria: e.id_vidrarias,
-      //                 id_aula: e.id_aula,
-      //               },
-      //             }
-      //           );
-      //           await vidraria.update({ quantidade_float: novaQuantidadeEstoque });
-      //         }
-      //       }
-      //     }
-      //   }
-      // }
+                  if (incrementEstoque > equipamento.quantidade) {
+                    console.log(`Erro: Estoque insuficiente para o equipamento "${equip.equipamento}".`);
+                    throw new Error(`Estoque insuficiente para o equipamento: "${equip.equipamento}".`);
+                  }
 
-      // if (agenteReajente) {
-      //   for (const e of agenteReajente) {
-      //     const agentesReajentes = (await AgenteReajente.findByPk(e.id_agenteReajente)) as any;
-      //     if (agentesReajentes) {
-      //       const aulaAgenteReajente = await Aula.findByPk(e.id_aula, {
-      //         include: [
-      //           {
-      //             model: AgenteReajente,
-      //             as: "agentes_reajentes",
-      //             attributes: ["id", "nome", "medida_quantidade"],  
-      //             through: {
-      //               attributes: ["quantidade"],
-      //             },
-      //           },
-      //         ],
-      //       }) as any;
-      
-      //       for (const agente of aulaAgenteReajente.agentes_reajentes) {
-      //         const unidadeEstoque = agente.medida_quantidade; // Medida do estoque
-      //         const unidadeRequisitada = e.unidade; // Medida que está sendo requisitada
-      //         const quantidadeAula = agente.AgenteReajenteAula.quantidade; // Quantidade na aula
-      //         const quantidadeRequisitada = e.quantidade_agenteReajente; // Quantidade requisitada
-      
-      //         console.log(unidadeEstoque, unidadeRequisitada, quantidadeAula, quantidadeRequisitada);
-      
-      //         // Calcular a diferença entre a quantidade na aula e a quantidade requisitada
-      //         let quantidadeDelta = quantidadeRequisitada - quantidadeAula;
-      
-      //         // Se as unidades forem diferentes, converte a quantidade requisitada para a unidade de medida do estoque
-      //         if (unidadeEstoque !== unidadeRequisitada) {
-      //           quantidadeDelta = convertUnits(unidadeRequisitada, unidadeEstoque, quantidadeDelta);
-      //           console.log('quantidadeDelta após conversão: ', quantidadeDelta);
-      //         }
-      
-      //         // Calcula a nova quantidade do estoque após a adição ou subtração
-      //         const novaQuantidadeEstoque = agentesReajentes.quantidade_float + quantidadeDelta;
-      
-      //         console.log('novaQuantidadeEstoque: ', novaQuantidadeEstoque);
-      
-      //         // Verifica se a nova quantidade é válida (não negativa)
-      //         if (novaQuantidadeEstoque < 0) {
-      //           throw new Error("Estoque insuficiente");
-      //         }
-      
-      //         // Atualiza a quantidade na tabela AgenteReajenteAula
-      //         await AgenteReajenteAula.update(
-      //           { quantidade: quantidadeRequisitada, medida_quantidade: unidadeRequisitada },
-      //           {
-      //             where: {
-      //               id_agenteReajente: e.id_agenteReajente,
-      //               id_aula: e.id_aula,
-      //             },
-      //           }
-      //         );
-      
-      //         // Atualiza a quantidade no estoque (quantidade_float) no banco de dados
-      //         await agentesReajentes.update({ quantidade_float: novaQuantidadeEstoque });
-      
-      //         console.log("Novo estoque atualizado: ", novaQuantidadeEstoque);
-      //       }
-      //     }
-      //   }
-      // }
-      
+                  await EquipamentoAula.update(
+                    { quantidade: e.quantidade_equipamento },
+                    { where: { id_equipamento: e.id_equipamento, id_aula: e.id_aula }, transaction: t }
+                  );
+                  await equipamento.update({ quantidade_float: incrementEstoque }, { transaction: t });
+                }
 
+                if (quantidadeSub > 0 && quantidadeAdi > quantidadeAula) {
+                  const reduceEstoque = equipamento.quantidade_float - Math.abs(quantidadeSub);
+
+                  if (reduceEstoque < 0) {
+                    console.log(`Erro: Estoque insuficiente para o equipamento "${equip.equipamento}".`);
+                    throw new Error(`Estoque insuficiente para o equipamento: "${equip.equipamento}".`);
+                  }
+
+                  await EquipamentoAula.update(
+                    { quantidade: e.quantidade_equipamento },
+                    { where: { id_equipamento: e.id_equipamento, id_aula: e.id_aula }, transaction: t }
+                  );
+                  await equipamento.update({ quantidade_float: reduceEstoque }, { transaction: t });
+                }
+              }
+            }
+
+            // Commit após processar todos os equipamentos
+            await t.commit();
+          } catch (error) {
+            // Rollback em caso de erro
+            await t.rollback();
+            console.error("Erro ao processar o equipamento:", error);
+            throw new Error(`Erro ao processar o equipamento "${e.id_equipamento}".`);
+          }
+        }
+      }
     };
 
     await verificarEstoque();
 
+    // Lógica para remover ou adicionar equipamentos
+    if (equipamentos) {
+      const equipamentosEnviados = equipamentos.map((e: any) => e.id_equipamento);
+      for (const e of equipamentos) {
+        const equipamento = await Equipamento.findByPk(e.id_equipamento) as any;
+        if (equipamento) {
+          const aulaEquipamento = await Aula.findByPk(e.id_aula, {
+            include: [
+              {
+                model: Equipamento,
+                as: "equipamentos",
+                attributes: ["id", "equipamento"],
+                through: { attributes: ["quantidade"] },
+              },
+            ],
+          }) as any;
 
-    if (id_materia) {
-      await MateriaAula.update(
-        { id_materia: id_materia },
-        { where: { id_aula: id } }
-      );
+          const equipamentoNaAula = aulaEquipamento.equipamentos.find((equip: any) => equip.id === e.id_equipamento);
+
+          for (const equipamentoAula of aulaEquipamento.equipamentos) {
+            if (!equipamentosEnviados.includes(equipamentoAula.id)) {
+              const equipamentoAtualizado = await Equipamento.findOne({ where: { id: equipamentoAula.id } }) as any;
+              const equipamentoAulaRelacao = await EquipamentoAula.findOne({
+                where: { id_aula: e.id_aula, id_equipamento: equipamentoAula.id },
+              }) as any;
+              const quantidadeFloat = equipamentoAtualizado.quantidade_float + equipamentoAulaRelacao.quantidade;
+
+              await equipamentoAtualizado.update({ quantidade_float: quantidadeFloat });
+              await EquipamentoAula.destroy({
+                where: { id_aula: e.id_aula, id_equipamento: equipamentoAula.id },
+              });
+            }
+          }
+
+          if (!equipamentoNaAula) {
+            const novaQuantidadeFloat = equipamento.quantidade_float - e.quantidade_equipamento;
+            if (novaQuantidadeFloat < 0) {
+              throw new Error(`Estoque insuficiente para o equipamento: "${equipamento.equipamento}". Reduza a quantidade e tente novamente.`);
+            }
+            await aulaEquipamento.addEquipamento(equipamento, { through: { quantidade: e.quantidade_equipamento } });
+            await equipamento.update({ quantidade_float: novaQuantidadeFloat });
+          }
+        }
+      }
     }
 
-    if (id_professor) {
-      await ProfessorAula.update(
-        { id_professor: id_professor },
-        { where: { id_aula: id } }
-      );
-    }
-
-    if (id_laboratorio) {
-      await LaboratorioAula.update(
-        { id_laboratorio: id_laboratorio },
-        { where: { id_aula: id } }
-      );
-    }
+    // Atualizações relacionadas à aula
+    if (id_materia) await MateriaAula.update({ id_materia }, { where: { id_aula: id } });
+    if (id_professor) await ProfessorAula.update({ id_professor }, { where: { id_aula: id } });
+    if (id_laboratorio) await LaboratorioAula.update({ id_laboratorio }, { where: { id_aula: id } });
 
     // Retorna a aula atualizada
     const aulas = await Aula.findAll({
@@ -557,26 +483,17 @@ export async function PUT(req: NextRequest) {
       ],
     });
 
-    return NextResponse.json(
-      { status: "sucess", data: aulas, message: "Aula editada com sucesso" },
-      { status: 200 }
-    );
+    return NextResponse.json({ status: "sucess", data: aulas, message: "Aula editada com sucesso" }, { status: 200 });
   } catch (error) {
-    return NextResponse.json(
-      {
-        status: "error",
-        message: `${error}`,
-        code: 400,
-      },
-      { status: 400 }
-    );
+    return NextResponse.json({ status: "error", message: `${error}`, code: 400 }, { status: 400 });
   }
 }
 
 export async function PATCH(req: NextRequest) {
   try {
     const id = (await req.json()) as any;
-    const aula = await Aula.findByPk(id, {include: [
+    const aula = (await Aula.findByPk(id, {
+      include: [
         {
           model: AgenteReajente,
           as: "agentes_reajentes",
@@ -591,9 +508,9 @@ export async function PATCH(req: NextRequest) {
           model: Vidrarias,
           as: "vidrarias",
           attributes: ["id"],
-        }
-      ]
-    }) as any;
+        },
+      ],
+    })) as any;
     if (aula) {
       if (aula.agentes_reajentes && Array.isArray(aula.agentes_reajentes)) {
         for (const agente of aula.agentes_reajentes) {
@@ -604,17 +521,19 @@ export async function PATCH(req: NextRequest) {
           }
         }
       }
-    
+
       if (aula.equipamentos && Array.isArray(aula.equipamentos)) {
         for (const equipamento of aula.equipamentos) {
-          const equipamentoInstance = await Equipamento.findByPk(equipamento.id);
+          const equipamentoInstance = await Equipamento.findByPk(
+            equipamento.id
+          );
           if (equipamentoInstance) {
             const quantidadeFloat = equipamentoInstance.get().quantidade_float;
             await equipamentoInstance.update({ quantidade: quantidadeFloat });
           }
         }
       }
-    
+
       if (aula.vidrarias && Array.isArray(aula.vidrarias)) {
         for (const vidraria of aula.vidrarias) {
           const vidrariaInstance = await Vidrarias.findByPk(vidraria.id);
@@ -624,15 +543,19 @@ export async function PATCH(req: NextRequest) {
           }
         }
       }
-    
+
       await aula.update({ status: "finish" });
-    
+
       return NextResponse.json(
-        { status: "success", message: `Aula finalizada com sucesso`, code: 200 },
+        {
+          status: "success",
+          message: `Aula finalizada com sucesso`,
+          code: 200,
+        },
         { status: 200 }
       );
     }
-    
+
     return NextResponse.json(
       {
         status: "error",
@@ -655,7 +578,7 @@ export async function PATCH(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
-    const { id } = await req.json() as { id: number|string };
+    const { id } = (await req.json()) as { id: number | string };
     const deleteAula = await Aula.findByPk(id);
     if (deleteAula) {
       await deleteAula.destroy();

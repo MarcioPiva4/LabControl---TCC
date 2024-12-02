@@ -40,7 +40,7 @@ export default async function Page({ params }: { params: any }) {
 async function getDataAulas() {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/aula`,
-    { cache: "no-cache" }
+    { cache: "no-store",  }
   );
   return response.json();
 }
@@ -48,7 +48,7 @@ async function getDataAulas() {
 async function getDataMateria() {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/materia`,
-    { cache: "no-cache" }
+    { cache: "no-store",  }
   );
   return await response.json();
 }
@@ -56,7 +56,7 @@ async function getDataMateria() {
 async function getDataLaboratorio() {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/laboratorio`,
-    { cache: "no-cache" }
+    { cache: "no-store",  }
   );
   return await response.json();
 }
@@ -64,7 +64,7 @@ async function getDataLaboratorio() {
 async function getDataProfessor() {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/professor`,
-    { cache: "no-cache" }
+    { cache: "no-store",  }
   );
   return await response.json();
 }

@@ -2,7 +2,7 @@ import { ProfessorReq } from "@/types/professor";
 
 async function getDataProfessores() {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/professor`, {
-        cache: "no-cache",
+        cache: "no-store", 
     });
     if (!response.ok) {
         throw new Error("Failed to fetch data");
