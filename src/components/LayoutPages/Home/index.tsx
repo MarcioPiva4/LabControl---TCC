@@ -234,7 +234,7 @@ export default function Home({
     day: "numeric",
   });
 
-  console.log(aulas, professores, fornecedores, vidrarias, equipamentos, laboratorios, materias)
+  //console.log(aulas, professores, fornecedores, vidrarias, equipamentos, laboratorios, materias)
   return session?.user.role == "prof" ? (
     <h1>teste prof</h1>
   ) : (
