@@ -19,14 +19,13 @@ export default async function Page() {
                 fontFamily: "'Arial', sans-serif",
                 padding: "20px",
                 minHeight: "100vh",
-                backgroundColor: "#f4f6f9",
             }}
         >
             <h1
                 style={{
                     textAlign: "center",
                     fontSize: "24px",
-                    color: "#343a40",
+                    color: "#ffff",
                     marginBottom: "20px",
                 }}
             >

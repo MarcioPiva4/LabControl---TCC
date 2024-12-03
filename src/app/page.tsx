@@ -16,6 +16,7 @@ export default async function Page() {
   const dataEquipamentos = await getDataEquipamentos();
   const dataAgentesReajentes = await getDataAgenteReajente();
   const dataVidrarias = await getDataVidrarias();
+  const dataAdministradores = await getDataAdministradores();
   console.log(dataAulas, dataFornecedores, dataProfessores, dataMaterias, dataEquipamentos, dataAgentesReajentes, dataVidrarias);
   return (
     <>
@@ -31,6 +32,7 @@ export default async function Page() {
           equipamentos={dataEquipamentos}
           laboratorios={dataLaboratorios}
           vidrarias={dataVidrarias}
+          administradores={dataAdministradores}
           ></Home>
       </main>
     </>
@@ -39,6 +41,13 @@ export default async function Page() {
 
 async function getDataAulas(){
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/aula`, {
+    cache: "no-store", 
+  });
+  return await response.json();
+}
+
+async function getDataAdministradores(){
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/administrador`, {
     cache: "no-store", 
   });
   return await response.json();
