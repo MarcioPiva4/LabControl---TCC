@@ -10,11 +10,28 @@ export default async function Page() {
   const dataFornecedores = await getDataFornecedores();
   const dataProfessores = await getDataProfessores();
   const dataMaterias = await getDataMaterias();
+  const dataAulasFinishes = await getDataAulasFinishies() as AulaReq;
+
+  const dataLaboratorios = await getDataLaboratorios();
+  const dataEquipamentos = await getDataEquipamentos();
+  const dataAgentesReajentes = await getDataAgenteReajente();
+  const dataVidrarias = await getDataVidrarias();
+
   return (
     <>
       <Header></Header>
-      <main>  
-        <Home aulas={dataAulas} fornecedores={dataFornecedores} professores={dataProfessores} materias={dataMaterias}></Home>
+      <main>
+        <Home
+          aulasLength={dataAulasFinishes.data.length}
+          aulas={dataAulas}
+          fornecedores={dataFornecedores}
+          professores={dataProfessores}
+          materias={dataMaterias}
+          agentesReajentes={dataAgentesReajentes}
+          equipamentos={dataEquipamentos}
+          laboratorios={dataLaboratorios}
+          vidrarias={dataVidrarias}
+          ></Home>
       </main>
     </>
   );
@@ -22,6 +39,41 @@ export default async function Page() {
 
 async function getDataAulas(){
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/aula`, {
+    cache: "no-store", 
+  });
+  return await response.json();
+}
+
+async function getDataAulasFinishies(){
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/aula/filter?status=finalizada`, {
+    cache: "no-store", 
+  });
+  return await response.json();
+}
+
+async function getDataLaboratorios(){
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/laboratorio`, {
+    cache: "no-store", 
+  });
+  return await response.json();
+}
+
+async function getDataVidrarias(){
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/vidrarias`, {
+    cache: "no-store", 
+  });
+  return await response.json();
+}
+
+async function getDataEquipamentos(){
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/equipamento`, {
+    cache: "no-store", 
+  });
+  return await response.json();
+}
+
+async function getDataAgenteReajente(){
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/agente-reajente`, {
     cache: "no-store", 
   });
   return await response.json();

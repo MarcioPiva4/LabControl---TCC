@@ -22,7 +22,8 @@ const PopupContainer = styled.div.withConfig({
 `;
 
 const PopupContent = styled.div`
-  background-color: #ffffff;
+  background-color: #0a418c;
+  color: #fff;
   padding: 40px;
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
@@ -32,6 +33,9 @@ const PopupContent = styled.div`
   flex-direction: column;
   align-items: center;
   transition: transform 0.3s ease-in-out;
+  p{
+    color: #fff;
+  }
 `;
 
 const CloseButton = styled.button`
@@ -54,7 +58,7 @@ const CloseButton = styled.button`
 const InputLabel = styled.label`
   width: 100%;
   font-size: 16px;
-  color: #333;
+  color: #fff;
   text-align: left;
   font-weight: 600;
 `;
@@ -87,7 +91,7 @@ const SaveButton = styled.button`
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #0a418c;
+    background-color: #00FF94;
   }
 
   &:disabled {
@@ -107,14 +111,11 @@ const ImagePreview = styled.img`
   margin-top: 12px;
   max-width: 120px;
   max-height: 120px;
+  height: 120px;
+  width: 120px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid #eee;
-`;
-
-const FileInput = styled.input`
-  margin-top: 15px;
-  font-size: 16px;
 `;
 
 const Loader = styled.div`
@@ -129,6 +130,41 @@ const Loader = styled.div`
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+  }
+`;
+
+const StyledFileInput = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 15px;
+
+  label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    background-color: #041833;
+    color: #fff;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #00FF94;
+    }
+
+    input {
+      display: none;
+    }
+  }
+
+  .file-name {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #fff;
+    text-align: center;
   }
 `;
 
@@ -276,7 +312,18 @@ const MenuPopup = () => {
         ) : (
           <p>Sem imagem</p>
         )}
-        <FileInput type="file" accept="image/*" onChange={handleFileChange} />
+        <StyledFileInput>
+          <label htmlFor="fileInput">
+            Escolher Imagem
+            <input
+              id="fileInput"
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+          </label>
+          {file && <p className="file-name">{file.name}</p>}
+        </StyledFileInput>
         {preview && <ImagePreview src={preview} alt="Pré-visualização" />}
         
         {isUploading ? (

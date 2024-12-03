@@ -123,6 +123,7 @@ export async function GET(request: Request) {
       ],
     }) as any;
 
+
     const filteredAulas = session?.user.role === 'prof' 
     ? aulas.filter((e: any) => e.professores[0].email === session?.user.email)
     : aulas;

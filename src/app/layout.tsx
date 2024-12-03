@@ -6,7 +6,6 @@ import StyledComponentsRegistry from "./registry";
 import { GlobalStyle } from "@/styles/GlobalStyle";
 import { Inter } from "next/font/google";
 import { theme } from "@/styles/theme";
-import ButtonBackTop from "@/components/ButtonBackTop";
 import ResetPassword from "@/components/ResetPassword";
 import ClientSessionProvider from "@/components/ClientSessionProvider.tsx";
 import dynamic from "next/dynamic";
@@ -31,6 +30,7 @@ export default async function RootLayout({
   const session = await getServerSession(authOptions) as Session;
 
   const MenuPopup = dynamic(() => import("@/components/UserConfig"), { ssr: false, });
+  const ButtonBackTop = dynamic(() => import("@/components/ButtonBackTop"), { ssr: false, });
   
   return (
     <html lang="pt-br" className={fontFamily.className}>
