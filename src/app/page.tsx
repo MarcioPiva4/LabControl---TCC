@@ -16,7 +16,7 @@ export default async function Page() {
   const dataEquipamentos = await getDataEquipamentos();
   const dataAgentesReajentes = await getDataAgenteReajente();
   const dataVidrarias = await getDataVidrarias();
-
+  console.log(dataAulas, dataFornecedores, dataProfessores, dataMaterias, dataEquipamentos, dataAgentesReajentes, dataVidrarias);
   return (
     <>
       <Header></Header>

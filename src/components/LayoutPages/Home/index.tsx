@@ -233,6 +233,8 @@ export default function Home({
     month: "long",
     day: "numeric",
   });
+
+  console.log(aulas, professores, fornecedores, vidrarias, equipamentos, laboratorios, materias)
   return session?.user.role == "prof" ? (
     <HomeDashboardProfessor
       date={formattedDate}

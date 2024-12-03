@@ -99,7 +99,6 @@ export const authOptions: NextAuthOptions = {
           name: session.name || token.name,
         };
       }
-
       if (user) {
         token.id = user.id;
         token.role = user.role;
@@ -118,9 +117,6 @@ export const authOptions: NextAuthOptions = {
             token.isFirstLogin = userFromDb.loginCount === 0;
 
             await userFromDb.increment("loginCount", { by: 1 });
-
-            // Remover a imagem do token
-            delete token.picture;
           } else {
             throw new Error("Usuário não autorizado. Contate o administrador.");
           }
@@ -135,11 +131,6 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
         session.user.isFirstLogin = token.isFirstLogin as boolean;
-
-        // Garantir que a imagem não seja propagada para a sessão
-        if (session.user.image) {
-          session.user.image = null;
-        }
       }
       return session;
     },
