@@ -221,9 +221,9 @@ export default function Home({
   const [aulasDataFinish, setAulasDataFinish] = useState(
     dataAulas.filter((e) => e.status == "finish")
   );
-  const data = professores.data.filter(
+  /*const data = professores.data.filter(
     (e) => e.id.toString() === session?.user.id.toString()
-  );
+  );*/
   const currentDate = new Date();
   const formattedDate = currentDate.toLocaleDateString("pt-BR", {
     weekday: "long",
