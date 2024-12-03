@@ -197,7 +197,6 @@ const ContentItens = styled.div`
 
 export default function Home({
   aulas,
-  professores,
   fornecedores,
   vidrarias,
   equipamentos,
@@ -206,9 +205,9 @@ export default function Home({
   materias,
   aulasLength,
   administradores,
+  professores,
 }: {
   aulas: AulaReq;
-  professores: ProfessorReq;
   fornecedores: FornecedorReq;
   materias: MateriaReq;
   vidrarias: VidrariaReq;
@@ -217,6 +216,7 @@ export default function Home({
   laboratorios: LaboratorioReq;
   aulasLength: number;
   administradores: administradorReq;
+  professores: ProfessorReq;
 }) {
   const { data: session, status } = useSession();
   const [dataAulas, setDataAulas] = useState(aulas.data);
@@ -226,9 +226,6 @@ export default function Home({
   const [aulasDataFinish, setAulasDataFinish] = useState(
     dataAulas.filter((e) => e.status == "finish")
   );
-  const data = professores.data.filter(
-    (e) => e.id.toString() === session?.user.id.toString()
-  );
   const currentDate = new Date();
   const formattedDate = currentDate.toLocaleDateString("pt-BR", {
     weekday: "long",
@@ -236,13 +233,9 @@ export default function Home({
     month: "long",
     day: "numeric",
   });
+
   return session?.user.role == "prof" ? (
-    <HomeDashboardProfessor
-      date={formattedDate}
-      image={data[0].image}
-      nome={session?.user.name}
-      totalAulasInProgress={aulasDataInProgress.length}
-      totalAulasFinish={aulasLength}></HomeDashboardProfessor>
+    <HomeDashboardProfessor nome={session?.user?.name} date={formattedDate} totalAulasInProgress={aulas.data.length} totalAulasFinish={aulas.data.length} image={session?.user.image}></HomeDashboardProfessor>
   ) : (
     <HomeDashboardAdministrador
       date={formattedDate}

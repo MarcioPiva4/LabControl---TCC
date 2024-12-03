@@ -17,7 +17,6 @@ export default async function Page() {
   const dataAgentesReajentes = await getDataAgenteReajente();
   const dataVidrarias = await getDataVidrarias();
   const dataAdministradores = await getDataAdministradores();
-  console.log(dataAulas, dataFornecedores, dataProfessores, dataMaterias, dataEquipamentos, dataAgentesReajentes, dataVidrarias);
   return (
     <>
       <Header></Header>
@@ -26,13 +25,13 @@ export default async function Page() {
           aulasLength={dataAulasFinishes.data.length}
           aulas={dataAulas}
           fornecedores={dataFornecedores}
-          professores={dataProfessores}
           materias={dataMaterias}
           agentesReajentes={dataAgentesReajentes}
           equipamentos={dataEquipamentos}
           laboratorios={dataLaboratorios}
           vidrarias={dataVidrarias}
           administradores={dataAdministradores}
+          professores={dataProfessores}
           ></Home>
       </main>
     </>
