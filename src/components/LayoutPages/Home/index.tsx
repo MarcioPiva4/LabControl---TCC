@@ -236,26 +236,9 @@ export default function Home({
 
   console.log(aulas, professores, fornecedores, vidrarias, equipamentos, laboratorios, materias)
   return session?.user.role == "prof" ? (
-    <HomeDashboardProfessor
-      date={formattedDate}
-      image={data[0].image}
-      nome={session?.user.name}
-      totalAulasInProgress={aulasDataInProgress.length}
-      totalAulasFinish={aulasLength}></HomeDashboardProfessor>
+    <h1>teste prof</h1>
   ) : (
-    <HomeDashboardAdministrador
-      date={formattedDate}
-      image={session?.user.image}
-      nome={session?.user.name}
-      totalFornecedores={fornecedores.data.length}
-      totalMaterias={materias.data.length}
-      totalProfessores={professores.data.length}
-      totalAulas={aulas.data.length}
-      totalAgentesReajentes={agentesReajentes.data.length}
-      totalEquipamentos={equipamentos.data.length}
-      totalLaboratorios={laboratorios.data.length}
-      totalVidrarias={vidrarias.data.length}
-      ></HomeDashboardAdministrador>
+    <h1>teste adm</h1>
   );
 }
 
