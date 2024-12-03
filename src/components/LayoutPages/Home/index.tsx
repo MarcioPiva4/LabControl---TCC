@@ -196,7 +196,6 @@ const ContentItens = styled.div`
 
 export default function Home({
   aulas,
-  professores,
   fornecedores,
   vidrarias,
   equipamentos,
@@ -206,7 +205,6 @@ export default function Home({
   aulasLength,
 }: {
   aulas: AulaReq;
-  professores: ProfessorReq;
   fornecedores: FornecedorReq;
   materias: MateriaReq;
   vidrarias: VidrariaReq;
