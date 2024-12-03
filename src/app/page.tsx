@@ -1,8 +1,5 @@
 import { LoaderHeader } from "@/components/LoaderForm";
 import { AulaReq } from "@/types/aula";
-import { authOptions } from "@/utils/authOptions";
-import { getServerSession } from "next-auth";
-import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 
 const Header = dynamic(() => import('@/components/Header'), { ssr: false, loading: () => <LoaderHeader></LoaderHeader> });
@@ -13,13 +10,11 @@ export default async function Page() {
   const dataFornecedores = await getDataFornecedores();
   const dataProfessores = await getDataProfessores();
   const dataMaterias = await getDataMaterias();
-  const session = await getServerSession(authOptions);
-  const dataAulasFiltered = dataAulas.data.filter((e) => e.professores[0].email == session?.user.email);
   return (
     <>
       <Header></Header>
       <main>  
-        <Home aulas={session?.user.role === 'prof' ? dataAulasFiltered : dataAulas} fornecedores={dataFornecedores} professores={dataProfessores} materias={dataMaterias}></Home>
+        <Home aulas={dataAulas} fornecedores={dataFornecedores} professores={dataProfessores} materias={dataMaterias}></Home>
       </main>
     </>
   );

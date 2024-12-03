@@ -18,12 +18,14 @@ import { Vidrarias } from "@/models/Vidrarias";
 import { authOptions } from "@/utils/authOptions";
 import { isValidateDate } from "@/utils/dateValidator";
 import { isDescriptionLengthMore } from "@/utils/descriptionValidatador";
+import { formatDate } from "@/utils/formatData";
+import { validateHourly } from "@/utils/horarioAula";
 import { checkAndSubtractStock } from "@/utils/stockConversion";
 import { getServerSession } from "next-auth";
 import { NextResponse, NextRequest } from "next/server";
-import { Sequelize } from "sequelize";
 
 export async function GET() {
+  const session = await getServerSession(authOptions);
   try {
     const aulas = await Aula.findAll({
       include: [
@@ -59,8 +61,11 @@ export async function GET() {
         },
       ],
     });
+    const filteredAulas = session?.user.role === 'prof' 
+    ? aulas.filter((e: any) => e.professores[0].email === session?.user.email)
+    : aulas;
     const response = NextResponse.json(
-      { status: "success", data: aulas },
+      { status: "success", data: filteredAulas },
       { status: 200 }
     );
 
@@ -120,9 +125,10 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
     if (!isValidateDate(data)) {
       return NextResponse.json(
-        { status: "error", message: "Data inválida" },
+        { status: "error", message: `A data ${formatDate(data)} é inválida. Por favor, insira uma data futura.` },
         { status: 400 }
       );
     }
@@ -135,6 +141,17 @@ export async function POST(req: NextRequest) {
         },
         { status: 400 }
       );
+    }
+
+    const testTime = validateHourly(horario_inicio, horario_finalizacao);
+    if (!testTime.value){
+      return NextResponse.json(
+        {
+          status: "error",
+          message: testTime.message
+        },
+        { status: 400 }
+      )
     }
 
     if (equipamentos || vidrarias || agenteReajente) {

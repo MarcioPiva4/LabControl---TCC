@@ -11,11 +11,9 @@ import { ProfessorReq } from "@/types/professor";
 import { FornecedorReq } from "@/types/fornecedor";
 import { MateriaReq } from "@/types/materia";
 
-export default function Home({ aulas, professores, fornecedores, materias }: {aulas: AulaReq | AulaItems[]; professores: ProfessorReq; fornecedores: FornecedorReq; materias: MateriaReq}){
+export default function Home({ aulas, professores, fornecedores, materias }: {aulas: AulaReq; professores: ProfessorReq; fornecedores: FornecedorReq; materias: MateriaReq}){
     const { data: session, status } = useSession(); 
-    const [dataAulas, setDataAulas] = useState<AulaItems[]>(
-        'data' in aulas ? aulas.data : aulas
-      );
+    const [dataAulas, setDataAulas] = useState(aulas.data);
     const [aulasDataInProgress, setAulasDataInProgress] = useState(dataAulas.filter((e) => e.status == 'in progress'));
     const [aulasDataFinish, setAulasDataFinish] = useState(dataAulas.filter((e) => e.status == 'finish'));
     return(
@@ -357,7 +355,7 @@ function HomeDashboardProfessor({ nome, totalAulasInProgress, totalAulasFinish, 
                 </div>
 
                 <div className="item">
-                    <Link href="/baixa-aulas">
+                    <Link href="/baixa-aulas?status=finalizada">
                         <div className="icon">
                         <svg width="25" height="19" viewBox="0 0 25 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M19.71 10.6496L19.0629 11.0246V14.2012L19.7035 13.8286L19.71 10.6496Z" fill="#12283D"/>

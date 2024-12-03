@@ -1,8 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-
 import { FilterAula } from "@/components/FilterAula";
 import { AulaItems, AulaReq } from "@/types/aula";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
@@ -84,18 +85,38 @@ const ContentAulas = styled.div`
   }
 `;
 
-export default function Manutencao({ aulas }: { aulas: AulaReq | AulaItems[] }) {
-  const [dataAulas, setDataAulas] = useState<AulaItems[]>(
-    'data' in aulas ? aulas.data : aulas
-  );
+export default function Manutencao({ aulas }: { aulas: AulaReq }) {
+  const [dataAulas, setDataAulas] = useState<AulaItems[]>(aulas.data);
   useEffect(() => {
     const aulas = dataAulas.filter((e) => e.status != "finish") as any;
     setDataAulas(aulas);
   }, []);
+
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const fetchData = async () => {
+      const queryParams = searchParams.toString();
+      console.log(queryParams);
+      try {
+        const response = await fetch(`/api/aula/filter?${queryParams}`, {cache: 'no-store'});
+        const data = await response.json() as AulaReq;
+        setDataAulas(data.data.filter((e) => e.status != "finish"));
+      } catch (error) {
+        console.error("Erro ao buscar aulas:", error);
+      }
+    };
+
+    console.log(dataAulas);
+
+    if (searchParams) {
+      fetchData(); 
+    }
+  }, [searchParams]); 
+
   return (
     dataAulas && (
       <>
-        <FilterAula></FilterAula>
+        <FilterAula manutencao></FilterAula>
 
         <ContentAulas>
           <ul>
@@ -125,8 +146,7 @@ export default function Manutencao({ aulas }: { aulas: AulaReq | AulaItems[] }) 
               ))
             ) : (
               <p className="no_results">
-                Nenhuma aula encontrada, cadastre novas aulas{" "}
-                <Link href={"/cadastro/aula"}>aqui</Link>
+                Nenhuma aula encontrada
               </p>
             )}
           </ul>

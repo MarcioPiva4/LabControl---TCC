@@ -14,11 +14,10 @@ const BaixaAulas = dynamic(() => import("@/components/LayoutPages/BaixaAulas"), 
 export default async function Page() {
     const dataAulas = await getDataAulas() as AulaReq;
     const session = await getServerSession(authOptions);
-    const dataAulasFiltered = dataAulas.data.filter((e) => e.professores[0].email == session?.user.email);
 
     return (
         <Section title="Finalizar aula" bottom>
-            <BaixaAulas aulas={session?.user.role === 'prof' ? dataAulasFiltered : dataAulas}></BaixaAulas>
+            <BaixaAulas aulas={dataAulas}></BaixaAulas>
         </Section>
     );
 }
