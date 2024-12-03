@@ -16,9 +16,11 @@ export default function Home({ aulas, professores, fornecedores, materias }: {au
     const [dataAulas, setDataAulas] = useState(aulas.data);
     const [aulasDataInProgress, setAulasDataInProgress] = useState(dataAulas.filter((e) => e.status == 'in progress'));
     const [aulasDataFinish, setAulasDataFinish] = useState(dataAulas.filter((e) => e.status == 'finish'));
+
+    const data = professores.data.filter((e) => e.id.toString() === session?.user.id.toString());
     return(
         session?.user.role == 'prof' ? (
-            <HomeDashboardProfessor image={session?.user.image} nome={session?.user.name} totalAulasInProgress={aulasDataInProgress.length} totalAulasFinish={aulasDataFinish.length}></HomeDashboardProfessor>
+            <HomeDashboardProfessor image={data[0].image} nome={session?.user.name} totalAulasInProgress={aulasDataInProgress.length} totalAulasFinish={aulasDataFinish.length}></HomeDashboardProfessor>
         ) : (
             <HomeDashboardAdministrador image={session?.user.image} nome={session?.user.name} totalFornecedores={fornecedores.data.length} totalMaterias={materias.data.length} totalProfessores={professores.data.length}></HomeDashboardAdministrador>
         )

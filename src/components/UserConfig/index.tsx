@@ -1,8 +1,8 @@
 'use client';
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useSearchParams } from 'next/navigation';
-import { signIn, useSession } from "next-auth/react";
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useSession } from "next-auth/react";
 
 const PopupContainer = styled.div.withConfig({
   shouldForwardProp: (prop) => prop !== 'isOpen',
@@ -133,116 +133,162 @@ const Loader = styled.div`
 `;
 
 const MenuPopup = () => {
-    const { data: session, update } = useSession();
-    const [isOpen, setIsOpen] = useState(false);
-    const [name, setName] = useState(session?.user?.name || "");
-    const [profilePicture, setProfilePicture] = useState(session?.user?.image || "");
-    const [preview, setPreview] = useState<string | null>(null);
-    const [file, setFile] = useState<File | null>(null);
-    const [isUploading, setIsUploading] = useState(false); // State to track upload status
-    const searchParams = useSearchParams();
+  const { data: session, update } = useSession();
+  const [isOpen, setIsOpen] = useState(false);
+  const [name, setName] = useState(session?.user?.name || "");
+  const [profilePicture, setProfilePicture] = useState(session?.user?.image || "");
+  const [preview, setPreview] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [professores, setProfessores] = useState<any[]>([]);
+  const searchParams = useSearchParams();
 
-    useEffect(() => {
-        const configParam = searchParams.get("config");
-        setIsOpen(configParam === "true");
-    }, [searchParams]);
+  useEffect(() => {
+    const configParam = searchParams.get("config");
+    setIsOpen(configParam === "true");
+  }, [searchParams]);
 
-    const closePopup = () => {
-        const url = new URL(window.location.href);
-        url.searchParams.delete("config");
-        window.history.pushState({}, "", url.toString());
-        setIsOpen(false);
-    };
-
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const uploadedFile = event.target.files?.[0];
-        if (uploadedFile) {
-            setFile(uploadedFile);
-            setPreview(URL.createObjectURL(uploadedFile));
+  const fetchProfessores = async () => {
+    try {
+      const response = await fetch(`/api/professor`);
+      const data = await response.json();
+      if (data.status === "success") {
+        setProfessores(data.data);
+        const user = data.data.find((professor: any) => professor.id === session?.user?.id);
+        if (user) {
+          setProfilePicture(user.image || session?.user?.image);  
         }
-    };
+      }
+    } catch (error) {
+      console.error("Erro ao buscar professores:", error);
+    }
+  };
 
-    const handleSave = async () => {
-        let imageUrl = profilePicture;
-        setIsUploading(true); // Start uploading
+  const router = useRouter();
+  useEffect(() => {
+    if (session?.user?.email) {
+      fetchProfessores();
+    }
+  }, [session?.user?.email]);
 
-        try {
-            if (file) {
-                const formData = new FormData();
-                formData.append("file", file);
+  const closePopup = () => {
+    const url = new URL(window.location.href);
+    url.searchParams.delete("config");
+    window.history.pushState({}, "", url.toString());
+    setIsOpen(false);
+  };
 
-                const response = await fetch("/api/auth/upload", {
-                    method: "POST",
-                    body: formData,
-                });
+  const handleSave = async () => {
+    setIsUploading(true); 
 
-                if (!response.ok) throw new Error("Erro ao fazer upload da imagem");
+    try {
+      let imageUrl = profilePicture;
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+          const base64Image = reader.result as string;
+          const response = await fetch("/api/auth/update", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name,
+              image: base64Image, 
+            }),
+          });
 
-                const data = await response.json();
-                imageUrl = data.imageUrl;
+          if (!response.ok) throw new Error("Erro ao atualizar dados do usuário");
 
-            }
+          const updatedSession = await response.json();
+          await update({
+            name: updatedSession.user.name,
+            image: updatedSession.user.image,
+          });
 
-            const saveResponse = await fetch("/api/auth/update", {
-                method: "POST",
-                body: JSON.stringify({
-                    name,
-                    image: imageUrl,
-                    role: session?.user.role,
-                }),
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
+          closePopup();
+        };
+        reader.readAsDataURL(file);
+      } else {
+        const response = await fetch("/api/auth/update", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name,
+            image: profilePicture,
+          }),
+        });
 
-            if (!saveResponse.ok) throw new Error("Erro ao atualizar dados do usuário");
+        if (!response.ok) throw new Error("Erro ao atualizar dados do usuário");
 
-            const updatedSession = await saveResponse.json();
-            await update({
-                name: updatedSession.user.name,
-                image: updatedSession.user.image,
-            });
-            await update();
-            closePopup();
-        } catch (error) {
-            console.error(error);
-            alert("Falha ao atualizar os dados.");
-        } finally {
-            setIsUploading(false); // Stop uploading
-        }
-    };
+        const updatedSession = await response.json();
+        await update({
+          name: updatedSession.user.name,
+          image: updatedSession.user.image,
+        });
+        update();
+        closePopup();
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Falha ao atualizar os dados.");
+    } finally {
+      router.refresh();
+      setIsUploading(false);
+    }
+  };
 
-    return (
-        <PopupContainer isOpen={isOpen}>
-            <PopupContent>
-                <h2>Editar Perfil</h2>
-                <UserDetails>
-                    <p><strong>Email:</strong> {session?.user?.email}</p>
-                    <p><strong>Cargo:</strong> {session?.user?.role === "adm" ? "Administrador" : "Professor"}</p>
-                </UserDetails>
-                
-                {/* Nome Field with Label */}
-                <InputLabel htmlFor="name">Nome</InputLabel>
-                <InputField
-                    type="text"
-                    id="name"
-                    placeholder="Nome"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    name="name"
-                />
-                
-                <FileInput type="file" accept="image/*" onChange={handleFileChange} />
-                {preview ? (
-                    <ImagePreview src={preview} alt="Prévia da imagem" />
-                ) : (
-                    profilePicture && <ImagePreview src={profilePicture} alt="Foto de perfil atual" />
-                )}
-                {isUploading ? <Loader /> : <SaveButton onClick={handleSave}>Salvar Alterações</SaveButton>}
-                <CloseButton onClick={closePopup}>Fechar</CloseButton>
-            </PopupContent>
-        </PopupContainer>
-    );
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const selectedFile = e.target.files[0];
+      setFile(selectedFile);
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result as string);
+      };
+      reader.readAsDataURL(selectedFile);
+    }
+  };
+
+  return (
+    <PopupContainer isOpen={isOpen}>
+      <PopupContent>
+        <h2>Editar Perfil</h2>
+        <UserDetails>
+          <p><strong>Email:</strong> {session?.user?.email}</p>
+          <p><strong>Cargo:</strong> {session?.user?.role === "adm" ? "Administrador" : "Professor"}</p>
+        </UserDetails>
+        
+
+        <InputLabel>Nome:</InputLabel>
+        <InputField
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+
+        <label>Imagem do Perfil:</label>
+        {profilePicture ? (
+          <ImagePreview src={profilePicture} alt="Perfil" />
+        ) : (
+          <p>Sem imagem</p>
+        )}
+        <FileInput type="file" accept="image/*" onChange={handleFileChange} />
+        {preview && <ImagePreview src={preview} alt="Pré-visualização" />}
+        
+        {isUploading ? (
+          <Loader />
+        ) : (
+          <SaveButton onClick={handleSave}>Salvar</SaveButton>
+        )}
+
+        <CloseButton onClick={closePopup}>Fechar</CloseButton>
+      </PopupContent>
+    </PopupContainer>
+  );
 };
 
 export default MenuPopup;

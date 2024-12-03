@@ -97,7 +97,6 @@ export default function BaixaAulas({ aulas }: { aulas: AulaReq }) {
   useEffect(() => {
     const fetchData = async () => {
       const queryParams = searchParams.toString();
-      console.log(queryParams);
       try {
         const response = await fetch(`/api/aula/filter?${queryParams}`, {cache: 'no-store'});
         const data = await response.json() as AulaReq;

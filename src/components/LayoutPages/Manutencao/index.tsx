@@ -96,7 +96,6 @@ export default function Manutencao({ aulas }: { aulas: AulaReq }) {
   useEffect(() => {
     const fetchData = async () => {
       const queryParams = searchParams.toString();
-      console.log(queryParams);
       try {
         const response = await fetch(`/api/aula/filter?${queryParams}`, {cache: 'no-store'});
         const data = await response.json() as AulaReq;
@@ -105,8 +104,6 @@ export default function Manutencao({ aulas }: { aulas: AulaReq }) {
         console.error("Erro ao buscar aulas:", error);
       }
     };
-
-    console.log(dataAulas);
 
     if (searchParams) {
       fetchData(); 

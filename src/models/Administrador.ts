@@ -54,7 +54,7 @@ const Administrador = db.define("administradores", {
     defaultValue: 0,
   },
   image: {
-    type: DataTypes.STRING(100),
+    type: DataTypes.TEXT,
     allowNull: true
   },
 });

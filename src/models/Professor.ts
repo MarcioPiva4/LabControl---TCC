@@ -33,7 +33,7 @@ const Professor = db.define('professores', {
         defaultValue: 0,
     },
     image: {
-        type: DataTypes.STRING(100),
+        type: DataTypes.TEXT,
         allowNull: true
     },
 });
