@@ -8,7 +8,7 @@ const Home = dynamic(() => import('@/components/LayoutPages/Home'), { ssr: false
 export default async function Page() {
   const dataAulas = await getDataAulas() as AulaReq;
   const dataFornecedores = await getDataFornecedores();
-  const dataProfessores = await getDataProfessores();
+  //const dataProfessores = await getDataProfessores();
   const dataMaterias = await getDataMaterias();
   const dataAulasFinishes = await getDataAulasFinishies() as AulaReq;
 
@@ -86,12 +86,12 @@ async function getDataFornecedores(){
   return await response.json();
 }
 
-async function getDataProfessores(){
+/*async function getDataProfessores(){
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/professor`, {
     cache: "no-store", 
   });
   return await response.json();
-}
+}*/
 
 async function getDataMaterias(){
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/materia`, {
