@@ -88,12 +88,12 @@ export async function GET(req: NextRequest) {
     });
 
     // Recupera a sessão do usuário
-    const filteredAulas =
+    const filteredAulas = !userRole && !userEmail ? 
       userRole === "prof"
         ? aulas.filter((e: any) =>
             e.professores.some((professor: any) => professor.email === userEmail)
           )
-        : aulas;
+        : aulas : aulas;
 
     const response = NextResponse.json(
       { status: "success", data: filteredAulas },
