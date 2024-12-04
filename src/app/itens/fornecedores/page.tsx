@@ -31,6 +31,7 @@ export default async function Page() {
             >
                 Lista de Fornecedores
             </h1>
+            <div style={{ overflowX: "auto" }}>
             <table
                 style={{
                     width: "100%",
@@ -207,6 +208,7 @@ export default async function Page() {
                     ))}
                 </tbody>
             </table>
+            </div>
         </div>
     );
 }
