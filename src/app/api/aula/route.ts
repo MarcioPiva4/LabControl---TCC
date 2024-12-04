@@ -514,10 +514,49 @@ export async function PUT(req: NextRequest) {
       }
     }
 
+    if (!isValidateDate(data)) {
+      return NextResponse.json(
+        { status: "error", message: `A data ${formatDate(data)} é inválida. Por favor, insira uma data futura.` },
+        { status: 400 }
+      );
+    }
+
+    if (isDescriptionLengthMore(observacoes)) {
+      return NextResponse.json(
+        {
+          status: "error",
+          message: "Não ultrapasse os 255 caracteres nas observações",
+        },
+        { status: 400 }
+      );
+    }
+
+    const testTime = validateHourly(horario_inicio, horario_finalizacao);
+    if (!testTime.value){
+      return NextResponse.json(
+        {
+          status: "error",
+          message: testTime.message
+        },
+        { status: 400 }
+      )
+    }
+
     // Atualizações relacionadas à aula
     if (id_materia) await MateriaAula.update({ id_materia }, { where: { id_aula: id } });
     if (id_professor) await ProfessorAula.update({ id_professor }, { where: { id_aula: id } });
     if (id_laboratorio) await LaboratorioAula.update({ id_laboratorio }, { where: { id_aula: id } });
+
+    const editAula = await Aula.update(
+      {
+        topico_aula,
+        horario_inicio,
+        horario_finalizacao,
+        data,
+        observacoes,
+      },
+      { where: { id: id } } 
+  ) as any;  
 
     // Retorna a aula atualizada
     const aulas = await Aula.findAll({

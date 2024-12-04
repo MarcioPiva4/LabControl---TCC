@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: "LabControl",
   description: "Gerenciamento de estoque de laboratório",
   icons: {
-    icon: "/favicon.png", 
+    icon: "/favicon.png",
   },
 };
 
@@ -27,30 +27,29 @@ const fontFamily = Inter({
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const session = await getServerSession(authOptions) as Session;
+  const session = (await getServerSession(authOptions)) as Session;
+  const MenuPopup = dynamic(() => import("@/components/UserConfig"), {
+    ssr: false,
+  });
+  const ButtonBackTop = dynamic(() => import("@/components/ButtonBackTop"), {
+    ssr: false,
+  });
 
-  const MenuPopup = dynamic(() => import("@/components/UserConfig"), { ssr: false, });
-  const ButtonBackTop = dynamic(() => import("@/components/ButtonBackTop"), { ssr: false, });
-  
   return (
     <html lang="pt-br" className={fontFamily.className}>
       <body>
         <ClientSessionProvider session={session}>
           <StyledComponentsRegistry>
             <GlobalStyle theme={theme} />
-            {session?.user?.isFirstLogin ? (
-              <ResetPassword id={session.user.id} role={session?.user?.role} />
-            ) : (
+            <>
+              {session && (
                 <>
-                  {session && (
-                    <>
-                      <ButtonBackTop />
-                      <MenuPopup />
-                    </>
-                  )}
-                {children}
+                  <ButtonBackTop />
+                  <MenuPopup />
                 </>
-            )}
+              )}
+              {children}
+            </>
           </StyledComponentsRegistry>
         </ClientSessionProvider>
       </body>
