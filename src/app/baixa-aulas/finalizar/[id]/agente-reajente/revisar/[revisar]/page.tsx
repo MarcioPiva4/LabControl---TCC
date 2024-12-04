@@ -1,4 +1,6 @@
 import { LoaderFormReview } from "@/components/LoaderForm";
+import { authOptions } from "@/utils/authOptions";
+import { getServerSession } from "next-auth";
 import dynamic from "next/dynamic";
 
 
@@ -32,9 +34,15 @@ async function getDataAgenteReajente() {
   return await response.json();
 }
 
-async function getDataAula() {
+async function getDataAula(){
+  const session = await getServerSession(authOptions);
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/aula`, {
-    'cache': 'no-cache'
+      cache: "no-store",
+      headers: {
+          "Authorization": `Bearer ${session?.token}`,
+          "X-User-Email": session?.user.email as string,
+          "X-User-Role": session?.user.role as string
+      },
   });
   return await response.json();
 }

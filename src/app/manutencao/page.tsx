@@ -27,7 +27,7 @@ async function getDataAulas(){
             "Authorization": `Bearer ${session?.token}`,
             "X-User-Email": session?.user.email as string,
             "X-User-Role": session?.user.role as string
-          },
+        },
     });
     return await response.json();
 }
