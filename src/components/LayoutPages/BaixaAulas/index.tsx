@@ -2,6 +2,7 @@
 
 import { FilterAula } from "@/components/FilterAula";
 import { AulaReq } from "@/types/aula";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -92,13 +93,19 @@ const ContentAulas = styled.div.attrs<{ $finish?: boolean }>((props) => ({
 
 export default function BaixaAulas({ aulas }: { aulas: AulaReq }) {
   const [dataAulas, setDataAulas] = useState(aulas.data);
+  const session = useSession();
 
   const searchParams = useSearchParams();
   useEffect(() => {
     const fetchData = async () => {
       const queryParams = searchParams.toString();
       try {
-        const response = await fetch(`/api/aula/filter?${queryParams}`, {cache: 'no-store'});
+        const response = await fetch(`/api/aula/filter?${queryParams}`, {cache: 'no-store',         headers: {
+          "Authorization": `Bearer ${session?.data?.token}`,
+          "X-User-Email": session?.data?.user.email as string,
+          "X-User-Role": session?.data?.user.role as string
+        },}
+      );
         const data = await response.json() as AulaReq;
         setDataAulas(data.data);
       } catch (error) {

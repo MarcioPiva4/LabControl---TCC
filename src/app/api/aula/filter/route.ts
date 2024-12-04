@@ -7,11 +7,10 @@ import { Equipamento } from "@/models/Equipamento";
 import { Vidrarias } from "@/models/Vidrarias";
 import { AgenteReajente } from "@/models/Agente_reajente";
 import { Op } from "sequelize";
-import { authOptions } from "@/utils/authOptions";
-import { getServerSession } from "next-auth";
 
 export async function GET(request: Request) {
-    const session = await getServerSession(authOptions);
+  const userRole = request.headers.get("X-User-Role");
+  const userEmail = request.headers.get("X-User-Email");
 
   try {
     const url = new URL(request.url);
@@ -124,9 +123,12 @@ export async function GET(request: Request) {
     }) as any;
 
 
-    const filteredAulas = session?.user.role === 'prof' 
-    ? aulas.filter((e: any) => e.professores[0].email === session?.user.email)
-    : aulas;
+    const filteredAulas =
+    userRole === "prof"
+        ? aulas.filter((e: any) =>
+              e.professores.some((professor: any) => professor.email === userEmail)
+          )
+        : aulas;
 
     const response = NextResponse.json(
       { status: "success", data: filteredAulas },

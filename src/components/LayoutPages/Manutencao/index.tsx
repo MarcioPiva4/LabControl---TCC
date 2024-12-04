@@ -2,6 +2,7 @@
 "use client";
 import { FilterAula } from "@/components/FilterAula";
 import { AulaItems, AulaReq } from "@/types/aula";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -93,11 +94,16 @@ export default function Manutencao({ aulas }: { aulas: AulaReq }) {
   }, []);
 
   const searchParams = useSearchParams();
+  const session = useSession();
   useEffect(() => {
     const fetchData = async () => {
       const queryParams = searchParams.toString();
       try {
-        const response = await fetch(`/api/aula/filter?${queryParams}`, {cache: 'no-store'});
+        const response = await fetch(`/api/aula/filter?${queryParams}`, {cache: 'no-store', headers: {
+          "Authorization": `Bearer ${session?.data?.token}`,
+          "X-User-Email": session?.data?.user.email as string,
+          "X-User-Role": session?.data?.user.role as string
+        }});
         const data = await response.json() as AulaReq;
         setDataAulas(data.data.filter((e) => e.status != "finish"));
       } catch (error) {

@@ -22,10 +22,35 @@ import { formatDate } from "@/utils/formatData";
 import { validateHourly } from "@/utils/horarioAula";
 import { checkAndSubtractStock } from "@/utils/stockConversion";
 import { getServerSession } from "next-auth";
+import { getToken } from "next-auth/jwt";
 import { NextResponse, NextRequest } from "next/server";
 
-export async function GET() {
-  const session = await getServerSession(authOptions);
+const secret = process.env.NEXTAUTH_SECRET;
+
+export async function GET(req: NextRequest) {
+  const authHeader = req.headers.get("Authorization");
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return NextResponse.json(
+      { status: "error", message: "Token não encontrado no cabeçalho" },
+      { status: 401 }
+    );
+  }
+  // Extrair o token do cabeçalho Authorization
+  const token = await getToken({
+    req,
+    secret,
+    raw: true,
+  });
+
+  if (!token) {
+    return NextResponse.json(
+      { status: "error", message: "Token inválido ou expirado" },
+      { status: 401 }
+    );
+  }
+
+  const userRole = req.headers.get("X-User-Role");
+  const userEmail = req.headers.get("X-User-Email");
   try {
     const aulas = await Aula.findAll({
       include: [
@@ -61,9 +86,15 @@ export async function GET() {
         },
       ],
     });
-    const filteredAulas = session?.user.role === 'prof' 
-    ? aulas.filter((e: any) => e.professores[0].email === session?.user.email)
-    : aulas;
+
+    // Recupera a sessão do usuário
+    const filteredAulas =
+      userRole === "prof"
+        ? aulas.filter((e: any) =>
+            e.professores.some((professor: any) => professor.email === userEmail)
+          )
+        : aulas;
+
     const response = NextResponse.json(
       { status: "success", data: filteredAulas },
       { status: 200 }
@@ -81,7 +112,7 @@ export async function GET() {
     return NextResponse.json(
       {
         status: "error",
-        message: `erro ao fazer a solicitação: ${error}`,
+        message: `Erro ao fazer a solicitação: ${error}`,
         code: 400,
       },
       { status: 400 }

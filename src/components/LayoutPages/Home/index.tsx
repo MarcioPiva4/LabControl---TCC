@@ -203,9 +203,10 @@ export default function Home({
   agentesReajentes,
   laboratorios,
   materias,
-  aulasLength,
+  aulasFinishLength,
   administradores,
   professores,
+  aulasProgressLength,
 }: {
   aulas: AulaReq;
   fornecedores: FornecedorReq;
@@ -214,18 +215,13 @@ export default function Home({
   equipamentos: EquipamentoReq;
   agentesReajentes: AgenteReajenteReq;
   laboratorios: LaboratorioReq;
-  aulasLength: number;
+  aulasFinishLength: number;
   administradores: administradorReq;
   professores: ProfessorReq;
+  aulasProgressLength: number;
 }) {
   const { data: session, status } = useSession();
   const [dataAulas, setDataAulas] = useState(aulas.data);
-  const [aulasDataInProgress, setAulasDataInProgress] = useState(
-    dataAulas.filter((e) => e.status == "in progress")
-  );
-  const [aulasDataFinish, setAulasDataFinish] = useState(
-    dataAulas.filter((e) => e.status == "finish")
-  );
   const currentDate = new Date();
   const formattedDate = currentDate.toLocaleDateString("pt-BR", {
     weekday: "long",
@@ -235,7 +231,12 @@ export default function Home({
   });
 
   return session?.user.role == "prof" ? (
-    <HomeDashboardProfessor nome={session?.user?.name} date={formattedDate} totalAulasInProgress={aulas.data.length} totalAulasFinish={aulas.data.length} image={session?.user.image}></HomeDashboardProfessor>
+    <HomeDashboardProfessor
+      nome={session?.user?.name}
+      date={formattedDate}
+      totalAulasInProgress={aulasProgressLength}
+      totalAulasFinish={aulasFinishLength}
+      image={session?.user.image}></HomeDashboardProfessor>
   ) : (
     <HomeDashboardAdministrador
       date={formattedDate}
@@ -249,7 +250,9 @@ export default function Home({
       totalEquipamentos={equipamentos.data.length}
       totalLaboratorios={laboratorios.data.length}
       totalVidrarias={vidrarias.data.length}
-      totalAdministradores={administradores.data.length}></HomeDashboardAdministrador>
+      totalAdministradores={
+        administradores.data.length
+      }></HomeDashboardAdministrador>
   );
 }
 
@@ -713,7 +716,7 @@ function HomeDashboardProfessor({
 
       <ContentItens>
         <div className="item">
-          <Link href="/baixa-aulas">
+          <Link href="/baixa-aulas?status=progresso">
             <div className="icon">
               <svg
                 width="26"
@@ -746,7 +749,6 @@ function HomeDashboardProfessor({
 
             <h2>Finalizar Aula</h2>
             <p>
-              {" "}
               <span>{totalAulasInProgress}</span> <span>Aulas</span>
             </p>
           </Link>

@@ -13,7 +13,6 @@ const BaixaAulas = dynamic(() => import("@/components/LayoutPages/BaixaAulas"), 
 
 export default async function Page() {
     const dataAulas = await getDataAulas() as AulaReq;
-    const session = await getServerSession(authOptions);
 
     return (
         <Section title="Finalizar aula" bottom>
@@ -23,8 +22,14 @@ export default async function Page() {
 }
 
 async function getDataAulas() {
+    const session = await getServerSession(authOptions);
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/aula`, {
-        cache: 'no-cache'
+        cache: 'no-cache',
+        headers: {
+            "Authorization": `Bearer ${session?.token}`,
+            "X-User-Email": session?.user.email as string,
+            "X-User-Role": session?.user.role as string
+        },
     });
     return await response.json();
 }
