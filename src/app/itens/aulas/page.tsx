@@ -1,5 +1,6 @@
 import { AulaReq, AulaItems } from "@/types/aula";
 import { authOptions } from "@/utils/authOptions";
+import { formatDateForBr } from "@/utils/formatDateForInput";
 import { getServerSession } from "next-auth";
 
 export default async function Page() {
@@ -61,8 +62,8 @@ export default async function Page() {
                                 <td style={tableCellStyle}>
                                     {aula.horario_inicio} - {aula.horario_finalizacao}
                                 </td>
-                                <td style={tableCellStyle}>{aula.data}</td>
-                                <td style={tableCellStyle}>{aula.status}</td>
+                                <td style={tableCellStyle}>{formatDateForBr(aula.data)}</td>
+                                <td style={tableCellStyle}>{aula.status === 'finish' ? 'Finalizado' : 'Em Progresso'}</td>
                                 <td style={tableCellStyle}>{aula.observacoes}</td>
                             </tr>
                         ))}

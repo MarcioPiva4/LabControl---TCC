@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useRouter, useSearchParams } from 'next/navigation';
-import { getSession, useSession } from "next-auth/react";
+import { getSession, signIn, useSession } from "next-auth/react";
 
 const PopupContainer = styled.div.withConfig({
   shouldForwardProp: (prop) => prop !== 'isOpen',
@@ -33,6 +33,8 @@ const PopupContent = styled.div`
   flex-direction: column;
   align-items: center;
   transition: transform 0.3s ease-in-out;
+  overflow-x: auto;
+  max-height: 95%;
   p{
     color: #fff;
   }
@@ -176,7 +178,6 @@ const MenuPopup = () => {
   const [preview, setPreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [professores, setProfessores] = useState<any[]>([]);
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -184,24 +185,47 @@ const MenuPopup = () => {
     setIsOpen(configParam === "true");
   }, [searchParams]);
 
-  // const fetchProfessores = async () => {
-  //   try {
-  //     const response = await fetch(session?.user.role === 'prof' ? `/api/professor/${session?.user.id}` : `/api/administrador/${session?.user.id}`);
-  //     const data = await response.json();
-  //     setProfilePicture(data.data)
-  //   } catch (error) {
-  //     console.error("Erro ao buscar professores:", error);
-  //   }
-  // };
-
   const router = useRouter();
+  const fetchProfileData = async () => {
+    try {
+      const response = await fetch(
+        session?.user.role === "prof"
+          ? `/api/professor/${session?.user.id}`
+          : `/api/administrador/${session?.user.id}`
+      );
+
+      if (!response.ok) {
+        throw new Error("Erro ao buscar dados");
+      }
+
+      const data = await response.json();
+      setProfilePicture(data.data);
+    } catch (error) {
+      console.error("Erro ao buscar dados:", error);
+    }
+  };
+
   useEffect(() => {
     if (session?.user?.email) {
-      const intervalId = setInterval(() => {
-        // fetchProfessores();
-      }, 5000);
-      return () => clearInterval(intervalId);
+      let intervalId: NodeJS.Timeout | null = null;
+
+      const startFetching = () => {
+        fetchProfileData();
+
+        intervalId = setInterval(() => {
+          fetchProfileData();
+        }, 5000);
+      };
+
+      startFetching();
+
+      return () => {
+        if (intervalId) {
+          clearInterval(intervalId);
+        }
+      };
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session?.user?.email]);
 
   const closePopup = () => {
@@ -234,12 +258,16 @@ const MenuPopup = () => {
           if (!response.ok) throw new Error("Erro ao atualizar dados do usuário");
 
           const updatedSession = await response.json();
-          console.log(updatedSession);
           await update({
-            name: updatedSession.user.name,
-            image: updatedSession.user.image,
+            name: updatedSession.updatedSession.user.name,
           });
-
+          update();
+          const signInResponse = await signIn('credentials', {
+            redirect: false,
+            email: session?.user.email,
+            password: updatedSession.password,
+          });
+          setPreview(null);
           closePopup();
         };
         reader.readAsDataURL(file);
@@ -258,13 +286,16 @@ const MenuPopup = () => {
         if (!response.ok) throw new Error("Erro ao atualizar dados do usuário");
 
         const updatedSession = await response.json();
-        console.log(updatedSession);
         await update({
-          name: updatedSession.user.name,
-          image: updatedSession.user.image,
+          name: updatedSession.updatedSession.user.name,
         });
         const updated = await getSession();
         update();
+        const signInResponse = await signIn('credentials', {
+          redirect: false,
+          email: session?.user.email,
+          password: updatedSession.password,
+        });
         closePopup();
       }
     } catch (error) {

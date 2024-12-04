@@ -91,8 +91,17 @@ const MenuWrapper = styled.div`
   }
 `;
 
-export default function ResetPassword({ id, role }: { id: string; role: string }) {
-  const [error, setError] = useState<{ error: boolean; message: string }>({ error: false, message: '' });
+export default function ResetPassword({
+  id,
+  role,
+}: {
+  id: string;
+  role: string;
+}) {
+  const [error, setError] = useState<{ error: boolean; message: string }>({
+    error: false,
+    message: "",
+  });
   const [submitting, setSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordRepeat, setShowPasswordRepeat] = useState(false);
@@ -109,29 +118,32 @@ export default function ResetPassword({ id, role }: { id: string; role: string }
     const formData = new FormData(e.currentTarget);
     const data = {
       id: id,
-      password: formData.get('password'),
-      passwordRepeat: formData.get('passwordRepeat')
+      password: formData.get("password"),
+      passwordRepeat: formData.get("passwordRepeat"),
     };
 
     setSubmitting(true);
-    const response = role == 'adm' ? await fetch('/api/administrador', {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data)
-    }) : await fetch('/api/professor', {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data)
-    });
+    const response =
+      role == "adm"
+        ? await fetch("/api/administrador", {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+        : await fetch("/api/professor", {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          });
     const responseJson = await response.json();
     setSubmitting(false);
 
     if (response.ok) {
-      setError({ error: false, message: '' });
+      setError({ error: false, message: "" });
       signOut();
     } else {
       setError({ error: true, message: responseJson.message });
@@ -147,32 +159,44 @@ export default function ResetPassword({ id, role }: { id: string; role: string }
             <label>
               <span>Senha:</span>
               <div className="input-container">
-                <input 
-                  type={showPassword ? "text" : "password"} 
-                  name="password" 
-                  required 
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  required
                 />
-                <div className="eye-icon" onClick={() => setShowPassword(!showPassword)}>
-                  {showPassword ? <AiFillEye size={24} /> : <AiFillEyeInvisible size={24} />}
+                <div
+                  className="eye-icon"
+                  onClick={() => setShowPassword(!showPassword)}>
+                  {showPassword ? (
+                    <AiFillEye size={24} />
+                  ) : (
+                    <AiFillEyeInvisible size={24} />
+                  )}
                 </div>
               </div>
             </label>
             <label>
               <span>Repita a Senha:</span>
               <div className="input-container">
-                <input 
-                  type={showPasswordRepeat ? "text" : "password"} 
-                  name="passwordRepeat" 
-                  required 
+                <input
+                  type={showPasswordRepeat ? "text" : "password"}
+                  name="passwordRepeat"
+                  required
                 />
-                <div className="eye-icon" onClick={() => setShowPasswordRepeat(!showPasswordRepeat)}>
-                  {showPasswordRepeat ? <AiFillEye size={24} /> :  <AiFillEyeInvisible size={24} />}
+                <div
+                  className="eye-icon"
+                  onClick={() => setShowPasswordRepeat(!showPasswordRepeat)}>
+                  {showPasswordRepeat ? (
+                    <AiFillEye size={24} />
+                  ) : (
+                    <AiFillEyeInvisible size={24} />
+                  )}
                 </div>
               </div>
             </label>
             {error.error && <ErrorMessage text={error.message} error={error} />}
             <Button type="submit" is="isNotTransparent">
-              {submitting ? 'Enviando...' : 'Enviar'}
+              {submitting ? "Enviando..." : "Enviar"}
             </Button>
           </DefaultForm>
         </MenuWrapper>

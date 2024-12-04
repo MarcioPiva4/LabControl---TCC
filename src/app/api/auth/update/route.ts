@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
             },
         };
 
-        return NextResponse.json(updatedSession, { status: 200 });
+        return NextResponse.json({updatedSession, password: user.senha}, { status: 200 });
     } catch (error) {
         console.error("Erro ao atualizar o usuário:", error);
         return NextResponse.json({ message: "Erro ao atualizar o usuário" }, { status: 500 });
