@@ -24,7 +24,6 @@ export default async function Page() {
     return <ResetPassword id={id} role={role} />;
   }
 
-
   const dataAulas = await getDataAulas(session);
   const dataFornecedores = await getDataFornecedores();
   const dataProfessores = await getDataProfessores();

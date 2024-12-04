@@ -79,7 +79,6 @@ export const authOptions: NextAuthOptions = {
           };
         }
 
-        // Nenhum usuário encontrado no banco de dados
         throw new Error("Email ou senha inválidos. Verifique suas credenciais e tente novamente.");
       },
     }),
@@ -95,23 +94,20 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        // Garantindo que os dados necessários sejam passados corretamente no token
         token.id = user.id;
         token.role = user.role;
         token.isFirstLogin = user.isFirstLogin;
-        // Aqui, gerando o accessToken (usando o id ou outro dado relevante)
-        token.accessToken = `${user.id}-${user.role}`;  // Apenas um exemplo de token real
+        token.accessToken = `${user.id}-${user.role}`; 
       }
       return token;
     },
 
     async session({ session, token }) {
       if (token) {
-        // Passando o token JWT para a sessão
         session.user.id = token.id as string;
         session.user.role = token.role as string;
         session.user.isFirstLogin = token.isFirstLogin as boolean;
-        session.token = token.accessToken as string;  // Garantindo que o token real seja enviado
+        session.token = token.accessToken as string;
       }
       return session;
     },

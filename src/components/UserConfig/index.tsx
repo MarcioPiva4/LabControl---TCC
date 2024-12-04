@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 
 const PopupContainer = styled.div.withConfig({
   shouldForwardProp: (prop) => prop !== 'isOpen',
@@ -186,15 +186,9 @@ const MenuPopup = () => {
 
   const fetchProfessores = async () => {
     try {
-      const response = await fetch(`/api/professor`);
+      const response = await fetch(session?.user.role === 'prof' ? `/api/professor/${session?.user.id}` : `/api/administrador/${session?.user.id}`);
       const data = await response.json();
-      if (data.status === "success") {
-        setProfessores(data.data);
-        const user = data.data.find((professor: any) => professor.id === session?.user?.id);
-        if (user) {
-          setProfilePicture(user.image || session?.user?.image);  
-        }
-      }
+      setProfilePicture(data.data)
     } catch (error) {
       console.error("Erro ao buscar professores:", error);
     }
@@ -203,7 +197,10 @@ const MenuPopup = () => {
   const router = useRouter();
   useEffect(() => {
     if (session?.user?.email) {
-      fetchProfessores();
+      const intervalId = setInterval(() => {
+        fetchProfessores();
+      }, 5000);
+      return () => clearInterval(intervalId);
     }
   }, [session?.user?.email]);
 
@@ -237,6 +234,7 @@ const MenuPopup = () => {
           if (!response.ok) throw new Error("Erro ao atualizar dados do usuário");
 
           const updatedSession = await response.json();
+          console.log(updatedSession);
           await update({
             name: updatedSession.user.name,
             image: updatedSession.user.image,
@@ -260,10 +258,12 @@ const MenuPopup = () => {
         if (!response.ok) throw new Error("Erro ao atualizar dados do usuário");
 
         const updatedSession = await response.json();
+        console.log(updatedSession);
         await update({
           name: updatedSession.user.name,
           image: updatedSession.user.image,
         });
+        const updated = await getSession();
         update();
         closePopup();
       }

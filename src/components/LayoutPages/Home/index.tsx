@@ -6,7 +6,7 @@ import imageUser from "@/../public/user.webp";
 import Image from "next/image";
 import Link from "next/link";
 import { AulaItems, AulaReq } from "@/types/aula";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ProfessorReq } from "@/types/professor";
 import { FornecedorReq } from "@/types/fornecedor";
 import { MateriaReq } from "@/types/materia";
@@ -230,17 +230,45 @@ export default function Home({
     day: "numeric",
   });
 
+  const [imageUrl, setImageUrl] = useState(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        const response = await fetch(session?.user.role === 'prof' ? `/api/professor/${session?.user.id}` : `/api/administrador/${session?.user.id}`);
+        
+        if (!response.ok) {
+          throw new Error('Erro ao buscar a imagem');
+        }
+        
+        const data = await response.json(); 
+        setImageUrl(data.data);
+
+        const intervalId = setInterval(() => {
+          fetchImage();
+        }, 5000);
+        return () => clearInterval(intervalId);
+      } catch (error) {
+        console.error('Erro ao carregar imagem:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchImage();
+  }, []);
+
   return session?.user.role == "prof" ? (
     <HomeDashboardProfessor
       nome={session?.user?.name}
       date={formattedDate}
       totalAulasInProgress={aulasProgressLength}
       totalAulasFinish={aulasFinishLength}
-      image={session?.user.image}></HomeDashboardProfessor>
+      image={imageUrl}></HomeDashboardProfessor>
   ) : (
     <HomeDashboardAdministrador
       date={formattedDate}
-      image={session?.user.image}
+      image={imageUrl}
       nome={session?.user.name}
       totalFornecedores={fornecedores.data.length}
       totalMaterias={materias.data.length}
