@@ -22,7 +22,6 @@ export default async function Page() {
   const dataVidrarias = await getDataVidrarias();
   const dataAdministradores = await getDataAdministradores();
 
-
   return (
     <>
       <Header></Header>

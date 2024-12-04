@@ -7,6 +7,7 @@ const nextConfig = {
     images: {
         domains: ['*'],
     },
+    productionBrowserSourceMaps: true,
 
 };
 
