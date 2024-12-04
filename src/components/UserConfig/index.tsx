@@ -184,21 +184,21 @@ const MenuPopup = () => {
     setIsOpen(configParam === "true");
   }, [searchParams]);
 
-  const fetchProfessores = async () => {
-    try {
-      const response = await fetch(session?.user.role === 'prof' ? `/api/professor/${session?.user.id}` : `/api/administrador/${session?.user.id}`);
-      const data = await response.json();
-      setProfilePicture(data.data)
-    } catch (error) {
-      console.error("Erro ao buscar professores:", error);
-    }
-  };
+  // const fetchProfessores = async () => {
+  //   try {
+  //     const response = await fetch(session?.user.role === 'prof' ? `/api/professor/${session?.user.id}` : `/api/administrador/${session?.user.id}`);
+  //     const data = await response.json();
+  //     setProfilePicture(data.data)
+  //   } catch (error) {
+  //     console.error("Erro ao buscar professores:", error);
+  //   }
+  // };
 
   const router = useRouter();
   useEffect(() => {
     if (session?.user?.email) {
       const intervalId = setInterval(() => {
-        fetchProfessores();
+        // fetchProfessores();
       }, 5000);
       return () => clearInterval(intervalId);
     }

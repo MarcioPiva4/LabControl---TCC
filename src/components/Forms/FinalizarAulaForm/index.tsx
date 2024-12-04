@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import Select from "@/components/Select";
 import { InputBoxSelectLink } from "@/components/InputBoxSelect";
 import TextArea from "@/components/TextArea";
+import { formatDateForInput } from "@/utils/formatDateForInput";
 
 export default function FinalizarAulaForm({
   aulas,
@@ -185,7 +186,7 @@ export default function FinalizarAulaForm({
         type="date"
         label="Data de aula"
         idInput="data"
-        value={dataAulasFilted ? dataAulasFilted[0].data : ""}
+        value={dataAulasFilted ? formatDateForInput(dataAulasFilted[0].data) : ""}
         readOnly
         onChange={(e) =>
           setdataAulasFilted((prev: any) =>

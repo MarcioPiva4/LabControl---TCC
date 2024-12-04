@@ -13,6 +13,7 @@ import { AulaReq } from "@/types/aula";
 import { LaboratorioReq } from "@/types/laboratorio";
 import { MateriaReq } from "@/types/materia";
 import { ProfessorReq } from "@/types/professor";
+import { formatDateForInput } from "@/utils/formatDateForInput";
 import { useEffect, useState } from "react";
 
 interface parsedDataEquipamentoEditar {
@@ -285,7 +286,7 @@ export default function EditarAulaForm({
         type="date"
         label="Data de aula"
         idInput="data"
-        value={dataAulasFilted ? dataAulasFilted[0].data : ""}
+        value={dataAulasFilted ? formatDateForInput(dataAulasFilted[0].data) : ""}
         onChange={(e) =>
           setdataAulasFilted((prev: any) =>
             prev ? [{ ...prev[0], data: e.target.value }] : prev
