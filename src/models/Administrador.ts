@@ -9,35 +9,35 @@ const Administrador = db.define("administradores", {
     primaryKey: true,
   },
   nome: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(50),
     allowNull: false,
   },
   email: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(100),
     allowNull: false,
   },
   telefone: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(30),
     allowNull: false,
   },
   data_contratacao: {
-    type: DataTypes.STRING,
+    type: DataTypes.DATE,
     allowNull: false,
   },
   cep: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(8),
     allowNull: false,
   },
   estado: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(20),
     allowNull: false,
   },
   cidade: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(50),
     allowNull: false,
   },
   rua: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(50),
     allowNull: false,
   },
   numero: {
@@ -51,9 +51,13 @@ const Administrador = db.define("administradores", {
   loginCount: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    defaultValue: 0, // Valor padrão para novo administrador
+    defaultValue: 0,
+  },
+  image: {
+    type: DataTypes.TEXT,
+    allowNull: true
   },
 });
 
-//Administrador.sync();
+Administrador.sync({ alter: true });
 export { Administrador };

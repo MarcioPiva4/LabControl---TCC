@@ -19,19 +19,19 @@ const Aula = db.define('aulas', {
         allowNull: false,
     },
     horario_inicio: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(100),
         allowNull: false,
     },
     horario_finalizacao: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(100),
         allowNull: false,
     },
     data: {
-        type: DataTypes.STRING,
+        type: DataTypes.DATE,
         allowNull: false,
     },
     status: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(50),
         allowNull: true,
         defaultValue: 'in progress'
     },
@@ -229,7 +229,7 @@ const AgenteReajenteAula = db.define('AgenteReajenteAula', {
         allowNull: false,
     },
     medida_quantidade: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(50),
         allowNull: true,
     },
 })

@@ -10,19 +10,19 @@ const Vidrarias = db.define('vidrarias', {
         primaryKey: true,
     },
     vidraria: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(100),
         allowNull: false,
     },
     tipo: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(50),
         allowNull: false,
     },
     capacidade: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(50),
         allowNull: false,
     },
     material: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(50),
         allowNull: false,
     },
     quantidade: {
@@ -34,7 +34,7 @@ const Vidrarias = db.define('vidrarias', {
         allowNull: false,
     },
     preco_compra: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(50),
         allowNull: false,
     },
     observacoes: {

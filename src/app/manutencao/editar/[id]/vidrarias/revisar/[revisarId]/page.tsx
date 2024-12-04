@@ -25,14 +25,14 @@ export default async function Page({ params }: PropPageRevisar){
 
 async function getDataVidrarias() {
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/vidrarias`, {
-    'cache': 'no-cache'
+    'cache': 'no-store'
   });
   return await response.json();
 }
 
 async function getDataAula() {
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/aula`, {
-    'cache': 'no-cache'
+    'cache': 'no-store'
   });
   return await response.json();
 }

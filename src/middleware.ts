@@ -4,6 +4,12 @@ import { NextRequest, NextResponse } from 'next/server';
 const secret = process.env.NEXTAUTH_SECRET;
 
 export async function middleware(req: NextRequest) {
+    const url = req.nextUrl;
+
+    if (url.pathname.startsWith('/api')) {
+      return NextResponse.next();
+    }
+
     const token = await getToken({ req, secret });
 
     if(!token){
@@ -18,5 +24,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/', '/cadastro/:path*',],
+    matcher: ['/', '/cadastro/:path*', '/manutencao/:path*', '/log', '/baixa-aulas/:path*', '/itens/:path*', '/api/:path*'],
 };

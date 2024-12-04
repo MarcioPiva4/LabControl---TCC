@@ -1,8 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-
 import { FilterAula } from "@/components/FilterAula";
-import { AulaReq } from "@/types/aula";
+import { AulaItems, AulaReq } from "@/types/aula";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
@@ -85,15 +87,39 @@ const ContentAulas = styled.div`
 `;
 
 export default function Manutencao({ aulas }: { aulas: AulaReq }) {
-  const [dataAulas, setDataAulas] = useState(aulas.data);
+  const [dataAulas, setDataAulas] = useState<AulaItems[]>(aulas.data);
   useEffect(() => {
     const aulas = dataAulas.filter((e) => e.status != "finish") as any;
     setDataAulas(aulas);
   }, []);
+
+  const searchParams = useSearchParams();
+  const session = useSession();
+  useEffect(() => {
+    const fetchData = async () => {
+      const queryParams = searchParams.toString();
+      try {
+        const response = await fetch(`/api/aula/filter?${queryParams}`, {cache: 'no-store', headers: {
+          "Authorization": `Bearer ${session?.data?.token}`,
+          "X-User-Email": session?.data?.user.email as string,
+          "X-User-Role": session?.data?.user.role as string
+        }});
+        const data = await response.json() as AulaReq;
+        setDataAulas(data.data.filter((e) => e.status != "finish"));
+      } catch (error) {
+        console.error("Erro ao buscar aulas:", error);
+      }
+    };
+
+    if (searchParams) {
+      fetchData(); 
+    }
+  }, [searchParams]); 
+
   return (
     dataAulas && (
       <>
-        <FilterAula></FilterAula>
+        <FilterAula manutencao></FilterAula>
 
         <ContentAulas>
           <ul>
@@ -123,8 +149,7 @@ export default function Manutencao({ aulas }: { aulas: AulaReq }) {
               ))
             ) : (
               <p className="no_results">
-                Nenhuma aula encontrada, cadastre novas aulas{" "}
-                <Link href={"/cadastro/aula"}>aqui</Link>
+                Nenhuma aula encontrada
               </p>
             )}
           </ul>

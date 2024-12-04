@@ -10,19 +10,19 @@ const AgenteReajente = db.define('agentes_reajentes', {
         primaryKey: true,
     },
     nome: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(100),
         allowNull: false,
     },
     formula: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(100),
         allowNull: false,
     },
     peso_molecular: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(50),
         allowNull: false,
     },
     material: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(100),
         allowNull: false,
     },
     cas: {
@@ -38,7 +38,7 @@ const AgenteReajente = db.define('agentes_reajentes', {
         allowNull: false,
     },
     concentracao: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(50),
         allowNull: false,
     },
     quantidade: {
@@ -50,11 +50,11 @@ const AgenteReajente = db.define('agentes_reajentes', {
         allowNull: false,
     },
     medida_quantidade: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(20),
         allowNull: true,
     },
     armazenamento_recomendado: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(100),
         allowNull: true,
     },
     observacoes: {

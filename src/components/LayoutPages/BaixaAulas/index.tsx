@@ -1,13 +1,12 @@
 "use client";
 
 import { FilterAula } from "@/components/FilterAula";
-import Select from "@/components/Select";
 import { AulaReq } from "@/types/aula";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-
-
 
 const ContentAulas = styled.div.attrs<{ $finish?: boolean }>((props) => ({
   $finish: props.$finish || false,
@@ -94,6 +93,31 @@ const ContentAulas = styled.div.attrs<{ $finish?: boolean }>((props) => ({
 
 export default function BaixaAulas({ aulas }: { aulas: AulaReq }) {
   const [dataAulas, setDataAulas] = useState(aulas.data);
+  const session = useSession();
+
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const fetchData = async () => {
+      const queryParams = searchParams.toString();
+      try {
+        const response = await fetch(`/api/aula/filter?${queryParams}`, {cache: 'no-store',         headers: {
+          "Authorization": `Bearer ${session?.data?.token}`,
+          "X-User-Email": session?.data?.user.email as string,
+          "X-User-Role": session?.data?.user.role as string
+        },}
+      );
+        const data = await response.json() as AulaReq;
+        setDataAulas(data.data);
+      } catch (error) {
+        console.error("Erro ao buscar aulas:", error);
+      }
+    };
+
+    if (searchParams) {
+      fetchData(); 
+    }
+  }, [searchParams]); 
+  
   return (
     dataAulas && (
       <>
@@ -125,7 +149,7 @@ export default function BaixaAulas({ aulas }: { aulas: AulaReq }) {
                 </li>
               ))
             ) : (
-              <p className="no_results">Nenhuma aula encontrada, cadastre novas aulas <Link href={'/cadastro/aula'}>aqui</Link></p>
+              <p className="no_results">Nenhuma aula encontrada</p>
             )}
           </ul>
         </ContentAulas>

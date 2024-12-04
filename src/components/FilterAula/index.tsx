@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import styled from "styled-components";
 
@@ -65,6 +66,7 @@ const ContentFilters = styled.div`
       color: #000 !important;
       font-weight: 400;
       cursor: pointer;
+      text-decoration: none;
     }
   }
 `;
@@ -123,6 +125,8 @@ const DropdownWrapper = styled.div`
       font-size: 14px;
       cursor: pointer;
       transition: background-color 0.2s ease;
+      display: block;
+      text-decoration: none;
 
       &:hover {
         background-color: rgba(255, 255, 255, 0.1);
@@ -131,10 +135,10 @@ const DropdownWrapper = styled.div`
   }
 `;
 
-export function FilterAula() {
+export function FilterAula({ manutencao }: { manutencao?: boolean }) {
   const [isDropdownOpenData, setIsDropdownOpenData] = useState(false);
   const [isDropdownOpenType, setIsDropdownOpenType] = useState(false);
-  const [filters, setFilters] = useState<string[]>([]);
+  const [filter, setFilter] = useState<string>("");
 
   const toggleDropdownData = () => {
     setIsDropdownOpenData((prev) => !prev);
@@ -150,14 +154,20 @@ export function FilterAula() {
   };
 
   const handleSelect = (item: string) => {
-    if (!filters.includes(item)) {
-      setFilters((prev) => [...prev, item]);
-    }
+    setFilter(item); // Replace the current filter with the new selection
     closeDropdown();
   };
 
-  const clearAllFilters = () => {
-    setFilters([]);
+  const clearFilter = () => {
+    setFilter(""); // Clear the selected filter
+  };
+
+  const generateUrl = (filterKey: string, filterValue: string) => {
+    const currentUrl = new URL(window.location.href);
+    const currentQueryParams = new URLSearchParams(currentUrl.search);
+    currentQueryParams.set(filterKey, filterValue);
+
+    return `${currentUrl.pathname}?${currentQueryParams.toString()}`;
   };
 
   return (
@@ -184,65 +194,91 @@ export function FilterAula() {
             </svg>
           </div>
           <div className={`dropdown-menu ${isDropdownOpenData ? "open" : ""}`}>
-            <div className="dropdown-item" onClick={() => handleSelect("Hoje")}>
+            <Link
+              href={generateUrl("publicado", "hoje")}
+              className="dropdown-item"
+              onClick={() => handleSelect("Hoje")}>
               Hoje
-            </div>
-            <div className="dropdown-item" onClick={() => handleSelect("Última semana")}>
+            </Link>
+            <Link
+              href={generateUrl("publicado", "ontem")}
+              className="dropdown-item"
+              onClick={() => handleSelect("Ontem")}>
+              Ontem
+            </Link>
+            <Link
+              href={generateUrl("publicado", "estaSemana")}
+              className="dropdown-item"
+              onClick={() => handleSelect("Esta semana")}>
+              Esta Semana
+            </Link>
+            <Link
+              href={generateUrl("publicado", "ultimaSemana")}
+              className="dropdown-item"
+              onClick={() => handleSelect("Última semana")}>
               Última semana
-            </div>
-            <div className="dropdown-item" onClick={() => handleSelect("Último mês")}>
+            </Link>
+            <Link
+              href={generateUrl("publicado", "ultimoMes")}
+              className="dropdown-item"
+              onClick={() => handleSelect("Último mês")}>
               Último mês
-            </div>
-            <div className="dropdown-item" onClick={() => handleSelect("Personalizado")}>
-              Personalizado
-            </div>
+            </Link>
           </div>
         </DropdownWrapper>
 
-        <DropdownWrapper>
-          <div
-            className="dropdown-trigger"
-            onClick={toggleDropdownType}
-            onBlur={closeDropdown}
-            tabIndex={0}>
-            Progresso
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M12.75 7.5L9 11.25L5.25 7.5L12.75 7.5Z"
-                fill="white"
-                fillOpacity="0.5"
-              />
-            </svg>
-          </div>
-          <div className={`dropdown-menu ${isDropdownOpenType ? "open" : ""}`}>
-            <div className="dropdown-item" onClick={() => handleSelect("Em processo")}>
-              Em processo
+        {!manutencao && (
+          <DropdownWrapper>
+            <div
+              className="dropdown-trigger"
+              onClick={toggleDropdownType}
+              onBlur={closeDropdown}
+              tabIndex={0}>
+              Progresso
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M12.75 7.5L9 11.25L5.25 7.5L12.75 7.5Z"
+                  fill="white"
+                  fillOpacity="0.5"
+                />
+              </svg>
             </div>
-            <div className="dropdown-item" onClick={() => handleSelect("Finalizada")}>
-              Finalizada
+            <div
+              className={`dropdown-menu ${isDropdownOpenType ? "open" : ""}`}>
+              <Link
+                href={generateUrl("status", "progresso")}
+                className="dropdown-item"
+                onClick={() => handleSelect("Em processo")}>
+                Em processo
+              </Link>
+              <Link
+                href={generateUrl("status", "finalizada")}
+                className="dropdown-item"
+                onClick={() => handleSelect("Finalizada")}>
+                Finalizada
+              </Link>
             </div>
-          </div>
-        </DropdownWrapper>
+          </DropdownWrapper>
+        )}
       </div>
 
       <div className="results">
-        {filters.length > 0 ? (
-          filters.map((filter, index) => (
-            <div key={index} className="result">
-              {filter}
-            </div>
-          ))
+        {filter ? (
+          <div className="result">{filter}</div>
         ) : (
           <div className="result">Selecione um filtro</div>
         )}
-        <div className="result clear_all" onClick={clearAllFilters}>
+        <Link
+          href={window.location.pathname}
+          className="result clear_all"
+          onClick={clearFilter}>
           Clear all
-        </div>
+        </Link>
       </div>
     </ContentFilters>
   );

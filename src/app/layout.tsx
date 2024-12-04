@@ -6,9 +6,9 @@ import StyledComponentsRegistry from "./registry";
 import { GlobalStyle } from "@/styles/GlobalStyle";
 import { Inter } from "next/font/google";
 import { theme } from "@/styles/theme";
-import ButtonBackTop from "@/components/ButtonBackTop";
 import ResetPassword from "@/components/ResetPassword";
 import ClientSessionProvider from "@/components/ClientSessionProvider.tsx";
+import dynamic from "next/dynamic";
 
 export const metadata: Metadata = {
   title: "LabControl",
@@ -28,6 +28,9 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const session = await getServerSession(authOptions) as Session;
+
+  const MenuPopup = dynamic(() => import("@/components/UserConfig"), { ssr: false, });
+  const ButtonBackTop = dynamic(() => import("@/components/ButtonBackTop"), { ssr: false, });
   
   return (
     <html lang="pt-br" className={fontFamily.className}>
@@ -38,10 +41,15 @@ export default async function RootLayout({
             {session?.user?.isFirstLogin ? (
               <ResetPassword id={session.user.id} role={session?.user?.role} />
             ) : (
-              <>
-                <ButtonBackTop />
+                <>
+                  {session && (
+                    <>
+                      <ButtonBackTop />
+                      <MenuPopup />
+                    </>
+                  )}
                 {children}
-              </>
+                </>
             )}
           </StyledComponentsRegistry>
         </ClientSessionProvider>

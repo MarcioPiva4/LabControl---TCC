@@ -4,7 +4,6 @@ import { Administrador } from "@/models/Administrador";
 import { Professor } from "@/models/Professor";
 import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
-
 import { DefaultUser } from "next-auth";
 
 declare module "next-auth" {
@@ -15,12 +14,14 @@ declare module "next-auth" {
 
   interface Session {
     user: User;
+    token: string;
   }
 
   interface JWT {
     id: string;
     role: string;
     isFirstLogin?: boolean;
+    accessToken: string;
   }
 }
 
@@ -92,62 +93,39 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, account, profile, user }) {
+    async jwt({ token, user }) {
       if (user) {
+        // Garantindo que os dados necessários sejam passados corretamente no token
         token.id = user.id;
         token.role = user.role;
         token.isFirstLogin = user.isFirstLogin;
+        // Aqui, gerando o accessToken (usando o id ou outro dado relevante)
+        token.accessToken = `${user.id}-${user.role}`;  // Apenas um exemplo de token real
       }
-
-      if (account && profile) {
-        if (account.provider === "google" || account.provider === "facebook") {
-          const userFromDb =
-            (await Administrador.findOne({ where: { email: token.email } })) as any ||
-            (await Professor.findOne({ where: { email: token.email } })) as any;
-
-          if (userFromDb) {
-            token.id = userFromDb.id;
-            token.role = userFromDb instanceof Administrador ? "adm" : "prof";
-            token.isFirstLogin = userFromDb.loginCount === 0;
-
-            await userFromDb.increment("loginCount", { by: 1 });
-          } else {
-            throw new Error("Usuário não autorizado. Contate o administrador.");
-          }
-        }
-      }
-
       return token;
     },
 
     async session({ session, token }) {
       if (token) {
+        // Passando o token JWT para a sessão
         session.user.id = token.id as string;
         session.user.role = token.role as string;
         session.user.isFirstLogin = token.isFirstLogin as boolean;
+        session.token = token.accessToken as string;  // Garantindo que o token real seja enviado
       }
       return session;
     },
 
     async signIn({ account, profile }) {
-      if (account?.provider === "google") {
+      if (account?.provider === "google" || account?.provider === "facebook") {
         const userFromDb =
           (await Administrador.findOne({ where: { email: profile?.email } })) ||
           (await Professor.findOne({ where: { email: profile?.email } }));
 
         if (!userFromDb) {
-          return `/login?error=googleUnauthorized`;
-        }
-      } else if (account?.provider === "facebook") {
-        const userFromDb =
-          (await Administrador.findOne({ where: { email: profile?.email } })) ||
-          (await Professor.findOne({ where: { email: profile?.email } }));
-
-        if (!userFromDb) {
-          return `/login?error=facebookUnauthorized`;
+          return `/login?error=${account.provider}Unauthorized`;
         }
       }
-
       return true;
     },
 

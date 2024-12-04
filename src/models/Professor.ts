@@ -9,19 +9,19 @@ const Professor = db.define('professores', {
         primaryKey: true,
     },
     cpf: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(11),
         allowNull: false,
     },
     nome: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(50),
         allowNull: false,
     },
     telefone: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(15),
         allowNull: false,
     },
     email: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(150),
         allowNull: false,
     },
     senha: {
@@ -32,8 +32,12 @@ const Professor = db.define('professores', {
         type: DataTypes.INTEGER,
         defaultValue: 0,
     },
+    image: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
 });
 
-Professor.sync();
+Professor.sync({alter: true});
 
 export { Professor };

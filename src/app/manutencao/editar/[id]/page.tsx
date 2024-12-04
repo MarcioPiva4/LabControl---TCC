@@ -1,5 +1,7 @@
 import { LoaderForm } from "@/components/LoaderForm";
 import Section from "@/components/Section";
+import { authOptions } from "@/utils/authOptions";
+import { getServerSession } from "next-auth";
 import dynamic from "next/dynamic";
 
 const EditarAulaForm = dynamic(() => import("@/components/Forms/EditarAulaForm"), {
@@ -38,9 +40,14 @@ export default async function Page({ params }: { params: any }) {
 }
 
 async function getDataAulas() {
+  const session = await getServerSession(authOptions);
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/aula`,
-    { cache: "no-cache" }
+    { cache: "no-store",        headers: {
+      "Authorization": `Bearer ${session?.token}`,
+      "X-User-Email": session?.user.email as string,
+      "X-User-Role": session?.user.role as string
+  },  }
   );
   return response.json();
 }
@@ -48,7 +55,7 @@ async function getDataAulas() {
 async function getDataMateria() {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/materia`,
-    { cache: "no-cache" }
+    { cache: "no-store",  }
   );
   return await response.json();
 }
@@ -56,7 +63,7 @@ async function getDataMateria() {
 async function getDataLaboratorio() {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/laboratorio`,
-    { cache: "no-cache" }
+    { cache: "no-store",  }
   );
   return await response.json();
 }
@@ -64,7 +71,7 @@ async function getDataLaboratorio() {
 async function getDataProfessor() {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/professor`,
-    { cache: "no-cache" }
+    { cache: "no-store",  }
   );
   return await response.json();
 }

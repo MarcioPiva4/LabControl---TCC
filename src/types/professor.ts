@@ -12,6 +12,7 @@ export interface ProfessorItems {
     telefone: string;
     email: string;
     senha: string;
+    image: string;
     loginCount: number;
 }
 

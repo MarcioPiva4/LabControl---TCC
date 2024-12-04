@@ -9,7 +9,7 @@ const Materias = db.define('materias', {
         primaryKey: true
     }, 
     nome: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(80),
         allowNull: false,
     },
     emenda: {
