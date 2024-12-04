@@ -386,133 +386,131 @@ export async function PUT(req: NextRequest) {
     const { aula, equipamentos, vidrarias, agenteReajente, id } = await req.json();
     const { id_materia, id_professor, id_laboratorio, topico_aula, horario_inicio, horario_finalizacao, data, observacoes } = aula;
 
-    console.log("Recuperado do front", equipamentos);
-
     // Função para verificar e atualizar estoque
-    const verificarEstoque = async () => {
-      if (equipamentos) {
-        // Itera sobre cada equipamento
-        for (const e of equipamentos) {
-          const t = await db.transaction(); // Cria uma transação isolada por item
+    // const verificarEstoque = async () => {
+    //   if (equipamentos) {
+    //     // Itera sobre cada equipamento
+    //     for (const e of equipamentos) {
+    //       const t = await db.transaction(); // Cria uma transação isolada por item
 
-          try {
-            // Recupera o equipamento
-            const equipamento = await Equipamento.findByPk(e.id_equipamento, { transaction: t }) as any;
-            if (equipamento) {
-              const aulaEquipamento = await Aula.findByPk(e.id_aula, {
-                include: [
-                  {
-                    model: Equipamento,
-                    as: "equipamentos",
-                    attributes: ["id", "equipamento"],
-                    through: {
-                      attributes: ["quantidade"],
-                    },
-                  },
-                ],
-                transaction: t,
-              }) as any;
+    //       try {
+    //         // Recupera o equipamento
+    //         const equipamento = await Equipamento.findByPk(e.id_equipamento, { transaction: t }) as any;
+    //         if (equipamento) {
+    //           const aulaEquipamento = await Aula.findByPk(e.id_aula, {
+    //             include: [
+    //               {
+    //                 model: Equipamento,
+    //                 as: "equipamentos",
+    //                 attributes: ["id", "equipamento"],
+    //                 through: {
+    //                   attributes: ["quantidade"],
+    //                 },
+    //               },
+    //             ],
+    //             transaction: t,
+    //           }) as any;
 
-              // Processa a atualização do estoque para cada equipamento
-              for (const equip of aulaEquipamento.equipamentos) {
-                const quantidadeAula = equip.EquipamentoAula.quantidade;
-                const quantidadeSub = e.quantidade_equipamento - quantidadeAula;
-                const quantidadeAdi = e.quantidade_equipamento + quantidadeAula;
+    //           // Processa a atualização do estoque para cada equipamento
+    //           for (const equip of aulaEquipamento.equipamentos) {
+    //             const quantidadeAula = equip.EquipamentoAula.quantidade;
+    //             const quantidadeSub = e.quantidade_equipamento - quantidadeAula;
+    //             const quantidadeAdi = e.quantidade_equipamento + quantidadeAula;
 
-                console.log("quantidadeSub:", quantidadeSub, "quantidadeAdi:", quantidadeAdi, "estoque:", equipamento.quantidade, "quantidadeAula:", quantidadeAula, "estoque_float:", equipamento.quantidade_float);
+    //             console.log("quantidadeSub:", quantidadeSub, "quantidadeAdi:", quantidadeAdi, "estoque:", equipamento.quantidade, "quantidadeAula:", quantidadeAula, "estoque_float:", equipamento.quantidade_float);
 
-                // Ajuste no estoque baseado na quantidade subtraída ou adicionada
-                if (quantidadeSub < 0 && quantidadeAdi > quantidadeAula) {
-                  const incrementEstoque = equipamento.quantidade_float + Math.abs(quantidadeSub);
+    //             // Ajuste no estoque baseado na quantidade subtraída ou adicionada
+    //             if (quantidadeSub < 0 && quantidadeAdi > quantidadeAula) {
+    //               const incrementEstoque = equipamento.quantidade_float + Math.abs(quantidadeSub);
 
-                  if (incrementEstoque > equipamento.quantidade) {
-                    console.log(`Erro: Estoque insuficiente para o equipamento "${equip.equipamento}".`);
-                    throw new Error(`Estoque insuficiente para o equipamento: "${equip.equipamento}".`);
-                  }
+    //               if (incrementEstoque > equipamento.quantidade) {
+    //                 console.log(`Erro: Estoque insuficiente para o equipamento "${equip.equipamento}".`);
+    //                 throw new Error(`Estoque insuficiente para o equipamento: "${equip.equipamento}".`);
+    //               }
 
-                  await EquipamentoAula.update(
-                    { quantidade: e.quantidade_equipamento },
-                    { where: { id_equipamento: e.id_equipamento, id_aula: e.id_aula }, transaction: t }
-                  );
-                  await equipamento.update({ quantidade_float: incrementEstoque }, { transaction: t });
-                }
+    //               await EquipamentoAula.update(
+    //                 { quantidade: e.quantidade_equipamento },
+    //                 { where: { id_equipamento: e.id_equipamento, id_aula: e.id_aula }, transaction: t }
+    //               );
+    //               await equipamento.update({ quantidade_float: incrementEstoque }, { transaction: t });
+    //             }
 
-                if (quantidadeSub > 0 && quantidadeAdi > quantidadeAula) {
-                  const reduceEstoque = equipamento.quantidade_float - Math.abs(quantidadeSub);
+    //             if (quantidadeSub > 0 && quantidadeAdi > quantidadeAula) {
+    //               const reduceEstoque = equipamento.quantidade_float - Math.abs(quantidadeSub);
 
-                  if (reduceEstoque < 0) {
-                    console.log(`Erro: Estoque insuficiente para o equipamento "${equip.equipamento}".`);
-                    throw new Error(`Estoque insuficiente para o equipamento: "${equip.equipamento}".`);
-                  }
+    //               if (reduceEstoque < 0) {
+    //                 console.log(`Erro: Estoque insuficiente para o equipamento "${equip.equipamento}".`);
+    //                 throw new Error(`Estoque insuficiente para o equipamento: "${equip.equipamento}".`);
+    //               }
 
-                  await EquipamentoAula.update(
-                    { quantidade: e.quantidade_equipamento },
-                    { where: { id_equipamento: e.id_equipamento, id_aula: e.id_aula }, transaction: t }
-                  );
-                  await equipamento.update({ quantidade_float: reduceEstoque }, { transaction: t });
-                }
-              }
-            }
+    //               await EquipamentoAula.update(
+    //                 { quantidade: e.quantidade_equipamento },
+    //                 { where: { id_equipamento: e.id_equipamento, id_aula: e.id_aula }, transaction: t }
+    //               );
+    //               await equipamento.update({ quantidade_float: reduceEstoque }, { transaction: t });
+    //             }
+    //           }
+    //         }
 
-            // Commit após processar todos os equipamentos
-            await t.commit();
-          } catch (error) {
-            // Rollback em caso de erro
-            await t.rollback();
-            console.error("Erro ao processar o equipamento:", error);
-            throw new Error(`Erro ao processar o equipamento "${e.id_equipamento}".`);
-          }
-        }
-      }
-    };
+    //         // Commit após processar todos os equipamentos
+    //         await t.commit();
+    //       } catch (error) {
+    //         // Rollback em caso de erro
+    //         await t.rollback();
+    //         console.error("Erro ao processar o equipamento:", error);
+    //         throw new Error(`Erro ao processar o equipamento "${e.id_equipamento}".`);
+    //       }
+    //     }
+    //   }
+    // };
 
-    await verificarEstoque();
+    // await verificarEstoque();
 
-    // Lógica para remover ou adicionar equipamentos
-    if (equipamentos) {
-      const equipamentosEnviados = equipamentos.map((e: any) => e.id_equipamento);
-      for (const e of equipamentos) {
-        const equipamento = await Equipamento.findByPk(e.id_equipamento) as any;
-        if (equipamento) {
-          const aulaEquipamento = await Aula.findByPk(e.id_aula, {
-            include: [
-              {
-                model: Equipamento,
-                as: "equipamentos",
-                attributes: ["id", "equipamento"],
-                through: { attributes: ["quantidade"] },
-              },
-            ],
-          }) as any;
+    // // Lógica para remover ou adicionar equipamentos
+    // if (equipamentos) {
+    //   const equipamentosEnviados = equipamentos.map((e: any) => e.id_equipamento);
+    //   for (const e of equipamentos) {
+    //     const equipamento = await Equipamento.findByPk(e.id_equipamento) as any;
+    //     if (equipamento) {
+    //       const aulaEquipamento = await Aula.findByPk(e.id_aula, {
+    //         include: [
+    //           {
+    //             model: Equipamento,
+    //             as: "equipamentos",
+    //             attributes: ["id", "equipamento"],
+    //             through: { attributes: ["quantidade"] },
+    //           },
+    //         ],
+    //       }) as any;
 
-          const equipamentoNaAula = aulaEquipamento.equipamentos.find((equip: any) => equip.id === e.id_equipamento);
+    //       const equipamentoNaAula = aulaEquipamento.equipamentos.find((equip: any) => equip.id === e.id_equipamento);
 
-          for (const equipamentoAula of aulaEquipamento.equipamentos) {
-            if (!equipamentosEnviados.includes(equipamentoAula.id)) {
-              const equipamentoAtualizado = await Equipamento.findOne({ where: { id: equipamentoAula.id } }) as any;
-              const equipamentoAulaRelacao = await EquipamentoAula.findOne({
-                where: { id_aula: e.id_aula, id_equipamento: equipamentoAula.id },
-              }) as any;
-              const quantidadeFloat = equipamentoAtualizado.quantidade_float + equipamentoAulaRelacao.quantidade;
+    //       for (const equipamentoAula of aulaEquipamento.equipamentos) {
+    //         if (!equipamentosEnviados.includes(equipamentoAula.id)) {
+    //           const equipamentoAtualizado = await Equipamento.findOne({ where: { id: equipamentoAula.id } }) as any;
+    //           const equipamentoAulaRelacao = await EquipamentoAula.findOne({
+    //             where: { id_aula: e.id_aula, id_equipamento: equipamentoAula.id },
+    //           }) as any;
+    //           const quantidadeFloat = equipamentoAtualizado.quantidade_float + equipamentoAulaRelacao.quantidade;
 
-              await equipamentoAtualizado.update({ quantidade_float: quantidadeFloat });
-              await EquipamentoAula.destroy({
-                where: { id_aula: e.id_aula, id_equipamento: equipamentoAula.id },
-              });
-            }
-          }
+    //           await equipamentoAtualizado.update({ quantidade_float: quantidadeFloat });
+    //           await EquipamentoAula.destroy({
+    //             where: { id_aula: e.id_aula, id_equipamento: equipamentoAula.id },
+    //           });
+    //         }
+    //       }
 
-          if (!equipamentoNaAula) {
-            const novaQuantidadeFloat = equipamento.quantidade_float - e.quantidade_equipamento;
-            if (novaQuantidadeFloat < 0) {
-              throw new Error(`Estoque insuficiente para o equipamento: "${equipamento.equipamento}". Reduza a quantidade e tente novamente.`);
-            }
-            await aulaEquipamento.addEquipamento(equipamento, { through: { quantidade: e.quantidade_equipamento } });
-            await equipamento.update({ quantidade_float: novaQuantidadeFloat });
-          }
-        }
-      }
-    }
+    //       if (!equipamentoNaAula) {
+    //         const novaQuantidadeFloat = equipamento.quantidade_float - e.quantidade_equipamento;
+    //         if (novaQuantidadeFloat < 0) {
+    //           throw new Error(`Estoque insuficiente para o equipamento: "${equipamento.equipamento}". Reduza a quantidade e tente novamente.`);
+    //         }
+    //         await aulaEquipamento.addEquipamento(equipamento, { through: { quantidade: e.quantidade_equipamento } });
+    //         await equipamento.update({ quantidade_float: novaQuantidadeFloat });
+    //       }
+    //     }
+    //   }
+    // }
 
     if (!isValidateDate(data)) {
       return NextResponse.json(

@@ -19,11 +19,10 @@ export default async function Page() {
   const session = await getServerSession(authOptions);
 
   if (!session || session.user.isFirstLogin) {
-    const id = session?.user?.id ?? '';  
-    const role = session?.user?.role ?? '';
+    const id = session?.user?.id ?? "";
+    const role = session?.user?.role ?? "";
     return <ResetPassword id={id} role={role} />;
   }
-
 
   const dataAulas = await getDataAulas(session);
   const dataFornecedores = await getDataFornecedores();

@@ -277,7 +277,7 @@ export function FilterAula({ manutencao }: { manutencao?: boolean }) {
           href={window.location.pathname}
           className="result clear_all"
           onClick={clearFilter}>
-          Clear all
+          Limpar todos
         </Link>
       </div>
     </ContentFilters>

@@ -2,6 +2,7 @@
 "use client";
 import { FilterAula } from "@/components/FilterAula";
 import { AulaItems, AulaReq } from "@/types/aula";
+import { formatDateForBr } from "@/utils/formatDateForInput";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -132,7 +133,7 @@ export default function Manutencao({ aulas }: { aulas: AulaReq }) {
                       <p>Tópico da Aula: {e.topico_aula}</p>
                       <p>Professor: {e.professores[0]?.nome} </p>
                       <p>Laboratório: {e.laboratorios[0]?.nome}</p>
-                      <p>Data: {e.data}</p>
+                      <p>Data: {formatDateForBr(e.data)}</p>
                     </div>
 
                     <div className="status_content">
